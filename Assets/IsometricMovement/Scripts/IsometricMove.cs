@@ -6,8 +6,8 @@ namespace IsometricMovement
 {
     public class IsometricMove : MonoBehaviour
     {
-        [SerializeField] bool m_isPhysicsMovement;
-        [SerializeField] float speed = 4f;
+        [SerializeField] private bool m_isPhysicsMovement;
+        [SerializeField] float m_movementDelta = 4f;
         private Vector3 m_isometricForward, m_isometricRight;
         private float m_horizontalMovement , m_verticalMovement;
         private Rigidbody m_Rigidbody;
@@ -104,47 +104,47 @@ namespace IsometricMovement
             }
         }
         #endregion
-        // Start is called before the first frame update
+        
         private void Awake()
         {
             m_isometricForward = Camera.main.transform.forward;
             m_isometricForward.y = 0;
-            m_isometricForward = Vector3.Normalize(m_isometricForward);
+            m_isometricForward = Vector3.Normalize(IsometricForward);
 
             m_isometricRight = Camera.main.transform.right;
 
             m_Rigidbody = GetComponent<Rigidbody>();
         }
-
-
-        // Update is called once per frame
-        private void Update()
+        
+        private void FixedUpdate()
         {
             HorizontalMovement = Input.GetAxis("HorizontalKey");
             VerticalMovement = Input.GetAxis("VerticalKey");
             
             Move(HorizontalMovement, VerticalMovement);
         }
-        
-        void Move(float p_xAxis, float p_zAxis)
+        protected virtual void Move(float p_xAxis, float p_zAxis)
         {
             if (isPhysicsMovement)
             {
-                Vector3 direction = new Vector3(p_xAxis * speed * Time.deltaTime , 0, p_zAxis * speed * Time.deltaTime);
+                Vector3 direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime , 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
 
                 direction = Camera.main.transform.TransformDirection(direction);
                 direction.y = 0;
 
                 Rigidbody.MovePosition(Rigidbody.position + direction);
+                if (direction != Vector3.zero)
+                    Rigidbody.rotation = Quaternion.LookRotation(direction);
             }
             else
             {
                 Vector3 direction = new Vector3(p_xAxis, 0, p_zAxis);
-                Vector3 righMovement = IsometricRight * speed * Time.deltaTime * direction.x;
-                Vector3 upMovement = IsometricForward * speed * Time.deltaTime * direction.z;
+                Vector3 righMovement = IsometricRight * m_movementDelta * Time.deltaTime * direction.x;
+                Vector3 upMovement = IsometricForward * m_movementDelta * Time.deltaTime * direction.z;
 
-                //Vector3 heading = Vector3.Normalize(righMovement + upMovement);
-                //transform.forward = heading;
+                Vector3 heading = Vector3.Normalize(righMovement + upMovement);
+                if (heading != Vector3.zero)
+                    transform.forward = heading;
 
                 transform.position += righMovement;
                 transform.position += upMovement;
