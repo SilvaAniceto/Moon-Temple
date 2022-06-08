@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 59342375}
   - component: {fileID: 59342374}
   - component: {fileID: 59342373}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -637,7 +637,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!65 &1515956897
 BoxCollider:
@@ -674,7 +674,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515956893}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e1621e987f87d2e418147e0facbbaec7, type: 3}
   m_Name: 
@@ -688,13 +688,18 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1515956893}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 601c96b4f569a4f40abde5a2e60ab515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_mouseCursorRotation: 1
+  m_isPhysicsRotation: 1
+  m_mouseSensibility: 27.8
   m_mouseCursor: {fileID: 775508411}
-  m_rotatePosition: {x: 0, y: 0, z: 0}
+  m_layerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &1661169449
 GameObject:
   m_ObjectHideFlags: 0
