@@ -10,6 +10,7 @@ namespace IsometricMovement
         [SerializeField] private float m_movementDelta = 4f;
         private float m_horizontalMovement , m_verticalMovement;
         private Rigidbody m_Rigidbody;
+        private Vector2 m_moveDelta;
 
         #region Properties
         public bool IsPhysicsMovement
@@ -72,10 +73,26 @@ namespace IsometricMovement
                 m_Rigidbody = value;
             }
         }
+        public Vector2 MovementDelta
+        {
+            get
+            {
+                return m_moveDelta;
+            }
+            private set
+            {
+                if (m_moveDelta == value)
+                    return;
+
+                m_moveDelta = value;
+            }
+        }
         #endregion
         
-        private void Awake()
+        new void Awake()
         {
+            base.Awake();
+
             m_Rigidbody = GetComponent<Rigidbody>();
         }
         
@@ -84,8 +101,10 @@ namespace IsometricMovement
             m_horizontalMovement = Input.GetAxis("HorizontalMovement");
             m_verticalMovement = Input.GetAxis("VerticalMovement");
 
-
-            Move(m_horizontalMovement, m_verticalMovement);
+            m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
+            
+            if (m_moveDelta != Vector2.zero)
+                Move(m_horizontalMovement, m_verticalMovement);
         }
         protected virtual void Move(float p_xAxis, float p_zAxis)
         {
@@ -98,7 +117,7 @@ namespace IsometricMovement
 
                 m_Rigidbody.MovePosition(m_Rigidbody.position + direction);
                 if (direction != Vector3.zero)
-                    m_Rigidbody.rotation = Quaternion.LookRotation(direction);
+                    m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, Quaternion.LookRotation(direction), 0.5f);
             }
             else
             {
@@ -108,7 +127,7 @@ namespace IsometricMovement
 
                 Vector3 heading = Vector3.Normalize(righMovement + upMovement);
                 if (heading != Vector3.zero)
-                    transform.forward = heading;
+                    transform.forward = Vector3.Lerp(transform.forward, heading, 0.40f);
 
                 transform.position += righMovement;
                 transform.position += upMovement;

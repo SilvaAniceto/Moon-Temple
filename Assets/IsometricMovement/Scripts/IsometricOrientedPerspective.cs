@@ -41,7 +41,7 @@ namespace IsometricMovement
         }
         #endregion
 
-        private void Awake()
+        protected void Awake()
         {
             m_isometricForward = Camera.main.transform.forward;
             m_isometricForward.y = 0;
