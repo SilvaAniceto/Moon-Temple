@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IsometricMovement
+namespace IsometricOrientedPerspective
 {
     public class IsometricRotation : IsometricOrientedPerspective
     {
@@ -150,7 +150,7 @@ namespace IsometricMovement
         }
         #endregion  
 
-        void Awake()
+        new void Awake()
         {
             m_Rigidbody = GetComponent<Rigidbody>();
         }

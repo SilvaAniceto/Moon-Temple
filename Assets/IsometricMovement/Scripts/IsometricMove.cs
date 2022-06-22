@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IsometricMovement
+namespace IsometricOrientedPerspective
 {
     public class IsometricMove : IsometricOrientedPerspective
     {
