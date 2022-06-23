@@ -6,6 +6,8 @@ namespace IsometricOrientedPerspective
 {
     public class IsometricMove : IsometricOrientedPerspective
     {
+        public static IsometricMove m_moveInstance;
+
         [SerializeField] private bool m_isPhysicsMovement;
         [SerializeField] private float m_movementDelta = 4f;
         private float m_horizontalMovement , m_verticalMovement;
@@ -93,13 +95,16 @@ namespace IsometricOrientedPerspective
         {
             base.Awake();
 
+            if (m_moveInstance == null)
+                m_moveInstance = this;
+
             m_Rigidbody = GetComponent<Rigidbody>();
         }
         
         private void FixedUpdate()
         {
-            m_horizontalMovement = Input.GetAxis("HorizontalMovement");
-            m_verticalMovement = Input.GetAxis("VerticalMovement");
+            m_horizontalMovement = Input.GetAxis("Horizontal");
+            m_verticalMovement = Input.GetAxis("Vertical");
 
             m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
             
@@ -116,8 +121,9 @@ namespace IsometricOrientedPerspective
                 direction.y = 0;
 
                 m_Rigidbody.MovePosition(m_Rigidbody.position + direction);
-                if (direction != Vector3.zero)
-                    m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, Quaternion.LookRotation(direction), 0.5f);
+                if (!IsometricRotation.m_rotationInstance.enabled)
+                    if (direction != Vector3.zero)
+                        m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, Quaternion.LookRotation(direction), 0.5f);
             }
             else
             {
@@ -125,9 +131,12 @@ namespace IsometricOrientedPerspective
                 Vector3 righMovement = IsometricRight * m_movementDelta * Time.deltaTime * direction.x;
                 Vector3 upMovement = IsometricForward * m_movementDelta * Time.deltaTime * direction.z;
 
-                Vector3 heading = Vector3.Normalize(righMovement + upMovement);
-                if (heading != Vector3.zero)
-                    transform.forward = Vector3.Lerp(transform.forward, heading, 0.40f);
+                if (!IsometricRotation.m_rotationInstance.enabled)
+                {
+                    Vector3 heading = Vector3.Normalize(righMovement + upMovement);
+                    if (heading != Vector3.zero)
+                        transform.forward = Vector3.Lerp(transform.forward, heading, 0.40f);
+                }
 
                 transform.position += righMovement;
                 transform.position += upMovement;

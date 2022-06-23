@@ -6,10 +6,10 @@ namespace IsometricOrientedPerspective
 {
     public class JumpSystem : MonoBehaviour
     {
-        [SerializeField] float jumpTime, jumpForce;
-        [SerializeField] bool isJumping, m_groundValue;
-        [SerializeField] Rigidbody rb;
+        [SerializeField] float m_heightDeltaTime, m_heightDelta;
+        private bool m_offGroundLevel, m_onGroundLevel;
         [SerializeField] LayerMask m_layerMask;
+        private Rigidbody m_rigidbody;
         private float m_jumpDelayCounter;
         private SphereCollider m_sphereCollider;
         private BoxCollider m_boxCollider;
@@ -21,21 +21,21 @@ namespace IsometricOrientedPerspective
             get
             { 
                 if (m_sphereCollider != null)
-                    m_groundValue = IsGround(m_sphereCollider, null, null);
+                    m_onGroundLevel = IsGround(m_sphereCollider, null, null);
                 else if (m_boxCollider != null)
-                    m_groundValue = IsGround(null, m_boxCollider, null);
+                    m_onGroundLevel = IsGround(null, m_boxCollider, null);
                 else if (m_capsuleCollider != null)
-                    m_groundValue = IsGround(null, null, m_capsuleCollider);
+                    m_onGroundLevel = IsGround(null, null, m_capsuleCollider);
 
-                return m_groundValue;
+                return m_onGroundLevel;
             }
             
             private set
             {
-                if (m_groundValue == value)
+                if (m_onGroundLevel == value)
                     return;
 
-                m_groundValue = value;
+                m_onGroundLevel = value;
             }
         }
 
@@ -44,6 +44,9 @@ namespace IsometricOrientedPerspective
         private void Awake()
         {
             GetCollider();
+
+            if (m_rigidbody == null)
+                m_rigidbody = GetComponent<Rigidbody>();
         }
 
         // Start is called before the first frame update
@@ -54,31 +57,30 @@ namespace IsometricOrientedPerspective
 
         // Update is called once per frame
         void Update()
-        {            
-            //onGround = Physics.Raycast(rb.transform.position, Vector3.down, 0.6f, layerMask);
+        { 
 
-            if (OnGroundLevel && Input.GetButtonDown("MouseLeftButton"))
+            if (OnGroundLevel && Input.GetButtonDown("Jump"))
             {
-                isJumping = true;
-                m_jumpDelayCounter = jumpTime;
-                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+                m_offGroundLevel = true;
+                m_jumpDelayCounter = m_heightDeltaTime;
+                m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Impulse);
             }
 
-            if (Input.GetButton("MouseLeftButton") && isJumping)
+            if (Input.GetButton("Jump") && m_offGroundLevel)
             {
 
                 if (m_jumpDelayCounter > 0)
                 {
-                    rb.AddForce(Vector3.up * jumpForce, ForceMode.Force);
+                    m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Force);
                     m_jumpDelayCounter -= Time.deltaTime;
                 }
                 else
-                    isJumping = false;
+                    m_offGroundLevel = false;
             }
 
-            if (Input.GetButtonUp("MouseLeftButton"))
+            if (Input.GetButtonUp("Jump"))
             {
-                isJumping = false;
+                m_offGroundLevel = false;
             }
         }
 

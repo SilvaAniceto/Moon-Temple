@@ -1,11 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace IsometricOrientedPerspective
 {
     public class IsometricRotation : IsometricOrientedPerspective
     {
+        public static IsometricRotation m_rotationInstance;
+
         private Vector3 m_rotatePosition;
         [SerializeField] private bool m_mouseCursorRotation, m_isPhysicsRotation;
         [Range(0f, 100f)][SerializeField] private float m_mouseSensibility;
@@ -152,9 +154,16 @@ namespace IsometricOrientedPerspective
 
         new void Awake()
         {
+            base.Awake();
+
+            if (m_rotationInstance == null)
+                m_rotationInstance = this;
+
             m_Rigidbody = GetComponent<Rigidbody>();
+
+            m_mouseCursor = Instantiate(m_mouseCursor, gameObject.transform);
         }
-        
+
         private void Update()
         {
             if (m_mouseCursorRotation)
@@ -192,9 +201,9 @@ namespace IsometricOrientedPerspective
                 Vector3 upMovement = IsometricForward * m_mouseSensibility * Time.deltaTime * direction.z;
 
                 Vector3 heading = Vector3.Normalize(righMovement + upMovement);
-                Debug.Log(direction);
+                Debug.Log(heading);
                 if (heading != Vector3.zero)
-                    transform.forward = heading;
+                    transform.forward =  heading; 
             }
         }
         protected virtual void Rotate(Vector3 p_rotatePosition, LayerMask p_layerMask)
