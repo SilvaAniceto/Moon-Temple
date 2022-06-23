@@ -14,6 +14,8 @@ namespace IsometricOrientedPerspective
         private Rigidbody m_Rigidbody;
         private Vector2 m_moveDelta;
 
+        Vector3 direction;
+
         #region Properties
         public bool IsPhysicsMovement
         {
@@ -115,12 +117,28 @@ namespace IsometricOrientedPerspective
         {
             if (IsPhysicsMovement)
             {
-                Vector3 direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime , 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
+                if (IsometricRotation.m_rotationInstance.enabled)
+                {
+                    direction = transform.forward * p_zAxis * m_movementDelta * Time.fixedDeltaTime;
 
-                direction = Camera.main.transform.TransformDirection(direction);
-                direction.y = 0;
+                    m_Rigidbody.MovePosition(m_Rigidbody.position + direction);
+                }
+                else
+                {
+                    direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime, 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
 
-                m_Rigidbody.MovePosition(m_Rigidbody.position + direction);
+                    direction = Camera.main.transform.TransformDirection(direction);
+                    direction.y = 0;
+
+                    m_Rigidbody.MovePosition(m_Rigidbody.position + direction);
+                }
+
+                //Vector3 direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime , 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
+
+                //direction = Camera.main.transform.TransformDirection(direction);
+                //direction.y = 0;
+
+                //m_Rigidbody.MovePosition(m_Rigidbody.position + direction);
                 if (!IsometricRotation.m_rotationInstance.enabled)
                     if (direction != Vector3.zero)
                         m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, Quaternion.LookRotation(direction), 0.5f);

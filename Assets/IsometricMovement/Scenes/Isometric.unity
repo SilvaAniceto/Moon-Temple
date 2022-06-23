@@ -617,7 +617,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1621e987f87d2e418147e0facbbaec7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPhysicsMovement: 0
+  m_isPhysicsMovement: 1
   m_movementDelta: 4
 --- !u!114 &1515956900
 MonoBehaviour:
@@ -631,7 +631,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601c96b4f569a4f40abde5a2e60ab515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_mouseCursorRotation: 0
+  m_mouseCursorRotation: 1
   m_isPhysicsRotation: 0
   m_mouseSensibility: 27.8
   m_mouseCursor: {fileID: 6892568986746799079, guid: 9bab9eb87820f084393433d3b996470c, type: 3}
