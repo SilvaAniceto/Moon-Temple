@@ -38,7 +38,6 @@ namespace IsometricOrientedPerspective
                 m_onGroundLevel = value;
             }
         }
-
         #endregion
 
         private void Awake()
@@ -46,7 +45,7 @@ namespace IsometricOrientedPerspective
             GetCollider();
 
             if (m_rigidbody == null)
-                m_rigidbody = GetComponent<Rigidbody>();
+                m_rigidbody = gameObject.GetComponent<Rigidbody>();
         }
 
         // Start is called before the first frame update

@@ -161,7 +161,7 @@ namespace IsometricOrientedPerspective
 
             m_Rigidbody = GetComponent<Rigidbody>();
 
-            m_mouseCursor = Instantiate(m_mouseCursor, gameObject.transform);
+            m_mouseCursor = Instantiate(m_mouseCursor);
         }
 
         private void Update()
