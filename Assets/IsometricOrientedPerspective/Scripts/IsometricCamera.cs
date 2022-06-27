@@ -6,17 +6,26 @@ namespace IsometricOrientedPerspective
 {
     public class IsometricCamera : IsometricOrientedPerspective
     {
+        public static IsometricCamera m_instance;
+
         [SerializeField] Transform m_target;
         [SerializeField] Vector3 m_offset;
         [SerializeField] float m_sensibility;
         [SerializeField] Camera m_camera;
-        [SerializeField] Vector3 m_currentOffset, m_leftOffset, m_rightOffset;
-        [SerializeField] Vector3[] m_deltaPosition = { new Vector3(-30, 0, -30), new Vector3(30, 0, -30), new Vector3(30, 0, 30), new Vector3(-30, 0, 30),};
+        [SerializeField] Vector3 m_currentOffset, m_leftOffset, m_rightOffset, m_currentPosition, m_nextPosition;
+        [SerializeField] Vector3[] m_deltaPosition = { new Vector3(-30, 15, -30), new Vector3(30, 15, -30), new Vector3(30, 15, 30), new Vector3(-30, 15, 30)};
         [SerializeField] List<Vector3> m_auxDeltaPosition = new List<Vector3>();
         [SerializeField] float m_horizontalAxis;
+
+        public enum CameraPosition { SOUTH, EAST, NORTH, WEST }
+        public CameraPosition m_cameraPosition = CameraPosition.SOUTH;
+
         // Start is called before the first frame update
         void Start()
         {
+            if (m_instance == null)
+                m_instance = this;
+
             if (m_offset != m_currentOffset)
                 m_currentOffset = m_offset;
 
@@ -24,6 +33,8 @@ namespace IsometricOrientedPerspective
             m_auxDeltaPosition.Add(m_deltaPosition[1]);
             m_auxDeltaPosition.Add(m_deltaPosition[2]);
             m_auxDeltaPosition.Add(m_deltaPosition[3]);
+
+            DefineCameraDirection();
         }
 
         // Update is called once per frame
@@ -40,19 +51,12 @@ namespace IsometricOrientedPerspective
                 transform.position += righMovement;
                 //transform.position += upMovement;
             }
-            else
-            {
-                transform.position = m_target.position + m_offset;
-            }
 
             if (Input.GetKeyUp(KeyCode.Mouse1))
-            {
                 SetCameraPosition();
-                transform.position = m_target.position + m_offset;
-            }
-                
 
-            transform.LookAt(m_target);
+            var targetRotation = Quaternion.LookRotation(m_target.position - transform.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 50 * Time.deltaTime);
         }
 
         void GetLeftRightOffSet(Vector3 p_currentOffset, float p_horizontalAxis)
@@ -61,8 +65,6 @@ namespace IsometricOrientedPerspective
 
             if (p_horizontalAxis > 0.2f)
             {
-                Debug.Log("Right");
-
                 m_horizontalAxis = 1;
 
                 int index = m_auxDeltaPosition.IndexOf(p_currentOffset);
@@ -82,12 +84,10 @@ namespace IsometricOrientedPerspective
                     m_leftOffset = m_auxDeltaPosition[index - 1];
                     m_rightOffset = m_auxDeltaPosition[index + 1];
                 }
-
+                m_nextPosition = m_target.position + m_rightOffset;
             }
             if (p_horizontalAxis < -0.2f)
             {
-                Debug.Log("Left");
-
                 m_horizontalAxis = -1;
 
                 int index = m_auxDeltaPosition.IndexOf(p_currentOffset);
@@ -107,6 +107,7 @@ namespace IsometricOrientedPerspective
                     m_leftOffset = m_auxDeltaPosition[index - 1];
                     m_rightOffset = m_auxDeltaPosition[index + 1];
                 }
+                m_nextPosition = m_target.position + m_leftOffset;
             }
         }
 
@@ -118,7 +119,31 @@ namespace IsometricOrientedPerspective
             if (m_horizontalAxis > 0)
                 m_offset = m_rightOffset;
 
-            m_currentOffset = m_offset;
+            LeanTween.move(this.gameObject, m_nextPosition, 0.5f).setOnComplete(() =>
+            {
+                m_currentOffset = m_offset;
+                DefineCameraDirection();
+            });
+        }
+
+        public void SetCameraFollow()
+        {
+            transform.position = m_target.position + m_offset;
+        }
+
+        public void DefineCameraDirection()
+        {
+            if (m_currentOffset == m_deltaPosition[0])
+                m_cameraPosition = CameraPosition.SOUTH;
+
+            if (m_currentOffset == m_deltaPosition[1])
+                m_cameraPosition = CameraPosition.EAST;
+
+            if (m_currentOffset == m_deltaPosition[2])
+                m_cameraPosition = CameraPosition.NORTH;
+
+            if (m_currentOffset == m_deltaPosition[3])
+                m_cameraPosition = CameraPosition.WEST;
         }
     }
 }

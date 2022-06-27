@@ -120,10 +120,14 @@ namespace IsometricOrientedPerspective
             m_horizontalMovement = Input.GetAxis("Horizontal");
             m_verticalMovement = Input.GetAxis("Vertical");
 
-            m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
-            
+            //m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
+            SetInputMoveDelta();
+
             if (m_moveDelta != Vector2.zero)
-                Move(m_horizontalMovement, m_verticalMovement);
+            {
+                Move(m_moveDelta.x, m_moveDelta.y);
+                IsometricCamera.m_instance.SetCameraFollow();
+            }
         }
         protected virtual void Move(float p_xAxis, float p_zAxis)
         {
@@ -179,6 +183,21 @@ namespace IsometricOrientedPerspective
                 transform.position += m_moveDirection.righMovement;
                 transform.position += m_moveDirection.upMovement;
             }
+        }
+
+        public void SetInputMoveDelta()
+        {
+            if (IsometricCamera.m_instance.m_cameraPosition == IsometricCamera.CameraPosition.SOUTH)
+                m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
+
+            if (IsometricCamera.m_instance.m_cameraPosition == IsometricCamera.CameraPosition.WEST)
+                m_moveDelta = new Vector2(m_verticalMovement, -m_horizontalMovement);
+
+            if (IsometricCamera.m_instance.m_cameraPosition == IsometricCamera.CameraPosition.NORTH)
+                m_moveDelta = new Vector2(-m_horizontalMovement, -m_verticalMovement);
+
+            if (IsometricCamera.m_instance.m_cameraPosition == IsometricCamera.CameraPosition.EAST)
+                m_moveDelta = new Vector2(-m_verticalMovement, m_horizontalMovement);
         }
     }
 }
