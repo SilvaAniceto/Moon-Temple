@@ -45,7 +45,7 @@ namespace IsometricOrientedPerspective
         {
             m_isometricForward = Camera.main.transform.forward;
             m_isometricForward.y = 0;
-            m_isometricForward = Vector3.Normalize(IsometricForward);
+            m_isometricForward = Vector3.Normalize(m_isometricForward);
 
             m_isometricRight = Camera.main.transform.right;
         }
