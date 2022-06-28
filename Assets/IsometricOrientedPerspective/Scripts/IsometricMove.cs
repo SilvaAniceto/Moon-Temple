@@ -16,6 +16,21 @@ namespace IsometricOrientedPerspective
         private MoveDirection m_moveDirection;
 
         #region Properties
+        public float MovementDelta
+        {
+            get
+            {
+                return m_movementDelta;
+            }
+
+            private set
+            {
+                if (m_movementDelta == value)
+                    return;
+
+                m_movementDelta = value;
+            }
+        }
         public bool IsPhysicsMovement
         {
             get 
@@ -76,7 +91,7 @@ namespace IsometricOrientedPerspective
                 m_Rigidbody = value;
             }
         }
-        public Vector2 MovementDelta
+        public Vector2 MoveDelta
         {
             get
             {
