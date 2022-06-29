@@ -9,6 +9,7 @@ namespace IsometricOrientedPerspective
         public static IsometricCamera m_instance;
 
         [SerializeField] Transform m_target;
+        [SerializeField] Transform m_parent;
         [SerializeField] float m_sensibility;
         [SerializeField] Camera m_camera;
         [SerializeField] Vector3 m_offset, m_currentOffset, m_leftOffset, m_rightOffset;
@@ -41,28 +42,32 @@ namespace IsometricOrientedPerspective
         {
             if (Input.GetKey(KeyCode.Mouse1))
             {
-                Vector3 direction = new Vector3(Input.GetAxis("Mouse X"), 0, 0/*Input.GetAxis("Mouse Y")*/);
-                Vector3 righMovement = transform.right * m_sensibility * Time.deltaTime * direction.x;
-                //Vector3 upMovement = transform.up * m_sensibility * Time.deltaTime * direction.z;                
+                Vector3 direction = new Vector3(Input.GetAxis("Mouse X"), 0, Input.GetAxis("Mouse Y"));
+                Vector3 righMovement = transform.right * m_sensibility * Time.deltaTime * direction.x; 
+                //Vector3 upMovement = transform.up * m_sensibility * Time.deltaTime * direction.z;
 
-                transform.position += righMovement;
+                if (!m_movingCamera)
+                    transform.position += righMovement;
+
                 //transform.position += upMovement;
 
                 GetLeftRightOffSet(m_currentOffset, Input.GetAxis("Mouse X"));
             }
 
             if (Input.GetKeyUp(KeyCode.Mouse1))
-                SetCameraPosition();
-
+                SetCameraPosition(m_horizontalAxis);
+            
             var targetRotation = Quaternion.LookRotation(m_target.position - transform.position);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 100f * Time.deltaTime);
+
+            m_parent.position = m_target.position;
         }
 
         void GetLeftRightOffSet(Vector3 p_currentOffset, float p_horizontalAxis)
         {
             if (p_currentOffset != m_currentOffset || p_horizontalAxis == 0) return;
 
-            if (p_horizontalAxis > 0.2f)
+            if (p_horizontalAxis > 0.35f)
             {
                 m_horizontalAxis = 1;
 
@@ -84,7 +89,7 @@ namespace IsometricOrientedPerspective
                     m_rightOffset = m_auxDeltaPosition[index + 1];
                 }
             }
-            if (p_horizontalAxis < -0.2f)
+            if (p_horizontalAxis < -0.35f)
             {
                 m_horizontalAxis = -1;
 
@@ -107,14 +112,16 @@ namespace IsometricOrientedPerspective
                 }
             }
         }
-        private void SetCameraPosition()
+        private void SetCameraPosition(float p_horizontalAxis)
         {
+            if (m_movingCamera) return;
+                
             m_movingCamera = true;
 
-            if (m_horizontalAxis < 0)
+            if (p_horizontalAxis < 0)
                 m_offset = m_leftOffset;
 
-            if (m_horizontalAxis > 0)
+            if (p_horizontalAxis > 0)
                 m_offset = m_rightOffset;
 
             LeanTween.move(this.gameObject, m_target.position + m_offset, 1.5f).setOnComplete(() =>
@@ -123,13 +130,6 @@ namespace IsometricOrientedPerspective
                 DefineCameraDirection();
                 m_movingCamera = false;
             });
-        }
-
-        public void SetCameraFollow()
-        {
-            if (m_movingCamera) return;
-
-            LeanTween.move(this.gameObject, m_target.position + m_currentOffset, 0);
         }
 
         public void DefineCameraDirection()

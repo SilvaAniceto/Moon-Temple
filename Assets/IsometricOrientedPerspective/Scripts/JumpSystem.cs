@@ -7,7 +7,7 @@ namespace IsometricOrientedPerspective
     public class JumpSystem : MonoBehaviour
     {
         [SerializeField] float m_heightDeltaTime, m_heightDelta;
-        private bool m_offGroundLevel, m_onGroundLevel;
+        private bool m_offGroundLevel, m_onGroundLevel, m_jumpInput;
         [SerializeField] LayerMask m_layerMask;
         private Rigidbody m_rigidbody;
         private float m_jumpDelayCounter;
@@ -38,6 +38,21 @@ namespace IsometricOrientedPerspective
                 m_onGroundLevel = value;
             }
         }
+        public bool JumpInput
+        {
+            get
+            {
+                return m_jumpInput;
+            }
+
+            private set
+            {
+                if (m_jumpInput == value)
+                    return;
+
+                m_jumpInput = value;
+            }
+        }
         #endregion
 
         private void Awake()
@@ -55,19 +70,25 @@ namespace IsometricOrientedPerspective
         }
 
         // Update is called once per frame
-        void Update()
-        { 
+        private void Update()
+        {
+            if (Input.GetButton("Jump"))
+                m_jumpInput = true;
+            else if (Input.GetButtonUp("Jump"))
+                m_jumpInput = false;
+        }
 
-            if (OnGroundLevel && Input.GetButtonDown("Jump"))
+        private void FixedUpdate()
+        { 
+            if (OnGroundLevel && JumpInput)
             {
                 m_offGroundLevel = true;
                 m_jumpDelayCounter = m_heightDeltaTime;
-                m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Impulse);
+                m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Force);
             }
 
-            if (Input.GetButton("Jump") && m_offGroundLevel)
+            if (JumpInput && m_offGroundLevel)
             {
-
                 if (m_jumpDelayCounter > 0)
                 {
                     m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Force);
@@ -77,10 +98,8 @@ namespace IsometricOrientedPerspective
                     m_offGroundLevel = false;
             }
 
-            if (Input.GetButtonUp("Jump"))
-            {
+            if (JumpInput)
                 m_offGroundLevel = false;
-            }
         }
 
         private void GetCollider()

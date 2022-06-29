@@ -130,20 +130,37 @@ namespace IsometricOrientedPerspective
             m_Rigidbody = GetComponent<Rigidbody>();
         }
         
-        private void FixedUpdate()
+        private void Update()
         {
             m_horizontalMovement = Input.GetAxis("Horizontal");
             m_verticalMovement = Input.GetAxis("Vertical");
 
-            //m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
             SetInputMoveDelta();
 
-            if (m_moveDelta != Vector2.zero)
+            if (IsPhysicsMovement) return;
+            
+            if (IsometricRotation.m_rotationInstance.enabled)
             {
-                Move(m_moveDelta.x, m_moveDelta.y);
-                IsometricCamera.m_instance.SetCameraFollow();
+                m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
+                if (m_moveDelta != Vector2.zero)
+                    Move(m_moveDelta.x, m_moveDelta.y);
+            }
+            else
+            {
+                if (m_moveDelta != Vector2.zero)
+                    Move(m_moveDelta.x, m_moveDelta.y);
             }
         }
+
+        private void FixedUpdate()
+        {
+            if (!IsPhysicsMovement) return;
+
+            m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
+            if (m_moveDelta != Vector2.zero)
+                Move(m_moveDelta.x, m_moveDelta.y);
+        }
+
         protected virtual void Move(float p_xAxis, float p_zAxis)
         {
             if (IsPhysicsMovement)

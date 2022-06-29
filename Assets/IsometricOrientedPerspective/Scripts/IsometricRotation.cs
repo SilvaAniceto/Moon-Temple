@@ -9,7 +9,7 @@ namespace IsometricOrientedPerspective
         public static IsometricRotation m_rotationInstance;
 
         private Vector3 m_rotatePosition;
-        [SerializeField] private bool m_mouseCursorRotation, m_isPhysicsRotation;
+        [SerializeField] private bool /*m_mouseCursorRotation,*/ m_isPhysicsRotation;
         [Range(0f, 100f)][SerializeField] private float m_mouseSensibility;
         [SerializeField] private Transform m_mouseCursor;
         private float m_horizontalRotation, m_verticalRotation;
@@ -32,21 +32,21 @@ namespace IsometricOrientedPerspective
                 m_rotatePosition = value;
             }
         }
-        public bool MouseCursorRotation
-        {
-            get 
-            {
-                return m_mouseCursorRotation;
-            }
+        //public bool MouseCursorRotation
+        //{
+        //    get 
+        //    {
+        //        return m_mouseCursorRotation;
+        //    }
 
-            private set
-            {
-                if (m_mouseCursorRotation == value)
-                    return;
+        //    private set
+        //    {
+        //        if (m_mouseCursorRotation == value)
+        //            return;
 
-                m_mouseCursorRotation = value;
-            }
-        }
+        //        m_mouseCursorRotation = value;
+        //    }
+        //}
         public bool IsPhysicsRotation
         {
             get
@@ -152,6 +152,16 @@ namespace IsometricOrientedPerspective
         }
         #endregion  
 
+        private void OnEnable()
+        {
+            m_mouseCursor.gameObject.SetActive(true);
+        }
+
+        private void OnDisable()
+        {
+            m_mouseCursor.gameObject.SetActive(false);
+        }
+
         new void Awake()
         {
             base.Awake();
@@ -166,45 +176,9 @@ namespace IsometricOrientedPerspective
 
         private void Update()
         {
-            if (m_mouseCursorRotation)
-            {
-                m_rotatePosition = Input.mousePosition;
+            m_rotatePosition = Input.mousePosition;
 
-                Rotate(m_rotatePosition, m_layerMask);
-            }
-            else 
-            {
-                m_horizontalRotation = Input.GetAxis("HorizontalRotation");
-                m_verticalRotation = Input.GetAxis("VerticalRotation");
-
-                Rotate(m_horizontalRotation, m_verticalRotation);
-            }
-
-            m_mouseCursor.gameObject.SetActive(m_mouseCursorRotation);
-        }
-        protected virtual void Rotate(float p_xAxis, float p_zAxis)
-        {
-            if (m_isPhysicsRotation)
-            {
-                Vector3 direction = new Vector3(p_xAxis * m_mouseSensibility * Time.fixedDeltaTime, 0, p_zAxis * m_mouseSensibility * Time.fixedDeltaTime);
-
-                direction = Camera.main.transform.TransformDirection(direction);
-                direction.y = 0;
-                Debug.Log(direction);
-                if (direction != Vector3.zero)
-                    m_Rigidbody.rotation = Quaternion.LookRotation(direction);
-            }
-            else
-            {
-                Vector3 direction = new Vector3(p_xAxis, 0, p_zAxis);
-                Vector3 righMovement = IsometricRight * m_mouseSensibility * Time.deltaTime * direction.x;
-                Vector3 upMovement = IsometricForward * m_mouseSensibility * Time.deltaTime * direction.z;
-
-                Vector3 heading = Vector3.Normalize(righMovement + upMovement);
-                Debug.Log(heading);
-                if (heading != Vector3.zero)
-                    transform.forward =  heading; 
-            }
+            Rotate(m_rotatePosition, m_layerMask);
         }
         protected virtual void Rotate(Vector3 p_rotatePosition, LayerMask p_layerMask)
         {
@@ -232,5 +206,29 @@ namespace IsometricOrientedPerspective
                     transform.LookAt(p_rotatePosition, Vector3.up);
             }
         }
+        //protected virtual void Rotate(float p_xAxis, float p_zAxis)
+        //{
+        //    if (m_isPhysicsRotation)
+        //    {
+        //        Vector3 direction = new Vector3(p_xAxis * m_mouseSensibility * Time.fixedDeltaTime, 0, p_zAxis * m_mouseSensibility * Time.fixedDeltaTime);
+
+        //        direction = Camera.main.transform.TransformDirection(direction);
+        //        direction.y = 0;
+        //        Debug.Log(direction);
+        //        if (direction != Vector3.zero)
+        //            m_Rigidbody.rotation = Quaternion.LookRotation(direction);
+        //    }
+        //    else
+        //    {
+        //        Vector3 direction = new Vector3(p_xAxis, 0, p_zAxis);
+        //        Vector3 righMovement = IsometricRight * m_mouseSensibility * Time.deltaTime * direction.x;
+        //        Vector3 upMovement = IsometricForward * m_mouseSensibility * Time.deltaTime * direction.z;
+
+        //        Vector3 heading = Vector3.Normalize(righMovement + upMovement);
+        //        Debug.Log(heading);
+        //        if (heading != Vector3.zero)
+        //            transform.forward =  heading; 
+        //    }
+        //}
     }
 }
