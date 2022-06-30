@@ -23,7 +23,7 @@ namespace IsometricOrientedPerspective
                 return m_movementDelta;
             }
 
-            private set
+            set
             {
                 if (m_movementDelta == value)
                     return;
@@ -38,7 +38,7 @@ namespace IsometricOrientedPerspective
                 return m_isPhysicsMovement;
             }
 
-            private set
+            set
             {
                 if (m_isPhysicsMovement == value)
                     return;
@@ -138,7 +138,9 @@ namespace IsometricOrientedPerspective
             SetInputMoveDelta();
 
             if (IsPhysicsMovement) return;
-            
+
+            IsometricCamera.m_instance.MoveBase();
+
             if (IsometricRotation.m_rotationInstance.enabled)
             {
                 m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
@@ -156,6 +158,8 @@ namespace IsometricOrientedPerspective
         {
             if (!IsPhysicsMovement) return;
 
+            IsometricCamera.m_instance.MoveBase();
+
             m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
             if (m_moveDelta != Vector2.zero)
                 Move(m_moveDelta.x, m_moveDelta.y);
@@ -170,7 +174,7 @@ namespace IsometricOrientedPerspective
                     float distance = Vector3.Distance(IsometricRotation.m_rotationInstance.MouseCursor.transform.position, transform.position);
                     
                     Vector3 zdirection = distance > 1.2f ? transform.forward * p_zAxis * m_movementDelta * Time.fixedDeltaTime : Vector3.zero;
-                    Vector3 xdirection = transform.right * p_xAxis *m_movementDelta * Time.fixedDeltaTime;
+                    Vector3 xdirection = transform.right * p_xAxis * m_movementDelta * Time.fixedDeltaTime;
                     m_moveDirection.direction = zdirection + xdirection;
 
                     m_Rigidbody.MovePosition(m_Rigidbody.position + m_moveDirection.direction);
@@ -219,16 +223,16 @@ namespace IsometricOrientedPerspective
 
         public void SetInputMoveDelta()
         {
-            if (IsometricCamera.m_instance.m_cameraPosition == IsometricCamera.CameraPosition.SOUTH)
+            if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.SOUTH)
                 m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
 
-            if (IsometricCamera.m_instance.m_cameraPosition == IsometricCamera.CameraPosition.WEST)
+            if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.WEST)
                 m_moveDelta = new Vector2(m_verticalMovement, -m_horizontalMovement);
 
-            if (IsometricCamera.m_instance.m_cameraPosition == IsometricCamera.CameraPosition.NORTH)
+            if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.NORTH)
                 m_moveDelta = new Vector2(-m_horizontalMovement, -m_verticalMovement);
 
-            if (IsometricCamera.m_instance.m_cameraPosition == IsometricCamera.CameraPosition.EAST)
+            if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.EAST)
                 m_moveDelta = new Vector2(-m_verticalMovement, m_horizontalMovement);
         }
     }

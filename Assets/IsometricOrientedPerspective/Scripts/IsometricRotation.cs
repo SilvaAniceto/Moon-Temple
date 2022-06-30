@@ -8,13 +8,13 @@ namespace IsometricOrientedPerspective
     {
         public static IsometricRotation m_rotationInstance;
 
-        private Vector3 m_rotatePosition;
-        [SerializeField] private bool /*m_mouseCursorRotation,*/ m_isPhysicsRotation;
-        [Range(0f, 100f)][SerializeField] private float m_mouseSensibility;
+        [SerializeField] private bool m_isPhysicsRotation;
+        [Range(0f, 100f)][SerializeField] private float m_rotationSensibility;
         [SerializeField] private Transform m_mouseCursor;
+        [SerializeField] private LayerMask m_layerMask;
+        private Vector3 m_rotatePosition;
         private float m_horizontalRotation, m_verticalRotation;
         private Rigidbody m_Rigidbody;
-        [SerializeField] private LayerMask m_layerMask;
 
         #region Properties
         public Vector3 RotatePosition
@@ -32,21 +32,6 @@ namespace IsometricOrientedPerspective
                 m_rotatePosition = value;
             }
         }
-        //public bool MouseCursorRotation
-        //{
-        //    get 
-        //    {
-        //        return m_mouseCursorRotation;
-        //    }
-
-        //    private set
-        //    {
-        //        if (m_mouseCursorRotation == value)
-        //            return;
-
-        //        m_mouseCursorRotation = value;
-        //    }
-        //}
         public bool IsPhysicsRotation
         {
             get
@@ -54,7 +39,7 @@ namespace IsometricOrientedPerspective
                 return m_isPhysicsRotation;
             }
 
-            private set
+            set
             {
                 if (m_isPhysicsRotation == value)
                     return;
@@ -62,19 +47,19 @@ namespace IsometricOrientedPerspective
                 m_isPhysicsRotation = value;
             }
         }
-        public float MouseSensibility
+        public float RotationSensibility
         {
             get
             {
-                return m_mouseSensibility;
+                return m_rotationSensibility;
             }
 
-            private set
+            set
             {
-                if (m_mouseSensibility == value)
+                if (m_rotationSensibility == value)
                     return;
 
-                m_mouseSensibility = value;
+                m_rotationSensibility = value;
             }
         }
         public Transform MouseCursor
@@ -159,7 +144,8 @@ namespace IsometricOrientedPerspective
 
         private void OnDisable()
         {
-            m_mouseCursor.gameObject.SetActive(false);
+            if (m_mouseCursor != null)
+                m_mouseCursor.gameObject.SetActive(false);
         }
 
         new void Awake()
@@ -206,29 +192,5 @@ namespace IsometricOrientedPerspective
                     transform.LookAt(p_rotatePosition, Vector3.up);
             }
         }
-        //protected virtual void Rotate(float p_xAxis, float p_zAxis)
-        //{
-        //    if (m_isPhysicsRotation)
-        //    {
-        //        Vector3 direction = new Vector3(p_xAxis * m_mouseSensibility * Time.fixedDeltaTime, 0, p_zAxis * m_mouseSensibility * Time.fixedDeltaTime);
-
-        //        direction = Camera.main.transform.TransformDirection(direction);
-        //        direction.y = 0;
-        //        Debug.Log(direction);
-        //        if (direction != Vector3.zero)
-        //            m_Rigidbody.rotation = Quaternion.LookRotation(direction);
-        //    }
-        //    else
-        //    {
-        //        Vector3 direction = new Vector3(p_xAxis, 0, p_zAxis);
-        //        Vector3 righMovement = IsometricRight * m_mouseSensibility * Time.deltaTime * direction.x;
-        //        Vector3 upMovement = IsometricForward * m_mouseSensibility * Time.deltaTime * direction.z;
-
-        //        Vector3 heading = Vector3.Normalize(righMovement + upMovement);
-        //        Debug.Log(heading);
-        //        if (heading != Vector3.zero)
-        //            transform.forward =  heading; 
-        //    }
-        //}
     }
 }

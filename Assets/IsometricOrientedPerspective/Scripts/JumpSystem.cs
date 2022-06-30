@@ -7,10 +7,10 @@ namespace IsometricOrientedPerspective
     public class JumpSystem : MonoBehaviour
     {
         [SerializeField] float m_heightDeltaTime, m_heightDelta;
-        private bool m_offGroundLevel, m_onGroundLevel, m_jumpInput;
         [SerializeField] LayerMask m_layerMask;
-        private Rigidbody m_rigidbody;
+        private bool m_offGroundLevel, m_onGroundLevel, m_jumpInput;
         private float m_jumpDelayCounter;
+        private Rigidbody m_rigidbody;
         private SphereCollider m_sphereCollider;
         private BoxCollider m_boxCollider;
         private CapsuleCollider m_capsuleCollider;
@@ -63,13 +63,6 @@ namespace IsometricOrientedPerspective
                 m_rigidbody = gameObject.GetComponent<Rigidbody>();
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            
-        }
-
-        // Update is called once per frame
         private void Update()
         {
             if (Input.GetButton("Jump"))
