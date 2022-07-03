@@ -195,6 +195,8 @@ namespace IsometricOrientedPerspective
         {
             if (Input.GetButton("CameraControll"))
             {
+                m_movingCamera = true;
+
                 Vector3 direction = new Vector3(Input.GetAxis("HorizontalCameraRotation"), 0, 0);
                 Vector3 righMovement = transform.right * m_sensibility * Time.deltaTime * direction.x;
 
@@ -212,7 +214,10 @@ namespace IsometricOrientedPerspective
             }
 
             if (Input.GetButtonUp("CameraControll"))
+            {
+                m_movingCamera = false;
                 SetCameraPosition(HorizontalAxis);
+            }
 
             m_zoom = Input.GetAxis("CameraZoom");
 
@@ -279,18 +284,19 @@ namespace IsometricOrientedPerspective
         }
         private void SetCameraPosition(float p_horizontalAxis)
         {
-            if (m_movingCamera) return;
+            if (p_horizontalAxis == 0) m_movingCamera = true;
+
+            if (m_movingCamera) { m_movingCamera = false; return; }    
                 
             m_movingCamera = true;
 
-            if (p_horizontalAxis < 0)
-                m_offset = m_leftOffset;
+            if (p_horizontalAxis < 0) m_offset = m_leftOffset;
 
-            if (p_horizontalAxis > 0)
-                m_offset = m_rightOffset;
+            if (p_horizontalAxis > 0) m_offset = m_rightOffset;
 
             LeanTween.move(this.gameObject, m_target.position + m_offset, 1.5f).setOnComplete(() =>
             {
+                m_horizontalAxis = 0;
                 m_currentOffset = m_offset;
                 DefineCameraDirection();
                 m_movingCamera = false;
