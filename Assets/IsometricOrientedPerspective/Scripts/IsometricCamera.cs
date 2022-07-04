@@ -19,8 +19,8 @@ namespace IsometricOrientedPerspective
         private float m_horizontalAxis;
         private float m_zoom;
         private bool m_movingCamera;
-        [HideInInspector] public enum CameraPosition { SOUTH, EAST, NORTH, WEST }
-        [HideInInspector] private CameraPosition m_cameraPosition = CameraPosition.SOUTH;
+        /*[HideInInspector]*/ public enum CameraPosition { SOUTH, EAST, NORTH, WEST }
+        /*[HideInInspector]*/ private CameraPosition m_cameraPosition = CameraPosition.SOUTH;
 
         #region Properties
         public CameraPosition CamPosition
@@ -169,6 +169,13 @@ namespace IsometricOrientedPerspective
                 return m_horizontalAxis;
             }
         }
+        public bool MovingCamera
+        {
+            get
+            {
+                return m_movingCamera;
+            }
+        }
         #endregion
 
         new void Awake()
@@ -195,7 +202,7 @@ namespace IsometricOrientedPerspective
         {
             if (Input.GetButton("CameraControll"))
             {
-                m_movingCamera = true;
+                //m_movingCamera = true;
 
                 Vector3 direction = new Vector3(Input.GetAxis("HorizontalCameraRotation"), 0, 0);
                 Vector3 righMovement = transform.right * m_sensibility * Time.deltaTime * direction.x;
@@ -224,7 +231,7 @@ namespace IsometricOrientedPerspective
             m_camera.orthographicSize += -m_zoom * m_zoomMultiplier * m_zoomSensibility * Time.deltaTime;
             m_camera.orthographicSize = Mathf.Clamp(m_camera.orthographicSize, 5, 15);
             
-            var targetRotation = Quaternion.LookRotation(m_target.position - transform.position);
+            var targetRotation = Quaternion.LookRotation(new Vector3(m_target.position.x, m_target.position.y + m_verticalOffset, m_target.position.z) - transform.position);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 100f * Time.deltaTime);
         }
 
@@ -293,8 +300,8 @@ namespace IsometricOrientedPerspective
             if (p_horizontalAxis < 0) m_offset = m_leftOffset;
 
             if (p_horizontalAxis > 0) m_offset = m_rightOffset;
-
-            LeanTween.move(this.gameObject, m_target.position + m_offset, 1.5f).setOnComplete(() =>
+            
+            LeanTween.move(this.gameObject, m_target.position + m_offset, 75f * Time.deltaTime).setOnComplete(() =>
             {
                 m_horizontalAxis = 0;
                 m_currentOffset = m_offset;

@@ -168,28 +168,31 @@ namespace IsometricOrientedPerspective
         }
         protected virtual void Rotate(Vector3 p_rotatePosition, LayerMask p_layerMask)
         {
-            Ray ray = Camera.main.ScreenPointToRay(p_rotatePosition);
-
-            if (!Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, p_layerMask))
-                return;
-            else
+            if (!IsometricCamera.m_instance.MovingCamera)
             {
-                p_rotatePosition = raycastHit.point;
-                p_rotatePosition.y = transform.position.y;
-                m_mouseCursor.position = new Vector3(p_rotatePosition.x, raycastHit.point.y, p_rotatePosition.z);
-            }
+                Ray ray = Camera.main.ScreenPointToRay(p_rotatePosition);
 
-            if (m_isPhysicsRotation)
-            {
-                Quaternion rotation = Quaternion.LookRotation(p_rotatePosition - transform.position);
+                if (!Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, p_layerMask))
+                    return;
+                else
+                {
+                    p_rotatePosition = raycastHit.point;
+                    p_rotatePosition.y = transform.position.y;
+                    m_mouseCursor.position = new Vector3(p_rotatePosition.x, raycastHit.point.y, p_rotatePosition.z);
+                }
 
-                if (Vector3.Distance(transform.position, m_mouseCursor.position) > 3)
-                    m_Rigidbody.rotation = rotation;
-            }
-            else
-            {
-                if (Vector3.Distance(transform.position, m_mouseCursor.position) > 3)
-                    transform.LookAt(p_rotatePosition, Vector3.up);
+                if (m_isPhysicsRotation)
+                {
+                    Quaternion rotation = Quaternion.LookRotation(p_rotatePosition - transform.position);
+
+                    if (Vector3.Distance(transform.position, m_mouseCursor.position) > 3)
+                        m_Rigidbody.rotation = rotation;
+                }
+                else
+                {
+                    if (Vector3.Distance(transform.position, m_mouseCursor.position) > 3)
+                        transform.LookAt(p_rotatePosition, Vector3.up);
+                }
             }
         }
     }

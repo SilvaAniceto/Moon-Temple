@@ -167,57 +167,60 @@ namespace IsometricOrientedPerspective
 
         protected virtual void Move(float p_xAxis, float p_zAxis)
         {
-            if (IsPhysicsMovement)
-            {
-                if (IsometricRotation.m_rotationInstance.enabled)
+            if (!IsometricCamera.m_instance.MovingCamera) 
+            { 
+                if (IsPhysicsMovement)
                 {
-                    float distance = Vector3.Distance(IsometricRotation.m_rotationInstance.MouseCursor.transform.position, transform.position);
+                    if (IsometricRotation.m_rotationInstance.enabled)
+                    {
+                        float distance = Vector3.Distance(IsometricRotation.m_rotationInstance.MouseCursor.transform.position, transform.position);
                     
-                    Vector3 zdirection = distance > 1.2f ? transform.forward * p_zAxis * m_movementDelta * Time.fixedDeltaTime : Vector3.zero;
-                    Vector3 xdirection = transform.right * p_xAxis * m_movementDelta * Time.fixedDeltaTime;
-                    m_moveDirection.direction = zdirection + xdirection;
+                        Vector3 zdirection = distance > 1.2f ? transform.forward * p_zAxis * m_movementDelta * Time.fixedDeltaTime : Vector3.zero;
+                        Vector3 xdirection = transform.right * p_xAxis * m_movementDelta * Time.fixedDeltaTime;
+                        m_moveDirection.direction = zdirection + xdirection;
 
-                    m_Rigidbody.MovePosition(m_Rigidbody.position + m_moveDirection.direction);
+                        m_Rigidbody.MovePosition(m_Rigidbody.position + m_moveDirection.direction);
+                    }
+                    else
+                    {
+                        m_moveDirection.direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime, 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
+
+                        m_moveDirection.direction = Camera.main.transform.TransformDirection(m_moveDirection.direction);
+                        m_moveDirection.direction.y = 0;
+
+                        m_Rigidbody.MovePosition(m_Rigidbody.position + m_moveDirection.direction);
+                    }
+
+                    if (!IsometricRotation.m_rotationInstance.enabled)
+                        if (m_moveDirection.direction != Vector3.zero)
+                            m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, Quaternion.LookRotation(m_moveDirection.direction), 0.5f);
                 }
                 else
                 {
-                    m_moveDirection.direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime, 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
+                    if (IsometricRotation.m_rotationInstance.enabled)
+                    {
+                        m_moveDirection.direction = new Vector3(p_xAxis, 0, p_zAxis);
+                        m_moveDirection.righMovement = transform.right * m_movementDelta * Time.deltaTime * m_moveDirection.direction.x;
+                        m_moveDirection.upMovement = transform.forward * m_movementDelta * Time.deltaTime * m_moveDirection.direction.z;
+                    }
+                    else
+                    {
+                        m_moveDirection.direction = new Vector3(p_xAxis, 0, p_zAxis);
+                        m_moveDirection.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * m_moveDirection.direction.x;
+                        m_moveDirection.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * m_moveDirection.direction.z;
+                    }
 
-                    m_moveDirection.direction = Camera.main.transform.TransformDirection(m_moveDirection.direction);
-                    m_moveDirection.direction.y = 0;
 
-                    m_Rigidbody.MovePosition(m_Rigidbody.position + m_moveDirection.direction);
+                    if (!IsometricRotation.m_rotationInstance.enabled)
+                    {
+                        m_moveDirection.heading = Vector3.Normalize(m_moveDirection.righMovement + m_moveDirection.upMovement);
+                        if (m_moveDirection.heading != Vector3.zero)
+                            transform.forward = Vector3.Lerp(transform.forward, m_moveDirection.heading, 0.40f);
+                    }
+
+                    transform.position += m_moveDirection.righMovement;
+                    transform.position += m_moveDirection.upMovement;
                 }
-
-                if (!IsometricRotation.m_rotationInstance.enabled)
-                    if (m_moveDirection.direction != Vector3.zero)
-                        m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, Quaternion.LookRotation(m_moveDirection.direction), 0.5f);
-            }
-            else
-            {
-                if (IsometricRotation.m_rotationInstance.enabled)
-                {
-                    m_moveDirection.direction = new Vector3(p_xAxis, 0, p_zAxis);
-                    m_moveDirection.righMovement = transform.right * m_movementDelta * Time.deltaTime * m_moveDirection.direction.x;
-                    m_moveDirection.upMovement = transform.forward * m_movementDelta * Time.deltaTime * m_moveDirection.direction.z;
-                }
-                else
-                {
-                    m_moveDirection.direction = new Vector3(p_xAxis, 0, p_zAxis);
-                    m_moveDirection.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * m_moveDirection.direction.x;
-                    m_moveDirection.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * m_moveDirection.direction.z;
-                }
-
-
-                if (!IsometricRotation.m_rotationInstance.enabled)
-                {
-                    m_moveDirection.heading = Vector3.Normalize(m_moveDirection.righMovement + m_moveDirection.upMovement);
-                    if (m_moveDirection.heading != Vector3.zero)
-                        transform.forward = Vector3.Lerp(transform.forward, m_moveDirection.heading, 0.40f);
-                }
-
-                transform.position += m_moveDirection.righMovement;
-                transform.position += m_moveDirection.upMovement;
             }
         }
 

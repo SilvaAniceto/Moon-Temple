@@ -298,8 +298,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601c96b4f569a4f40abde5a2e60ab515, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_isPhysicsRotation: 1
-  m_rotationSensibility: 0
+  m_isPhysicsRotation: 0
+  m_rotationSensibility: 7.5
   m_mouseCursor: {fileID: 6892568986746799079, guid: 9bab9eb87820f084393433d3b996470c, type: 3}
   m_layerMask:
     serializedVersion: 2
@@ -575,7 +575,7 @@ MonoBehaviour:
   m_sensibility: 50
   m_zoomSensibility: 100
   m_zoomMultiplier: 10
-  m_verticalOffset: 1.5
+  m_verticalOffset: 1.75
   m_target: {fileID: 431844769}
   m_baseMotion: {fileID: 1661169450}
 --- !u!1 &1661169449
@@ -602,7 +602,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1661169449}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25, y: 1.9, z: 25}
+  m_LocalPosition: {x: 25, y: 0, z: 25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 942682640}
