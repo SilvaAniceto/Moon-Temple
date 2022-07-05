@@ -19,8 +19,8 @@ namespace IsometricOrientedPerspective
         private float m_horizontalAxis;
         private float m_zoom;
         private bool m_movingCamera;
-        /*[HideInInspector]*/ public enum CameraPosition { SOUTH, EAST, NORTH, WEST }
-        /*[HideInInspector]*/ private CameraPosition m_cameraPosition = CameraPosition.SOUTH;
+        public enum CameraPosition { SOUTH, EAST, NORTH, WEST }
+        private CameraPosition m_cameraPosition = CameraPosition.SOUTH;
 
         #region Properties
         public CameraPosition CamPosition
@@ -200,12 +200,20 @@ namespace IsometricOrientedPerspective
 
         void Update()
         {
+            var targetRotation = Quaternion.LookRotation(new Vector3(m_target.position.x, m_target.position.y + m_verticalOffset, m_target.position.z) - transform.position);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 100f * Time.fixedDeltaTime);
+
+            m_zoom = Input.GetAxis("CameraZoom");
+
+            m_camera.orthographicSize += -m_zoom * m_zoomMultiplier * m_zoomSensibility * Time.deltaTime;
+            m_camera.orthographicSize = Mathf.Clamp(m_camera.orthographicSize, 5, 15);
+
+            if (m_movingCamera) return;
+
             if (Input.GetButton("CameraControll"))
             {
-                //m_movingCamera = true;
-
                 Vector3 direction = new Vector3(Input.GetAxis("HorizontalCameraRotation"), 0, 0);
-                Vector3 righMovement = transform.right * m_sensibility * Time.deltaTime * direction.x;
+                Vector3 righMovement = transform.right * 4.5f * Time.deltaTime * direction.x;
 
                 if (!m_movingCamera)
                     transform.position += righMovement;
@@ -225,14 +233,6 @@ namespace IsometricOrientedPerspective
                 m_movingCamera = false;
                 SetCameraPosition(HorizontalAxis);
             }
-
-            m_zoom = Input.GetAxis("CameraZoom");
-
-            m_camera.orthographicSize += -m_zoom * m_zoomMultiplier * m_zoomSensibility * Time.deltaTime;
-            m_camera.orthographicSize = Mathf.Clamp(m_camera.orthographicSize, 5, 15);
-            
-            var targetRotation = Quaternion.LookRotation(new Vector3(m_target.position.x, m_target.position.y + m_verticalOffset, m_target.position.z) - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 100f * Time.deltaTime);
         }
 
         public void MoveBase()
@@ -242,9 +242,9 @@ namespace IsometricOrientedPerspective
 
         void GetLeftRightOffSet(Vector3 p_currentOffset, float p_horizontalAxis)
         {
-            if (p_currentOffset != m_currentOffset || p_horizontalAxis == 0 ) return;
+            if (p_currentOffset != m_currentOffset || p_horizontalAxis == 0) return;
 
-            if (p_horizontalAxis > 0.35f)
+            if (p_horizontalAxis > 0.05f)
             {
                 m_horizontalAxis = 1;
 
@@ -266,7 +266,7 @@ namespace IsometricOrientedPerspective
                     m_rightOffset = m_auxDeltaPosition[index + 1];
                 }
             }
-            if (p_horizontalAxis < -0.35f)
+            if (p_horizontalAxis < -0.05f)
             {
                 m_horizontalAxis = -1;
 
@@ -289,6 +289,7 @@ namespace IsometricOrientedPerspective
                 }
             }
         }
+
         private void SetCameraPosition(float p_horizontalAxis)
         {
             if (p_horizontalAxis == 0) m_movingCamera = true;
@@ -301,7 +302,7 @@ namespace IsometricOrientedPerspective
 
             if (p_horizontalAxis > 0) m_offset = m_rightOffset;
             
-            LeanTween.move(this.gameObject, m_target.position + m_offset, 75f * Time.deltaTime).setOnComplete(() =>
+            LeanTween.move(this.gameObject, m_target.position + m_offset, 35f * Time.fixedDeltaTime).setOnComplete(() =>
             {
                 m_horizontalAxis = 0;
                 m_currentOffset = m_offset;
