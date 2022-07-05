@@ -9,9 +9,9 @@ namespace IsometricOrientedPerspective
         public static IsometricCamera m_instance;
 
         [SerializeField] private Camera m_camera;
-        [Range(0f, 100f)][SerializeField] private float m_sensibility, m_zoomSensibility;
+        [Range(10f, 100f)][SerializeField] private float m_sensibility, m_zoomSensibility;
         [Range(2f, 10f)][SerializeField] private int m_zoomMultiplier;
-        [Range(0f, 3f)][SerializeField] private float m_verticalOffset;
+        [Range(1f, 3f)][SerializeField] private float m_verticalOffset;
         [SerializeField] private Transform m_target, m_baseMotion;
         private Vector3 m_offset, m_currentOffset, m_leftOffset, m_rightOffset;
         private Vector3[] m_deltaPosition = { new Vector3(-30, 15, -30), new Vector3(30, 15, -30), new Vector3(30, 15, 30), new Vector3(-30, 15, 30) };
@@ -302,7 +302,7 @@ namespace IsometricOrientedPerspective
 
             if (p_horizontalAxis > 0) m_offset = m_rightOffset;
             
-            LeanTween.move(this.gameObject, m_target.position + m_offset, 35f * Time.fixedDeltaTime).setOnComplete(() =>
+            LeanTween.move(this.gameObject, m_target.position + m_offset, m_sensibility * Time.fixedDeltaTime).setOnComplete(() =>
             {
                 m_horizontalAxis = 0;
                 m_currentOffset = m_offset;
