@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,6 +6,8 @@ namespace IsometricOrientedPerspective
 {
     public class UIPopUpController : MonoBehaviour
     {
+        public static UIPopUpController m_popUpInstance;
+
         [SerializeField] private RectTransform open;
         [SerializeField] private RectTransform close;
         [SerializeField] private RectTransform panel;
@@ -13,6 +16,9 @@ namespace IsometricOrientedPerspective
 
         protected virtual void Awake()
         {
+            if (m_popUpInstance == null)
+                m_popUpInstance = this;
+
             btOpenClose?.onClick.AddListener(OnOpenCLose);
         }
 
@@ -28,13 +34,10 @@ namespace IsometricOrientedPerspective
         {
             LeanTween.cancel(panel.gameObject);
 
-            //if (now)
-            //    panel.transform.localPosition = open.transform.localPosition;
-            //else
-                LeanTween.move(panel.gameObject, open.transform.position, 0.3f).setEase(LeanTweenType.easeOutQuad).setOnComplete(() =>
-                {
-                    btOpenClose.GetComponentInChildren<Text>().text = "<<";
-                });
+            LeanTween.move(panel.gameObject, open.transform.position, 0.3f).setEase(LeanTweenType.easeOutQuad).setOnComplete(() =>
+            {
+                btOpenClose.GetComponentInChildren<Text>().text = "<<";
+            });
 
             isOpen = true;
         }
@@ -42,9 +45,6 @@ namespace IsometricOrientedPerspective
         {
             LeanTween.cancel(panel.gameObject);
 
-            //if (now)
-            //    panel.transform.localPosition = close.transform.localPosition;
-            //else
             LeanTween.move(panel.gameObject, close.transform.position, 0.3f).setEase(LeanTweenType.easeOutQuad).setOnComplete(() =>
             {
                 btOpenClose.GetComponentInChildren<Text>().text = ">>";
