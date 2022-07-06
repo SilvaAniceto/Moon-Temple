@@ -9,7 +9,7 @@ namespace IsometricOrientedPerspective
         public static IsometricMove m_moveInstance;
 
         [SerializeField] private bool m_isPhysicsMovement;
-        [SerializeField] private float m_movementDelta = 4f;
+        [Range(1f, 10f)][SerializeField] private float m_movementDelta = 4f;
         private float m_horizontalMovement , m_verticalMovement;
         private Rigidbody m_Rigidbody;
         private Vector2 m_moveDelta;

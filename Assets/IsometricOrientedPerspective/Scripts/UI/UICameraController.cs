@@ -3,12 +3,14 @@ using UnityEngine.UI;
 
 namespace IsometricOrientedPerspective
 {
-    public class UICameraController : MonoBehaviour
+    public class UICameraController : UIPopUpController
     {
-        [SerializeField] Slider UICameraSensibility, UIZoomSensibility, UIZoomMultiplier, UIVerticalOffSet;
+        [SerializeField] private Slider UICameraSensibility, UIZoomSensibility, UIZoomMultiplier, UIVerticalOffSet;
 
-        private void Awake()
+        new void Awake()
         {
+            base.Awake();
+
             UICameraSensibility.onValueChanged.AddListener((float p_sensibility) =>
             {
                 IsometricCamera.m_instance.Sensibility = p_sensibility;
@@ -36,11 +38,9 @@ namespace IsometricOrientedPerspective
             UIZoomSensibility.value = IsometricCamera.m_instance.ZoomSensibility;
             UIZoomMultiplier.value = IsometricCamera.m_instance.ZoomMultiplier;
             UIVerticalOffSet.value = IsometricCamera.m_instance.VerticalOffset;
-        }
 
-        void Update()
-        {
-
+            if (isOpen)
+                Hide();
         }
     }
 }

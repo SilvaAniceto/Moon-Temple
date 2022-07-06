@@ -6,7 +6,10 @@ namespace IsometricOrientedPerspective
 {
     public class JumpSystem : MonoBehaviour
     {
-        [SerializeField] float m_heightDeltaTime, m_heightDelta;
+        public static JumpSystem m_jumpInstance;
+
+        [SerializeField] float m_heightDeltaTime;
+        [Range(50f, 100f)][SerializeField] float m_heightDelta;
         [SerializeField] LayerMask m_layerMask;
         private bool m_offGroundLevel, m_onGroundLevel, m_jumpInput;
         private float m_jumpDelayCounter;
@@ -16,6 +19,21 @@ namespace IsometricOrientedPerspective
         private CapsuleCollider m_capsuleCollider;
 
         #region Properties
+        public float HeightDelta
+        {
+            get
+            {
+                return m_heightDelta;
+            }
+
+            set
+            {
+                if (m_heightDelta == value)
+                    return;
+
+                m_heightDelta = value;
+            }
+        }
         public bool OnGroundLevel
         {
             get
@@ -58,6 +76,9 @@ namespace IsometricOrientedPerspective
         private void Awake()
         {
             GetCollider();
+
+            if (m_jumpInstance == null)
+                m_jumpInstance = this;
 
             if (m_rigidbody == null)
                 m_rigidbody = gameObject.GetComponent<Rigidbody>();
