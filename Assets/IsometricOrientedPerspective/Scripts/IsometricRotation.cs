@@ -12,26 +12,11 @@ namespace IsometricOrientedPerspective
         [Range(0f, 100f)][SerializeField] private float m_rotationSensibility;
         [SerializeField] private Transform m_mouseCursor;
         [SerializeField] private LayerMask m_layerMask;
-        private Vector3 m_rotatePosition;
+        //private Vector3 m_rotatePosition;
         private float m_horizontalRotation, m_verticalRotation;
         private Rigidbody m_Rigidbody;
 
         #region Properties
-        public Vector3 RotatePosition
-        {
-            get
-            {
-                return m_rotatePosition;
-            }
-
-            private set
-            {
-                if (m_rotatePosition == value)
-                    return;
-
-                m_rotatePosition = value;
-            }
-        }
         public bool IsPhysicsRotation
         {
             get
@@ -160,19 +145,18 @@ namespace IsometricOrientedPerspective
             m_mouseCursor = Instantiate(m_mouseCursor);
         }
 
-        private void Update()
+        new void Update()
         {
-            m_rotatePosition = Input.mousePosition;
+            //m_rotatePosition = Input.mousePosition;
+            base.Update();
 
-            Rotate(m_rotatePosition, m_layerMask);
+            Rotate(RotatePosition, m_layerMask);
         }
         protected virtual void Rotate(Vector3 p_rotatePosition, LayerMask p_layerMask)
         {
             if (!IsometricCamera.m_instance.MovingCamera)
             {
-                Ray ray = Camera.main.ScreenPointToRay(p_rotatePosition);
-
-                if (!Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, p_layerMask))
+                if (!Physics.Raycast(RaycastHit, out RaycastHit raycastHit, float.MaxValue, p_layerMask))
                     return;
                 else
                 {

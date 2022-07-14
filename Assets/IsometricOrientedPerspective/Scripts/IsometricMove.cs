@@ -10,7 +10,7 @@ namespace IsometricOrientedPerspective
 
         [SerializeField] private bool m_isPhysicsMovement, m_onMove;
         [Range(1f, 10f)][SerializeField] private float m_movementDelta = 4f;
-        private float m_horizontalMovement , m_verticalMovement;
+        //private float m_horizontalMovement , m_verticalMovement;
         private Rigidbody m_Rigidbody;
         private Vector2 m_moveDelta;
         [SerializeField] private MoveDirection m_moveDirection;
@@ -59,36 +59,6 @@ namespace IsometricOrientedPerspective
                     return;
 
                 m_onMove = value;
-            }
-        }
-        public float HorizontalMovement
-        {
-            get 
-            {
-                return m_horizontalMovement; 
-            }
-
-            private set 
-            {
-                if (m_horizontalMovement == value)
-                    return;
-
-                m_horizontalMovement = value;
-            }
-        }
-        public float VerticalMovement
-        {
-            get
-            {
-                return m_verticalMovement;
-            }
-
-            private set
-            {
-                if (m_verticalMovement == value)
-                    return; 
-
-                m_verticalMovement = value;
             }
         }
         public Rigidbody Rigidbody
@@ -145,10 +115,9 @@ namespace IsometricOrientedPerspective
             m_Rigidbody = GetComponent<Rigidbody>();
         }
         
-        private void Update()
+        new void Update()
         {
-            m_horizontalMovement = Input.GetAxis("Horizontal");
-            m_verticalMovement = Input.GetAxis("Vertical");
+            base.Update();
 
             SetInputMoveDelta();
 
@@ -158,10 +127,8 @@ namespace IsometricOrientedPerspective
 
             if (IsometricRotation.m_rotationInstance.enabled)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, IsometricRotation.m_rotationInstance.LayerMask))
-                    if (Input.GetMouseButtonDown(0))
+                if (Physics.Raycast(RaycastHit, out RaycastHit raycastHit, float.MaxValue, IsometricRotation.m_rotationInstance.LayerMask))
+                    if (LeftClick)
                     {
                         m_moveDirection.direction = new Vector3(IsometricRotation.m_rotationInstance.MouseCursor.position.x, transform.position.y, IsometricRotation.m_rotationInstance.MouseCursor.position.z);
                     
@@ -186,10 +153,8 @@ namespace IsometricOrientedPerspective
 
             if (IsometricRotation.m_rotationInstance.enabled)
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, IsometricRotation.m_rotationInstance.LayerMask))
-                    if (Input.GetMouseButtonDown(0))
+                if (Physics.Raycast(RaycastHit, out RaycastHit raycastHit, float.MaxValue, IsometricRotation.m_rotationInstance.LayerMask))
+                    if (LeftClick)
                     {
                         m_moveDirection.direction = new Vector3(IsometricRotation.m_rotationInstance.MouseCursor.position.x, transform.position.y, IsometricRotation.m_rotationInstance.MouseCursor.position.z);
 
@@ -201,7 +166,7 @@ namespace IsometricOrientedPerspective
             }
             else
             {
-                m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
+                m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
                 if (m_moveDelta != Vector2.zero)
                     Move(m_moveDelta.x, m_moveDelta.y);
             }
@@ -267,16 +232,16 @@ namespace IsometricOrientedPerspective
         public void SetInputMoveDelta()
         {
             if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.SOUTH)
-                m_moveDelta = new Vector2(m_horizontalMovement, m_verticalMovement);
+                m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
 
             if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.WEST)
-                m_moveDelta = new Vector2(m_verticalMovement, -m_horizontalMovement);
+                m_moveDelta = new Vector2(VerticalMovement, -HorizontalMovement);
 
             if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.NORTH)
-                m_moveDelta = new Vector2(-m_horizontalMovement, -m_verticalMovement);
+                m_moveDelta = new Vector2(-HorizontalMovement, -VerticalMovement);
 
             if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.EAST)
-                m_moveDelta = new Vector2(-m_verticalMovement, m_horizontalMovement);
+                m_moveDelta = new Vector2(-VerticalMovement, HorizontalMovement);
         }
     }
 }
