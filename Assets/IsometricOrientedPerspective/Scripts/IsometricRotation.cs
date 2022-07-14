@@ -185,12 +185,12 @@ namespace IsometricOrientedPerspective
                 {
                     Quaternion rotation = Quaternion.LookRotation(p_rotatePosition - transform.position);
 
-                    if (Vector3.Distance(transform.position, m_mouseCursor.position) > 3)
+                    if (Vector3.Distance(transform.position, m_mouseCursor.position) > 3 && !IsometricMove.m_moveInstance.OnMove)
                         m_Rigidbody.rotation = rotation;
                 }
                 else
                 {
-                    if (Vector3.Distance(transform.position, m_mouseCursor.position) > 3)
+                    if (Vector3.Distance(transform.position, m_mouseCursor.position) > 3 && !IsometricMove.m_moveInstance.OnMove)
                         transform.LookAt(p_rotatePosition, Vector3.up);
                 }
             }

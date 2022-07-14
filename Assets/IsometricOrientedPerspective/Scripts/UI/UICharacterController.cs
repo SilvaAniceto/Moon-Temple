@@ -27,12 +27,14 @@ namespace IsometricOrientedPerspective
             UITogglePhysics.onValueChanged.AddListener((bool p_physics) =>
             {
                 m_physicsEnabled = p_physics;
+                IsometricMove.m_moveInstance.OnMove = false;
                 IsometricMove.m_moveInstance.IsPhysicsMovement = p_physics;
                 IsometricRotation.m_rotationInstance.IsPhysicsRotation = p_physics;
             });
 
             UIToggleMouseRotation.onValueChanged.AddListener((bool p_physics) =>
             {
+                IsometricMove.m_moveInstance.OnMove = false;
                 IsometricRotation.m_rotationInstance.enabled = p_physics;
                 IsometricRotation.m_rotationInstance.IsPhysicsRotation = m_physicsEnabled;
             });
@@ -47,11 +49,6 @@ namespace IsometricOrientedPerspective
 
             if (isOpen)
                 Hide();
-        }
-
-        void Update()
-        {
-
         }
     }
 }
