@@ -61,6 +61,14 @@ namespace IsometricOrientedPerspective
             {
                 return m_leftClick;
             }
+
+            set
+            {
+                if (m_leftClick == value)
+                    return;
+
+                m_leftClick = value;
+            }
         }
         #endregion
 

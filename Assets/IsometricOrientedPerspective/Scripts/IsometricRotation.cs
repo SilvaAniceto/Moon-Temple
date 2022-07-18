@@ -147,7 +147,6 @@ namespace IsometricOrientedPerspective
 
         new void Update()
         {
-            //m_rotatePosition = Input.mousePosition;
             base.Update();
 
             Rotate(RotatePosition, m_layerMask);

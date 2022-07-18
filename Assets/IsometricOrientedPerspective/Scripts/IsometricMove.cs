@@ -121,14 +121,10 @@ namespace IsometricOrientedPerspective
 
             SetInputMoveDelta();
 
-            if (IsPhysicsMovement) return;
-
-            IsometricCamera.m_instance.MoveBase();
-
             if (IsometricRotation.m_rotationInstance.enabled)
             {
                 if (Physics.Raycast(RaycastHit, out RaycastHit raycastHit, float.MaxValue, IsometricRotation.m_rotationInstance.LayerMask))
-                    if (LeftClick)
+                    if (LeftClick && !m_onMove)
                     {
                         m_moveDirection.direction = new Vector3(IsometricRotation.m_rotationInstance.MouseCursor.position.x, transform.position.y, IsometricRotation.m_rotationInstance.MouseCursor.position.z);
                     
@@ -140,9 +136,17 @@ namespace IsometricOrientedPerspective
             }
             else
             {
+                m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
                 if (m_moveDelta != Vector2.zero)
                     Move(m_moveDelta.x, m_moveDelta.y);
             }
+
+            if (IsPhysicsMovement) return;
+
+            IsometricCamera.m_instance.MoveBase();
+
+            if (m_moveDelta != Vector2.zero)
+                Move(m_moveDelta.x, m_moveDelta.y);
         }
 
         private void FixedUpdate()
@@ -152,24 +156,11 @@ namespace IsometricOrientedPerspective
             IsometricCamera.m_instance.MoveBase();
 
             if (IsometricRotation.m_rotationInstance.enabled)
-            {
-                if (Physics.Raycast(RaycastHit, out RaycastHit raycastHit, float.MaxValue, IsometricRotation.m_rotationInstance.LayerMask))
-                    if (LeftClick)
-                    {
-                        m_moveDirection.direction = new Vector3(IsometricRotation.m_rotationInstance.MouseCursor.position.x, transform.position.y, IsometricRotation.m_rotationInstance.MouseCursor.position.z);
-
-                        m_onMove = true;
-                    }
-
                 if (m_onMove)
                     Move(m_moveDirection.direction.x, m_moveDirection.direction.z);
-            }
             else
-            {
-                m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
                 if (m_moveDelta != Vector2.zero)
                     Move(m_moveDelta.x, m_moveDelta.y);
-            }
         }
 
         protected virtual void Move(float p_xAxis, float p_zAxis)
@@ -187,7 +178,7 @@ namespace IsometricOrientedPerspective
                     }
                     else
                     {
-                        m_moveDirection.direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime, 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
+                        m_moveDirection.direction = new Vector3(p_xAxis *(m_movementDelta / 6f) * Time.fixedDeltaTime, 0, p_zAxis * (m_movementDelta / 6f) * Time.fixedDeltaTime);
 
                         m_moveDirection.direction = Camera.main.transform.TransformDirection(m_moveDirection.direction);
                         m_moveDirection.direction.y = 0;
