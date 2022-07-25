@@ -134,18 +134,12 @@ namespace IsometricOrientedPerspective
                 if (m_onMove)
                     Move(m_moveDirection.direction.x, m_moveDirection.direction.z);
             }
-            else
-            {
-                m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
-                if (m_moveDelta != Vector2.zero)
-                    Move(m_moveDelta.x, m_moveDelta.y);
-            }
 
             if (IsPhysicsMovement) return;
 
             IsometricCamera.m_instance.MoveBase();
 
-            if (m_moveDelta != Vector2.zero)
+            if (m_moveDelta != Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
                 Move(m_moveDelta.x, m_moveDelta.y);
         }
 
@@ -158,9 +152,9 @@ namespace IsometricOrientedPerspective
             if (IsometricRotation.m_rotationInstance.enabled)
                 if (m_onMove)
                     Move(m_moveDirection.direction.x, m_moveDirection.direction.z);
-            else
-                if (m_moveDelta != Vector2.zero)
-                    Move(m_moveDelta.x, m_moveDelta.y);
+            
+            if (m_moveDelta != Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+                Move(m_moveDelta.x, m_moveDelta.y);
         }
 
         protected virtual void Move(float p_xAxis, float p_zAxis)
@@ -178,7 +172,7 @@ namespace IsometricOrientedPerspective
                     }
                     else
                     {
-                        m_moveDirection.direction = new Vector3(p_xAxis *(m_movementDelta / 6f) * Time.fixedDeltaTime, 0, p_zAxis * (m_movementDelta / 6f) * Time.fixedDeltaTime);
+                        m_moveDirection.direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime, 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
 
                         m_moveDirection.direction = Camera.main.transform.TransformDirection(m_moveDirection.direction);
                         m_moveDirection.direction.y = 0;
