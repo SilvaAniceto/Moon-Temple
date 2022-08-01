@@ -9,11 +9,13 @@ namespace IsometricOrientedPerspective
         public static IsometricMove m_moveInstance;
 
         [SerializeField] private bool m_isPhysicsMovement, m_onMove;
+        [SerializeField] private float m_moveDistance = 9f;
         [Range(1f, 10f)][SerializeField] private float m_movementDelta = 4f;
-        //private float m_horizontalMovement , m_verticalMovement;
         private Rigidbody m_Rigidbody;
         private Vector2 m_moveDelta;
-        [SerializeField] private MoveDirection m_moveDirection;
+        private MoveDirection m_moveDirection;
+
+        [SerializeField] LineRenderer lineRenderer; 
 
         #region Properties
         public float MovementDelta
@@ -114,7 +116,12 @@ namespace IsometricOrientedPerspective
 
             m_Rigidbody = GetComponent<Rigidbody>();
         }
-        
+
+        //private void Start()
+        //{
+        //    DrawCircle(100, 9);
+        //}
+
         new void Update()
         {
             base.Update();
@@ -141,6 +148,8 @@ namespace IsometricOrientedPerspective
 
             if (m_moveDelta != Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
                 Move(m_moveDelta.x, m_moveDelta.y);
+            else if (m_moveDelta == Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+                m_onMove = false;
         }
 
         private void FixedUpdate()
@@ -152,9 +161,11 @@ namespace IsometricOrientedPerspective
             if (IsometricRotation.m_rotationInstance.enabled)
                 if (m_onMove)
                     Move(m_moveDirection.direction.x, m_moveDirection.direction.z);
-            
+
             if (m_moveDelta != Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
                 Move(m_moveDelta.x, m_moveDelta.y);
+            else if (m_moveDelta == Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+                m_onMove = false;
         }
 
         protected virtual void Move(float p_xAxis, float p_zAxis)
@@ -178,6 +189,7 @@ namespace IsometricOrientedPerspective
                         m_moveDirection.direction.y = 0;
 
                         m_Rigidbody.MovePosition(m_Rigidbody.position + m_moveDirection.direction);
+                        m_onMove = true;
                     }
 
                     if (!IsometricRotation.m_rotationInstance.enabled)
@@ -201,6 +213,7 @@ namespace IsometricOrientedPerspective
 
                         transform.position += m_moveDirection.righMovement;
                         transform.position += m_moveDirection.upMovement;
+                        m_onMove = true;
                     }
 
 
@@ -228,5 +241,32 @@ namespace IsometricOrientedPerspective
             if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.EAST)
                 m_moveDelta = new Vector2(-VerticalMovement, HorizontalMovement);
         }
+
+        private void GetMoveDistance(float p_distanceDelta)
+        {
+            
+        }
+
+        //private void DrawCircle(int steps, float radius)
+        //{
+        //    lineRenderer.positionCount = steps;
+
+        //    for (int currentStep = 0; currentStep < steps; currentStep++)
+        //    {
+        //        float circunferenceProgress = (float)currentStep / steps;
+
+        //        float currentRadian = circunferenceProgress * 2 * Mathf.PI;
+
+        //        float xScaled = Mathf.Cos(currentRadian);
+        //        float zScaled = Mathf.Sin(currentRadian);
+
+        //        float x = xScaled * radius;
+        //        float z = zScaled * radius;
+
+        //        Vector3 currentPosition = new Vector3(transform.position.x + x,transform.position.y, transform.position.z + z);
+
+        //        lineRenderer.SetPosition(currentStep, currentPosition);
+        //    }
+        //}
     }
 }

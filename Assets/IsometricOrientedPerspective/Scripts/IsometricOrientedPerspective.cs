@@ -7,7 +7,7 @@ namespace IsometricOrientedPerspective
     public class IsometricOrientedPerspective : MonoBehaviour
     {
         private Vector3 m_isometricForward, m_isometricRight;
-        [SerializeField] private float m_horizontalMovement, m_verticalMovement;
+        private float m_horizontalMovement, m_verticalMovement;
         private Vector3 m_rotatePosition;
         private Ray m_raycastHit;
         private bool m_leftClick;
