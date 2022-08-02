@@ -14,8 +14,11 @@ namespace IsometricOrientedPerspective
         private Rigidbody m_Rigidbody;
         private Vector2 m_moveDelta;
         private MoveDirection m_moveDirection;
+        private Vector3 m_startPosition;
+        private float m_distanceTravelled;
+        private bool m_inputStartMovement;
 
-        [SerializeField] LineRenderer lineRenderer; 
+        [SerializeField] private AreaMovement m_movementArea;
 
         #region Properties
         public float MovementDelta
@@ -117,11 +120,6 @@ namespace IsometricOrientedPerspective
             m_Rigidbody = GetComponent<Rigidbody>();
         }
 
-        //private void Start()
-        //{
-        //    DrawCircle(100, 9);
-        //}
-
         new void Update()
         {
             base.Update();
@@ -136,20 +134,40 @@ namespace IsometricOrientedPerspective
                         m_moveDirection.direction = new Vector3(IsometricRotation.m_rotationInstance.MouseCursor.position.x, transform.position.y, IsometricRotation.m_rotationInstance.MouseCursor.position.z);
                     
                         m_onMove = true;
+
+                        m_startPosition = transform.position;
                     }
                 
                 if (m_onMove)
                     Move(m_moveDirection.direction.x, m_moveDirection.direction.z);
             }
 
+            if (m_onMove)
+            {
+                GetMoveDistance(m_startPosition);
+                m_movementArea.DrawCircle(100, m_moveDistance, new Vector3(m_startPosition.x, -0.85f, m_startPosition.z));
+            }
+            else
+                m_movementArea.DrawCircle(100, m_moveDistance, transform.position);
+
             if (IsPhysicsMovement) return;
 
             IsometricCamera.m_instance.MoveBase();
 
             if (m_moveDelta != Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+            {
+                if (m_inputStartMovement)
+                {
+                    m_inputStartMovement = false;
+                    m_startPosition = transform.position;
+                }
                 Move(m_moveDelta.x, m_moveDelta.y);
+            }
             else if (m_moveDelta == Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+            {
+                m_inputStartMovement = true;
                 m_onMove = false;
+            }
         }
 
         private void FixedUpdate()
@@ -163,9 +181,19 @@ namespace IsometricOrientedPerspective
                     Move(m_moveDirection.direction.x, m_moveDirection.direction.z);
 
             if (m_moveDelta != Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+            {
+                if (m_inputStartMovement)
+                {
+                    m_inputStartMovement = false;
+                    m_startPosition = transform.position;
+                }
                 Move(m_moveDelta.x, m_moveDelta.y);
+            }
             else if (m_moveDelta == Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+            {
+                m_inputStartMovement = true;
                 m_onMove = false;
+            }
         }
 
         protected virtual void Move(float p_xAxis, float p_zAxis)
@@ -179,7 +207,8 @@ namespace IsometricOrientedPerspective
                         float distance = Vector3.Distance(m_moveDirection.direction, transform.position);
                         m_onMove = distance > 0.2f ? true : false;
 
-                        m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, m_moveDirection.direction, m_movementDelta * Time.deltaTime));
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                            m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, m_moveDirection.direction, m_movementDelta * Time.deltaTime));
                     }
                     else
                     {
@@ -188,7 +217,9 @@ namespace IsometricOrientedPerspective
                         m_moveDirection.direction = Camera.main.transform.TransformDirection(m_moveDirection.direction);
                         m_moveDirection.direction.y = 0;
 
-                        m_Rigidbody.MovePosition(m_Rigidbody.position + m_moveDirection.direction);
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                            m_Rigidbody.MovePosition(m_Rigidbody.position + m_moveDirection.direction);
+
                         m_onMove = true;
                     }
 
@@ -203,7 +234,8 @@ namespace IsometricOrientedPerspective
                         float distance = Vector3.Distance(m_moveDirection.direction, transform.position);
                         m_onMove = distance > 0.2f ? true : false;
 
-                        transform.position = Vector3.MoveTowards(transform.position, m_moveDirection.direction, m_movementDelta * Time.deltaTime);
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                            transform.position = Vector3.MoveTowards(transform.position, m_moveDirection.direction, m_movementDelta * Time.deltaTime);
                     }
                     else
                     {
@@ -211,11 +243,14 @@ namespace IsometricOrientedPerspective
                         m_moveDirection.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * m_moveDirection.direction.x;
                         m_moveDirection.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * m_moveDirection.direction.z;
 
-                        transform.position += m_moveDirection.righMovement;
-                        transform.position += m_moveDirection.upMovement;
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                        {
+                            transform.position += m_moveDirection.righMovement;
+                            transform.position += m_moveDirection.upMovement;
+                        }
+
                         m_onMove = true;
                     }
-
 
                     if (!IsometricRotation.m_rotationInstance.enabled)
                     {
@@ -242,31 +277,12 @@ namespace IsometricOrientedPerspective
                 m_moveDelta = new Vector2(-VerticalMovement, HorizontalMovement);
         }
 
-        private void GetMoveDistance(float p_distanceDelta)
+        private void GetMoveDistance(Vector3 p_startPosition)
         {
-            
+            m_distanceTravelled = Vector3.Distance(p_startPosition, transform.position);
+
+            if (m_distanceTravelled >= m_moveDistance)
+                OnMove = false;
         }
-
-        //private void DrawCircle(int steps, float radius)
-        //{
-        //    lineRenderer.positionCount = steps;
-
-        //    for (int currentStep = 0; currentStep < steps; currentStep++)
-        //    {
-        //        float circunferenceProgress = (float)currentStep / steps;
-
-        //        float currentRadian = circunferenceProgress * 2 * Mathf.PI;
-
-        //        float xScaled = Mathf.Cos(currentRadian);
-        //        float zScaled = Mathf.Sin(currentRadian);
-
-        //        float x = xScaled * radius;
-        //        float z = zScaled * radius;
-
-        //        Vector3 currentPosition = new Vector3(transform.position.x + x,transform.position.y, transform.position.z + z);
-
-        //        lineRenderer.SetPosition(currentStep, currentPosition);
-        //    }
-        //}
     }
 }
