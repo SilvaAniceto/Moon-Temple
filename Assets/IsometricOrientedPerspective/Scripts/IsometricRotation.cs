@@ -12,7 +12,6 @@ namespace IsometricOrientedPerspective
         [Range(0f, 100f)][SerializeField] private float m_rotationSensibility;
         [SerializeField] private Transform m_mouseCursor;
         [SerializeField] private LayerMask m_layerMask;
-        //private Vector3 m_rotatePosition;
         private float m_horizontalRotation, m_verticalRotation;
         private Rigidbody m_Rigidbody;
 
