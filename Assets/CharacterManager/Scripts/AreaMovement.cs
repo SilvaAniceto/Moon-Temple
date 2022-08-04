@@ -2,29 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AreaMovement : MonoBehaviour
+namespace CharacterManager
 {
-    [SerializeField] private LineRenderer m_lineRenderer;    
-
-    public void DrawCircle(int p_steps, float p_radius, Vector3 p_position)
+    public class AreaMovement : MonoBehaviour
     {
-        m_lineRenderer.positionCount = p_steps;
+        public static AreaMovement m_areaMovementInstance;
 
-        for (int currentStep = 0; currentStep < p_steps; currentStep++)
+        [SerializeField] private LineRenderer m_lineRenderer;
+
+        #region Properties
+      
+        #endregion
+
+        private void Awake()
         {
-            float circunferenceProgress = (float)currentStep / p_steps;
+            if (m_areaMovementInstance == null)
+                m_areaMovementInstance = this;
+        }
 
-            float currentRadian = circunferenceProgress * 2 * Mathf.PI;
+        public void DrawCircle(int p_steps, float p_radius, Vector3 p_position)
+        {
+            m_lineRenderer.positionCount = p_steps;
 
-            float xScaled = Mathf.Cos(currentRadian);
-            float zScaled = Mathf.Sin(currentRadian);
+            for (int currentStep = 0; currentStep < p_steps; currentStep++)
+            {
+                float circunferenceProgress = (float)currentStep / p_steps;
 
-            float x = xScaled * p_radius;
-            float z = zScaled * p_radius;
+                float currentRadian = circunferenceProgress * 2 * Mathf.PI;
 
-            Vector3 currentPosition = new Vector3(p_position.x + x, transform.position.y, p_position.z + z);
+                float xScaled = Mathf.Cos(currentRadian);
+                float zScaled = Mathf.Sin(currentRadian);
 
-            m_lineRenderer.SetPosition(currentStep, currentPosition);
+                float x = xScaled * p_radius;
+                float z = zScaled * p_radius;
+
+                Vector3 currentPosition = new Vector3(p_position.x + x, transform.position.y, p_position.z + z);
+
+                m_lineRenderer.SetPosition(currentStep, currentPosition);
+            }
         }
     }
 }

@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace IsometricOrientedPerspective
 {
-    public class IsometricRotation : IsometricOrientedPerspective
+    public class IsometricRotation : IsometricPerspective
     {
         public static IsometricRotation m_rotationInstance;
 
         [SerializeField] private bool m_isPhysicsRotation;
         [Range(0f, 100f)][SerializeField] private float m_rotationSensibility;
-        [SerializeField] private Transform m_mouseCursor;
         [SerializeField] private LayerMask m_layerMask;
+        private Transform m_mouseCursor;
         private float m_horizontalRotation, m_verticalRotation;
         private Rigidbody m_Rigidbody;
 
@@ -52,13 +52,6 @@ namespace IsometricOrientedPerspective
             {
                 return m_mouseCursor;
             }
-            private set
-            {
-                if (m_mouseCursor == value)
-                    return;
-
-                m_mouseCursor = value;
-            }
         }
         public float HorizontalRotation
         {
@@ -66,28 +59,12 @@ namespace IsometricOrientedPerspective
             {
                 return m_horizontalRotation;
             }
-
-            private set
-            {
-                if (m_horizontalRotation == value)
-                    return;
-
-                m_horizontalRotation = value;
-            }
         }
         public float VerticalRotation
         {
             get
             {
                 return m_verticalRotation;
-            }
-
-            private set
-            {
-                if (m_verticalRotation == value)
-                    return;
-
-                m_verticalRotation = value;
             }
         }
         public Rigidbody Rigidbody
@@ -97,7 +74,7 @@ namespace IsometricOrientedPerspective
                 return m_Rigidbody;
             }
 
-            private set
+            set
             {
                 if (m_Rigidbody != null)
                     return;
@@ -123,7 +100,8 @@ namespace IsometricOrientedPerspective
 
         private void OnEnable()
         {
-            m_mouseCursor.gameObject.SetActive(true);
+            if (m_mouseCursor != null)
+                m_mouseCursor.gameObject.SetActive(true);
         }
 
         private void OnDisable()
@@ -132,21 +110,23 @@ namespace IsometricOrientedPerspective
                 m_mouseCursor.gameObject.SetActive(false);
         }
 
-        new void Awake()
+        private void Awake()
         {
-            base.Awake();
+            //base.Awake();
 
             if (m_rotationInstance == null)
                 m_rotationInstance = this;
 
             m_Rigidbody = GetComponent<Rigidbody>();
 
+            m_mouseCursor = Resources.Load<Transform>("Cursor");
+
             m_mouseCursor = Instantiate(m_mouseCursor);
         }
 
         new void Update()
         {
-            base.Update();
+            //base.Update();
 
             Rotate(RotatePosition, m_layerMask);
         }

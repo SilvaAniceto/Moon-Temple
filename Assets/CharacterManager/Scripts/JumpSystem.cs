@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IsometricOrientedPerspective
+namespace CharacterManager
 {
     public class JumpSystem : MonoBehaviour
     {

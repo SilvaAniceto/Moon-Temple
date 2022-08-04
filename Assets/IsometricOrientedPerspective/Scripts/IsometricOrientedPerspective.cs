@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace IsometricOrientedPerspective
 {
-    public class IsometricOrientedPerspective : MonoBehaviour
+    public class IsometricPerspective : MonoBehaviour
     {
-        private Vector3 m_isometricForward, m_isometricRight;
+        private static Vector3 m_isometricForward, m_isometricRight;
+        private static MoveDirection m_moveDirection;
         private float m_horizontalMovement, m_verticalMovement;
         private Vector3 m_rotatePosition;
         private Ray m_raycastHit;
@@ -33,13 +34,28 @@ namespace IsometricOrientedPerspective
             {
                 return m_horizontalMovement;
             }
+
+            set
+            {
+                if (m_horizontalMovement == value)
+                    return;
+
+                m_horizontalMovement = value;
+            }
         }
         public float VerticalMovement
         {
             get
             {
                 return m_verticalMovement;
-            } 
+            }
+            set
+            {
+                if (m_verticalMovement == value)
+                    return;
+
+                m_verticalMovement = value;
+            }
         }
         public Vector3 RotatePosition
         {
@@ -47,12 +63,25 @@ namespace IsometricOrientedPerspective
             {
                 return m_rotatePosition;
             }
+
+            set
+            {
+                if (m_rotatePosition == value)
+                    return;
+
+                m_rotatePosition = value;
+            }
         }
         public Ray RaycastHit
         {
             get
             {
                 return m_raycastHit;
+            }
+
+            set
+            {
+                m_raycastHit = value;
             }
         }
         public bool LeftClick
@@ -70,27 +99,39 @@ namespace IsometricOrientedPerspective
                 m_leftClick = value;
             }
         }
+        public MoveDirection Direction
+        {
+            get
+            {
+                return m_moveDirection;
+            }
+            set
+            {
+                m_moveDirection = value;
+            }
+        }
         #endregion
 
-        protected void Awake()
+        #region Classes
+        public class MoveDirection
+        {
+            public Vector3 direction = new Vector3();
+            public Vector3 righMovement = new Vector3();
+            public Vector3 upMovement = new Vector3();
+            public Vector3 heading = new Vector3();
+        }
+        #endregion
+
+        public static void Setup()
         {
             m_isometricForward = Camera.main.transform.forward;
             m_isometricForward.y = 0;
             m_isometricForward = Vector3.Normalize(m_isometricForward);
 
             m_isometricRight = Camera.main.transform.right;
-        }
 
-        protected void Update()
-        {
-            m_horizontalMovement = Input.GetAxis("Horizontal");
-            m_verticalMovement = Input.GetAxis("Vertical");
-
-            m_rotatePosition = Input.mousePosition;
-
-            m_raycastHit = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            m_leftClick = Input.GetMouseButtonDown(0);
+            if (m_moveDirection == null)
+                m_moveDirection = new MoveDirection();
         }
     }
 }

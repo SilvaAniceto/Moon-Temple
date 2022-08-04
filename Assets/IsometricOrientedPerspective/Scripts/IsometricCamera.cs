@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace IsometricOrientedPerspective
 {
-    public class IsometricCamera : IsometricOrientedPerspective
+    public class IsometricCamera : IsometricPerspective
     {
         public static IsometricCamera m_instance;
 
@@ -178,9 +178,9 @@ namespace IsometricOrientedPerspective
         }
         #endregion
 
-        new void Awake()
+        private void Awake()
         {
-            base.Awake();
+            //base.Awake();
 
             if (m_instance == null)
                 m_instance = this;
