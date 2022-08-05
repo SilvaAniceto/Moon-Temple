@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace IsometricOrientedPerspective
 {
-    public class IsometricMove : IsometricPerspective
+    public class IsometricMove : IsometricOrientedPerspective
     {
         public static IsometricMove m_moveInstance;
 
@@ -125,9 +125,9 @@ namespace IsometricOrientedPerspective
         }                        
         #endregion
 
-        public void MovementSetup()
+        public void Setup()
         {
-            Setup();
+            MoveSetup();
         }
 
         public void Move(float p_xAxis, float p_zAxis)

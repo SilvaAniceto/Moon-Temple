@@ -12,14 +12,14 @@ namespace CharacterManager
             public bool m_inputStartMovement;
             public float m_horizontalAxi;
             public float m_verticalAxi;
-            public bool m_leftClick;
+            public bool m_movePoint;
             public Vector3 m_rotatePosition;
 
             public void UpdateInputs()
             { 
                 m_horizontalAxi  = Input.GetAxis("Horizontal");
                 m_verticalAxi = Input.GetAxis("Vertical");
-                m_leftClick = Input.GetMouseButtonDown(0);
+                m_movePoint = Input.GetMouseButton(0);
                 m_rotatePosition = Input.mousePosition; 
             }
         }
@@ -28,9 +28,15 @@ namespace CharacterManager
         public class CharacterSettings
         {
             public bool m_physicsMove;
+            public bool m_physicsRotation;
             public float m_movementDistance;
+            [Range(0f, 100f)] public float m_rotationSpeed;
             [Range(1,10)] public float m_movementSpeed;
+            public LayerMask m_layerMask;
+            public bool m_mouseRotation;
         }
+
+        #region Properties
         public IsometricMove IsoMovement
         {
             get
@@ -46,10 +52,26 @@ namespace CharacterManager
                 IsometricMove.m_moveInstance = value;
             }
         }
+        public IsometricRotation IsoRotation
+        {
+            get
+            {
+                return IsometricRotation.m_rotationInstance;
+            }
+
+            set
+            {
+                if (IsometricRotation.m_rotationInstance == value)
+                    return;
+
+                IsometricRotation.m_rotationInstance = value;
+            }
+        }
+        #endregion
 
         private CharacterInputs m_inputs = new CharacterInputs();
         [SerializeField] private CharacterSettings m_settings = new CharacterSettings();
-
+        
         private void Awake()
         {
             if (IsoMovement == null)
@@ -58,14 +80,33 @@ namespace CharacterManager
                 IsoMovement = GetComponent<IsometricMove>();
             }
 
-            IsoMovement.MovementSetup();
+            if (IsoRotation == null)
+            {
+                gameObject.AddComponent<IsometricRotation>();
+                IsoRotation = GetComponent<IsometricRotation>();
+                IsoRotation.enabled = false;
+            }
+
             IsoMovement.Rigidbody = GetComponent<Rigidbody>();
+            IsoRotation.Rigidbody = GetComponent<Rigidbody>();
+                        
+            ApplySettings();
         }
+
         private void Start()
+        {
+            IsoMovement.Setup();
+            IsoRotation.Setup();            
+        }
+        public void ApplySettings()
         {
             IsoMovement.IsPhysicsMovement = m_settings.m_physicsMove;
             IsoMovement.MoveDistance = m_settings.m_movementDistance;
             IsoMovement.MovementDelta = m_settings.m_movementSpeed;
+            IsoRotation.IsPhysicsRotation = m_settings.m_physicsRotation;
+            IsoRotation.RotationSensibility = m_settings.m_rotationSpeed;
+            IsoRotation.LayerMask = m_settings.m_layerMask;
+            IsoRotation.enabled = m_settings.m_mouseRotation;
         }
 
         private void Update()
@@ -75,16 +116,18 @@ namespace CharacterManager
 
             IsoMovement.HorizontalMovement = m_inputs.m_horizontalAxi;
             IsoMovement.VerticalMovement = m_inputs.m_verticalAxi;
-            IsoMovement.LeftClick = m_inputs.m_leftClick;
-            IsoMovement.RotatePosition = m_inputs.m_rotatePosition;
-            IsoMovement.RaycastHit = Camera.main.ScreenPointToRay(IsoMovement.RotatePosition);
+            IsoRotation.LeftClick = m_inputs.m_movePoint;
+            IsoRotation.RotatePosition = m_inputs.m_rotatePosition;
+            IsoRotation.RaycastHit = Camera.main.ScreenPointToRay(IsoRotation.RotatePosition);
 
-            if (IsometricRotation.m_rotationInstance.enabled)
+            if (IsoRotation.enabled)
             {
-                if (Physics.Raycast(IsoMovement.RaycastHit, out RaycastHit raycastHit, float.MaxValue, IsometricRotation.m_rotationInstance.LayerMask))
-                    if (IsoMovement.LeftClick && IsoMovement.OnMove)
+                IsoRotation.Rotate(IsoRotation.RaycastHit, IsoRotation.RotatePosition, IsoRotation.LayerMask);
+
+                if (Physics.Raycast(IsoRotation.RaycastHit, out RaycastHit raycastHit, float.MaxValue, IsoRotation.LayerMask))
+                    if (IsoRotation.LeftClick && !IsoMovement.OnMove)
                     {
-                        IsoMovement.Direction.direction = new Vector3(IsometricRotation.m_rotationInstance.MouseCursor.position.x, transform.position.y, IsometricRotation.m_rotationInstance.MouseCursor.position.z);
+                        IsoMovement.Direction.direction = new Vector3(IsoRotation.MouseCursor.position.x, transform.position.y, IsoRotation.MouseCursor.position.z);
 
                         IsoMovement.OnMove = true;
 
@@ -93,7 +136,7 @@ namespace CharacterManager
 
                 if (IsoMovement.OnMove)
                     IsoMovement.Move(IsoMovement.Direction.direction.x, IsoMovement.Direction.direction.z);
-            }
+            }           
             
             if (IsoMovement.IsPhysicsMovement) return;
 
@@ -107,7 +150,7 @@ namespace CharacterManager
 
             IsometricCamera.m_instance.MoveBase();
 
-            if (IsoMovement.MoveDelta != Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+            if (IsoMovement.MoveDelta != Vector2.zero && !IsoRotation.enabled)
             {
                 if (m_inputs.m_inputStartMovement)
                 {
@@ -116,12 +159,11 @@ namespace CharacterManager
                 }
                 IsoMovement.Move(IsoMovement.MoveDelta.x, IsoMovement.MoveDelta.y);
             }
-            else if (IsoMovement.MoveDelta == Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+            else if (IsoMovement.MoveDelta == Vector2.zero && !IsoRotation.enabled)
             {
                 m_inputs.m_inputStartMovement = true;
                 IsoMovement.OnMove = false;
             }
-
         }
 
         private void FixedUpdate()
@@ -138,12 +180,12 @@ namespace CharacterManager
 
             IsometricCamera.m_instance.MoveBase();
 
-            if (IsometricRotation.m_rotationInstance.enabled)
+            if (IsoRotation.enabled)
             {
                 if (IsoMovement.OnMove)
                     IsoMovement.Move(IsoMovement.Direction.direction.x, IsoMovement.Direction.direction.z);
             }
-            else if (IsoMovement.MoveDelta != Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+            else if (IsoMovement.MoveDelta != Vector2.zero && !IsoRotation.enabled)
             {
                 if (m_inputs.m_inputStartMovement)
                 {
@@ -152,7 +194,7 @@ namespace CharacterManager
                 }
                 IsoMovement.Move(IsoMovement.MoveDelta.x, IsoMovement.MoveDelta.y);
             }
-            else if (IsoMovement.MoveDelta == Vector2.zero && !IsometricRotation.m_rotationInstance.enabled)
+            else if (IsoMovement.MoveDelta == Vector2.zero && !IsoRotation.enabled)
             {
                 m_inputs.m_inputStartMovement = true;
                 IsoMovement.OnMove = false;

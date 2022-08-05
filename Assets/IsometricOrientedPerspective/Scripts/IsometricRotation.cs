@@ -4,16 +4,15 @@ using UnityEngine;
 
 namespace IsometricOrientedPerspective
 {
-    public class IsometricRotation : IsometricPerspective
+    public class IsometricRotation : IsometricOrientedPerspective
     {
         public static IsometricRotation m_rotationInstance;
 
-        [SerializeField] private bool m_isPhysicsRotation;
-        [Range(0f, 100f)][SerializeField] private float m_rotationSensibility;
-        [SerializeField] private LayerMask m_layerMask;
-        private Transform m_mouseCursor;
-        private float m_horizontalRotation, m_verticalRotation;
+        private bool m_isPhysicsRotation;
+        private float m_rotationSensibility;
+        private LayerMask m_layerMask;        
         private Rigidbody m_Rigidbody;
+        [SerializeField]private Transform m_mouseCursor;
 
         #region Properties
         public bool IsPhysicsRotation
@@ -45,28 +44,7 @@ namespace IsometricOrientedPerspective
 
                 m_rotationSensibility = value;
             }
-        }
-        public Transform MouseCursor
-        {
-            get
-            {
-                return m_mouseCursor;
-            }
-        }
-        public float HorizontalRotation
-        {
-            get
-            {
-                return m_horizontalRotation;
-            }
-        }
-        public float VerticalRotation
-        {
-            get
-            {
-                return m_verticalRotation;
-            }
-        }
+        }      
         public Rigidbody Rigidbody
         {
             get
@@ -96,6 +74,13 @@ namespace IsometricOrientedPerspective
                 m_layerMask = value;    
             }
         }
+        public Transform MouseCursor
+        {
+            get
+            {
+                return m_mouseCursor;
+            }
+        }
         #endregion  
 
         private void OnEnable()
@@ -110,31 +95,18 @@ namespace IsometricOrientedPerspective
                 m_mouseCursor.gameObject.SetActive(false);
         }
 
-        private void Awake()
+        public void Setup()
         {
-            //base.Awake();
-
-            if (m_rotationInstance == null)
-                m_rotationInstance = this;
-
-            m_Rigidbody = GetComponent<Rigidbody>();
-
             m_mouseCursor = Resources.Load<Transform>("Cursor");
 
             m_mouseCursor = Instantiate(m_mouseCursor);
         }
 
-        new void Update()
-        {
-            //base.Update();
-
-            Rotate(RotatePosition, m_layerMask);
-        }
-        protected virtual void Rotate(Vector3 p_rotatePosition, LayerMask p_layerMask)
+        public void Rotate(Ray p_raycast, Vector3 p_rotatePosition, LayerMask p_layerMask)
         {
             if (!IsometricCamera.m_instance.MovingCamera)
             {
-                if (!Physics.Raycast(RaycastHit, out RaycastHit raycastHit, float.MaxValue, p_layerMask))
+                if (!Physics.Raycast(p_raycast, out RaycastHit raycastHit, float.MaxValue, p_layerMask))
                     return;
                 else
                 {

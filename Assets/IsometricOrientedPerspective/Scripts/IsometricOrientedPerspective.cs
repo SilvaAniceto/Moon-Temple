@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace IsometricOrientedPerspective
 {
-    public class IsometricPerspective : MonoBehaviour
+    public class IsometricOrientedPerspective : MonoBehaviour
     {
         private static Vector3 m_isometricForward, m_isometricRight;
         private static MoveDirection m_moveDirection;
         private float m_horizontalMovement, m_verticalMovement;
         private Vector3 m_rotatePosition;
         private Ray m_raycastHit;
-        private bool m_leftClick;
+        private bool m_leftClick;        
 
         #region Properties
         public Vector3 IsometricForward
@@ -109,7 +109,7 @@ namespace IsometricOrientedPerspective
             {
                 m_moveDirection = value;
             }
-        }
+        }        
         #endregion
 
         #region Classes
@@ -121,8 +121,8 @@ namespace IsometricOrientedPerspective
             public Vector3 heading = new Vector3();
         }
         #endregion
-
-        public static void Setup()
+        
+        public void MoveSetup()
         {
             m_isometricForward = Camera.main.transform.forward;
             m_isometricForward.y = 0;
@@ -131,7 +131,7 @@ namespace IsometricOrientedPerspective
             m_isometricRight = Camera.main.transform.right;
 
             if (m_moveDirection == null)
-                m_moveDirection = new MoveDirection();
+                m_moveDirection = new MoveDirection();           
         }
     }
 }

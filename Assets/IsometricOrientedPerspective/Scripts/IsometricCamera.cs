@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace IsometricOrientedPerspective
 {
-    public class IsometricCamera : IsometricPerspective
+    public class IsometricCamera : IsometricOrientedPerspective
     {
         public static IsometricCamera m_instance;
 

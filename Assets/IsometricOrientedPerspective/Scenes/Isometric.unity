@@ -1406,7 +1406,6 @@ GameObject:
   - component: {fileID: 431844768}
   - component: {fileID: 431844767}
   - component: {fileID: 431844770}
-  - component: {fileID: 431844765}
   - component: {fileID: 431844764}
   - component: {fileID: 431844763}
   - component: {fileID: 431844762}
@@ -1461,23 +1460,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_heightDeltaTime: 0.4
   m_heightDelta: 50
-  m_layerMask:
-    serializedVersion: 2
-    m_Bits: 8
---- !u!114 &431844765
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 431844761}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 601c96b4f569a4f40abde5a2e60ab515, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_isPhysicsRotation: 0
-  m_rotationSensibility: 7.5
   m_layerMask:
     serializedVersion: 2
     m_Bits: 8
@@ -1560,8 +1542,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_settings:
     m_physicsMove: 0
+    m_physicsRotation: 0
     m_movementDistance: 9
+    m_rotationSpeed: 100
     m_movementSpeed: 4
+    m_layerMask:
+      serializedVersion: 2
+      m_Bits: 8
+    m_mouseRotation: 1
 --- !u!1 &455035316
 GameObject:
   m_ObjectHideFlags: 0
@@ -5176,16 +5164,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9b058bed88084b42b7594dc75844c06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  open: {fileID: 1515590666}
-  close: {fileID: 1813992966}
-  panel: {fileID: 1541643020}
-  btOpenClose: {fileID: 43069315}
-  isOpen: 1
-  UIMoveSpeed: {fileID: 1235169070}
-  UIJumpHeight: {fileID: 1292654399}
-  UITogglePhysics: {fileID: 274629510}
-  UIToggleMouseRotation: {fileID: 1581701864}
-  m_physicsEnabled: 0
 --- !u!1 &1546182129
 GameObject:
   m_ObjectHideFlags: 0
