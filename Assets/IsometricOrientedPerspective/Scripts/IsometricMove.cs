@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace IsometricOrientedPerspective
@@ -18,6 +16,9 @@ namespace IsometricOrientedPerspective
         private bool m_onMove;
 
         #region Properties
+        /// <summary>
+        /// Define wheter on not the movement uses physics.
+        /// </summary>
         public bool IsPhysicsMovement
         {
             get 
@@ -33,6 +34,9 @@ namespace IsometricOrientedPerspective
                 m_isPhysicsMovement = value;
             }
         }
+        /// <summary>
+        /// Define the limit distance that the movement can happen.
+        /// </summary>
         public float MoveDistance
         {
             get
@@ -48,6 +52,9 @@ namespace IsometricOrientedPerspective
                 m_moveDistance = value;
             }
         }
+        /// <summary>
+        /// Define the speed delta of the movement.
+        /// </summary>
         public float MovementDelta
         {
             get
@@ -63,6 +70,9 @@ namespace IsometricOrientedPerspective
                 m_movementDelta = value;
             }
         }
+        /// <summary>
+        /// Define wheter on not the movement is happening.
+        /// </summary>
         public bool OnMove
         {
             get
@@ -78,6 +88,9 @@ namespace IsometricOrientedPerspective
                 m_onMove = value;
             }
         }
+        /// <summary>
+        /// The rigidbody used to move with physics.
+        /// </summary>
         public Rigidbody Rigidbody
         {
             get 
@@ -93,6 +106,9 @@ namespace IsometricOrientedPerspective
                 m_Rigidbody = value;
             }
         }
+        /// <summary>
+        /// Delta of the axis of movement input.
+        /// </summary>
         public Vector2 MoveDelta
         {
             get
@@ -108,6 +124,9 @@ namespace IsometricOrientedPerspective
                 m_moveDelta = value;
             }
         }
+        /// <summary>
+        /// The start position when the movement begins.
+        /// </summary>
         public Vector3 StartPosition
         {
             get
@@ -127,75 +146,81 @@ namespace IsometricOrientedPerspective
 
         public void Setup()
         {
-            MoveSetup();
+            IsometricSetup();
         }
 
+        /// <summary>
+        /// Resolve the movement in Isometric Oriented Perspective.
+        /// </summary>
         public void Move(float p_xAxis, float p_zAxis)
         {
-            if (!IsometricCamera.m_instance.MovingCamera) 
+            if (!IsometricCamera.m_instance.MovingCamera) // Prevents that the movement happens when the Camera is moving.
             { 
-                if (IsPhysicsMovement)
+                if (IsPhysicsMovement) 
                 {
                     if (IsometricRotation.m_rotationInstance.enabled)
                     {
-                        float distance = Vector3.Distance(Direction.direction, transform.position);
-                        m_onMove = distance > 0.2f ? true : false;
-
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime));
+                                                                                                                                                      //
+                        float distance = Vector3.Distance(Direction.direction, transform.position);                                                   //     Resolve the point and click mouse 
+                        m_onMove = distance > 0.2f ? true : false;                                                                                    // movement and rotation with physics.
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                           //
+                            m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime)); //
                     }
                     else
                     {
-                        Direction.direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime, 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
-
-                        Direction.direction = Camera.main.transform.TransformDirection(Direction.direction);
-                        Direction.direction.y = 0;
-
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            m_Rigidbody.MovePosition(m_Rigidbody.position + Direction.direction);
-
-                        m_onMove = true;
+                        Direction.direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime, 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime); //
+                                                                                                                                                                //
+                        Direction.direction = Camera.main.transform.TransformDirection(Direction.direction);                                                    //
+                        Direction.direction.y = 0;                                                                                                              //   Resolve the axis movement using
+                                                                                                                                                                // physics.
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                                     //
+                            m_Rigidbody.MovePosition(m_Rigidbody.position + Direction.direction);                                                               //
+                                                                                                                                                                //
+                        m_onMove = true;                                                                                                                        //
                     }
 
-                    if (!IsometricRotation.m_rotationInstance.enabled)
-                        if (Direction.direction != Vector3.zero)
-                            m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, Quaternion.LookRotation(Direction.direction), 0.5f);
+                    if (!IsometricRotation.m_rotationInstance.enabled)                                                                         //
+                        if (Direction.direction != Vector3.zero)                                                                               //    Resolves the rotation when using physics 
+                            m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, Quaternion.LookRotation(Direction.direction), 0.5f); // axis movement.
                 }
                 else
                 {
                     if (IsometricRotation.m_rotationInstance.enabled)
                     {
-                        float distance = Vector3.Distance(Direction.direction, transform.position);
-                        m_onMove = distance > 0.2f ? true : false;
-
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            transform.position = Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime);
+                        float distance = Vector3.Distance(Direction.direction, transform.position);                                              //
+                        m_onMove = distance > 0.2f ? true : false;                                                                               //   Resolve the point and click mouse movement
+                                                                                                                                                 // and rotation using transform movement.
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                      //
+                            transform.position = Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime); //
                     }
                     else
                     {
-                        Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
-                        Direction.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * Direction.direction.x;
-                        Direction.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * Direction.direction.z;
-
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                        {
-                            transform.position += Direction.righMovement;
-                            transform.position += Direction.upMovement;
-                        }
-
-                        m_onMove = true;
+                        Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);                                             //
+                        Direction.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * Direction.direction.x; //
+                        Direction.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * Direction.direction.z; //
+                                                                                                                            //
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)                                                 //   Resolve the axis movement using transform movement.
+                        {                                                                                                   //
+                            transform.position += Direction.righMovement;                                                   //
+                            transform.position += Direction.upMovement;                                                     //
+                        }                                                                                                   //
+                                                                                                                            //
+                        m_onMove = true;                                                                                    //
                     }
 
                     if (!IsometricRotation.m_rotationInstance.enabled)
                     {
-                        Direction.heading = Vector3.Normalize(Direction.righMovement + Direction.upMovement);
-                        if (Direction.heading != Vector3.zero)
-                            transform.forward = Vector3.Lerp(transform.forward, Direction.heading, 0.40f);
+                        Direction.heading = Vector3.Normalize(Direction.righMovement + Direction.upMovement); //
+                        if (Direction.heading != Vector3.zero)                                                //     Resolves the rotation when using transform axis movement.
+                            transform.forward = Vector3.Lerp(transform.forward, Direction.heading, 0.40f);    //
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Defines the input direction after changing the camera position.
+        /// </summary>
         public void SetInputMoveDelta()
         {
             if (!m_isPhysicsMovement)
@@ -216,6 +241,9 @@ namespace IsometricOrientedPerspective
                 m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
         }
 
+        /// <summary>
+        /// Calculate the distance travelled when the movement begins.
+        /// </summary>
         public void GetMoveDistance(Vector3 p_startPosition)
         {
             m_distanceTravelled = Vector3.Distance(p_startPosition, transform.position);

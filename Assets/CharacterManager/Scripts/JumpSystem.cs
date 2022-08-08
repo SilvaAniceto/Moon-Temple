@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace CharacterManager
@@ -8,9 +6,15 @@ namespace CharacterManager
     {
         public static JumpSystem m_jumpInstance;
 
-        [SerializeField] float m_heightDeltaTime;
+        [Header("Time Between Jumps")]
+        [SerializeField] float m_jumpDeltaTime;
+
+        [Header("Max Jump Height")]
         [Range(50f, 100f)][SerializeField] float m_heightDelta;
+
+        [Header("Ground LayerMask")]
         [SerializeField] LayerMask m_layerMask;
+
         private bool m_offGroundLevel, m_onGroundLevel, m_jumpInput;
         private float m_jumpDelayCounter;
         private Rigidbody m_rigidbody;
@@ -97,7 +101,7 @@ namespace CharacterManager
             if (OnGroundLevel && JumpInput)
             {
                 m_offGroundLevel = true;
-                m_jumpDelayCounter = m_heightDeltaTime;
+                m_jumpDelayCounter = m_jumpDeltaTime;
                 m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Force);
             }
 

@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 
 namespace CharacterManager
 {
@@ -8,16 +7,14 @@ namespace CharacterManager
     {
         public static AreaMovement m_areaMovementInstance;
 
-        [SerializeField] private LineRenderer m_lineRenderer;
-
-        #region Properties
-      
-        #endregion
+        private LineRenderer m_lineRenderer;
 
         private void Awake()
         {
             if (m_areaMovementInstance == null)
                 m_areaMovementInstance = this;
+
+            m_lineRenderer = GetComponent<LineRenderer>();
         }
 
         public void DrawCircle(int p_steps, float p_radius, Vector3 p_position)

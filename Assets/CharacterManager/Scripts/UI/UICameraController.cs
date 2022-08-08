@@ -13,7 +13,7 @@ public class UICameraController : UIPopUpController
 
         UICameraSensibility.onValueChanged.AddListener((float p_sensibility) =>
         {
-            IsometricCamera.m_instance.Sensibility = p_sensibility;
+            IsometricCamera.m_instance.CameraSpeed = p_sensibility;
         });
 
         UIZoomSensibility.onValueChanged.AddListener((float p_zoom) =>
@@ -34,7 +34,7 @@ public class UICameraController : UIPopUpController
 
     private void Start()
     {
-        UICameraSensibility.value = IsometricCamera.m_instance.Sensibility;
+        UICameraSensibility.value = IsometricCamera.m_instance.CameraSpeed;
         UIZoomSensibility.value = IsometricCamera.m_instance.ZoomSensibility;
         UIZoomMultiplier.value = IsometricCamera.m_instance.ZoomMultiplier;
         UIVerticalOffSet.value = IsometricCamera.m_instance.VerticalOffset;

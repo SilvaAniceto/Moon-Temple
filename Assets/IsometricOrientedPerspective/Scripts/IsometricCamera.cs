@@ -8,14 +8,25 @@ namespace IsometricOrientedPerspective
     {
         public static IsometricCamera m_instance;
 
+        [Header("Isometric Camera")]
         [SerializeField] private Camera m_camera;
-        [Range(10f, 100f)][SerializeField] private float m_sensibility, m_zoomSensibility;
+
+        [Header("Camera Settings")]
+        [Range(10f, 100f)][SerializeField] private float m_cameraSpeed;
+        [Range(10f, 100f)][SerializeField] private float m_zoomSensibility;
         [Range(2f, 10f)][SerializeField] private int m_zoomMultiplier;
         [Range(1f, 3f)][SerializeField] private float m_verticalOffset;
-        [SerializeField] private Transform m_target, m_baseMotion;
+
+        [Header("Camera Target")]
+        [SerializeField] private Transform m_target;
+
+        [Header("Camera Base")]
+        [SerializeField] private Transform m_baseMotion;
+
         private Vector3 m_offset, m_currentOffset, m_leftOffset, m_rightOffset;
         private Vector3[] m_deltaPosition = { new Vector3(-30, 15, -30), new Vector3(30, 15, -30), new Vector3(30, 15, 30), new Vector3(-30, 15, 30) };
         private List<Vector3> m_auxDeltaPosition = new List<Vector3>();
+
         private float m_horizontalAxis;
         private float m_zoom;
         private bool m_movingCamera;
@@ -23,6 +34,9 @@ namespace IsometricOrientedPerspective
         private CameraPosition m_cameraPosition = CameraPosition.SOUTH;
 
         #region Properties
+        /// <summary>
+        /// Current camera position.
+        /// </summary>
         public CameraPosition CamPosition
         {
             get
@@ -38,6 +52,9 @@ namespace IsometricOrientedPerspective
                 m_cameraPosition = value;
             }
         }
+        /// <summary>
+        /// The Main Camera.
+        /// </summary>
         public Camera Camera
         {
             get
@@ -53,6 +70,9 @@ namespace IsometricOrientedPerspective
                 m_camera = value;
             }
         }
+        /// <summary>
+        /// Camera target for Look and Follow.
+        /// </summary>
         public Transform Target
         {
             get
@@ -68,6 +88,9 @@ namespace IsometricOrientedPerspective
                 m_target = value;
             }
         }
+        /// <summary>
+        /// Parent transform that moves with the target.
+        /// </summary>
         public Transform BaseMotion
         {
             get
@@ -83,21 +106,27 @@ namespace IsometricOrientedPerspective
                 m_baseMotion = value;
             }
         }
-        public float Sensibility
+        /// <summary>
+        /// Camera speed for changing position.
+        /// </summary>
+        public float CameraSpeed
         {
             get
             {
-                return m_sensibility;
+                return m_cameraSpeed;
             }
 
             set
             {
-                if (m_sensibility == value)
+                if (m_cameraSpeed == value)
                     return;
 
-                m_sensibility = value;
+                m_cameraSpeed = value;
             }
         }
+        /// <summary>
+        /// Defines the Camera zoom sensibility.
+        /// </summary>
         public float ZoomSensibility
         {
             get 
@@ -113,6 +142,9 @@ namespace IsometricOrientedPerspective
                 m_zoomSensibility = value;
             }
         }
+        /// <summary>
+        /// Vertical offset relative to the target.
+        /// </summary>
         public float VerticalOffset
         {
             get
@@ -128,6 +160,9 @@ namespace IsometricOrientedPerspective
                 m_verticalOffset = value;
             }
         }
+        /// <summary>
+        /// Multiplier that define the Camera zoom speed.
+        /// </summary>
         public int ZoomMultiplier
         {
             get
@@ -143,6 +178,9 @@ namespace IsometricOrientedPerspective
                 m_zoomMultiplier = value;
             }
         }
+        /// <summary>
+        /// Offset for next position of the Camera.
+        /// </summary>
         public Vector3 OffSet
         {
             get
@@ -162,6 +200,9 @@ namespace IsometricOrientedPerspective
                 return m_offset;
             }
         }
+        /// <summary>
+        /// Horizontal input for next Camera position.
+        /// </summary>
         public float HorizontalAxis
         {
             get
@@ -169,6 +210,9 @@ namespace IsometricOrientedPerspective
                 return m_horizontalAxis;
             }
         }
+        /// <summary>
+        /// Define wheter or not the Camera is moving.
+        /// </summary>
         public bool MovingCamera
         {
             get
@@ -180,8 +224,6 @@ namespace IsometricOrientedPerspective
 
         private void Awake()
         {
-            //base.Awake();
-
             if (m_instance == null)
                 m_instance = this;
             
@@ -235,11 +277,17 @@ namespace IsometricOrientedPerspective
             }
         }
 
+        /// <summary>
+        /// Move the Camera Base along the target.
+        /// </summary>
         public void MoveBase()
         {
             m_baseMotion.position = m_target.position + new Vector3(0, m_verticalOffset, 0);
         }
 
+        /// <summary>
+        /// Calculate and defines the next position for the Camera movement.
+        /// </summary>
         void GetLeftRightOffSet(Vector3 p_currentOffset, float p_horizontalAxis)
         {
             if (p_currentOffset != m_currentOffset || p_horizontalAxis == 0) return;
@@ -290,6 +338,9 @@ namespace IsometricOrientedPerspective
             }
         }
 
+        /// <summary>
+        /// Move and set the current position of the Camera.
+        /// </summary>
         private void SetCameraPosition(float p_horizontalAxis)
         {
             if (p_horizontalAxis == 0) m_movingCamera = true;
@@ -302,7 +353,7 @@ namespace IsometricOrientedPerspective
 
             if (p_horizontalAxis > 0) m_offset = m_rightOffset;
             
-            LeanTween.move(this.gameObject, m_target.position + m_offset, m_sensibility * Time.fixedDeltaTime).setOnComplete(() =>
+            LeanTween.move(this.gameObject, m_target.position + m_offset, m_cameraSpeed * Time.fixedDeltaTime).setOnComplete(() =>
             {
                 m_horizontalAxis = 0;
                 m_currentOffset = m_offset;
@@ -311,6 +362,9 @@ namespace IsometricOrientedPerspective
             });
         }
 
+        /// <summary>
+        /// Define the Camera look direction based on the new position. 
+        /// </summary>
         public void DefineCameraDirection()
         {
             if (m_currentOffset == m_deltaPosition[0])

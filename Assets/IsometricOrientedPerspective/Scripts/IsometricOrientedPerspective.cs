@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace IsometricOrientedPerspective
@@ -11,9 +9,12 @@ namespace IsometricOrientedPerspective
         private float m_horizontalMovement, m_verticalMovement;
         private Vector3 m_rotatePosition;
         private Ray m_raycastHit;
-        private bool m_leftClick;        
+        private bool m_leftClick;
 
         #region Properties
+        /// <summary>
+        /// New forward orientation for Isometric Perspective.
+        /// </summary>
         public Vector3 IsometricForward
         {
             get
@@ -21,6 +22,9 @@ namespace IsometricOrientedPerspective
                 return m_isometricForward;
             }
         }
+        /// <summary>
+        /// New right orientation for Isometric Perspective.
+        /// </summary>
         public Vector3 IsometricRight
         {
             get
@@ -28,6 +32,9 @@ namespace IsometricOrientedPerspective
                 return m_isometricRight;
             }  
         }
+        /// <summary>
+        /// Horizontal axi for movement in Isometric Perspective.
+        /// </summary>
         public float HorizontalMovement
         {
             get
@@ -43,6 +50,9 @@ namespace IsometricOrientedPerspective
                 m_horizontalMovement = value;
             }
         }
+        /// <summary>
+        /// Vertical axi for movement in Isometric Perspective.
+        /// </summary>
         public float VerticalMovement
         {
             get
@@ -57,6 +67,9 @@ namespace IsometricOrientedPerspective
                 m_verticalMovement = value;
             }
         }
+        /// <summary>
+        /// Look at position when mouse rotation is enabled.
+        /// </summary>
         public Vector3 RotatePosition
         {
             get
@@ -72,6 +85,9 @@ namespace IsometricOrientedPerspective
                 m_rotatePosition = value;
             }
         }
+        /// <summary>
+        /// Physics ray to define mouse cursor position.
+        /// </summary>
         public Ray RaycastHit
         {
             get
@@ -84,6 +100,9 @@ namespace IsometricOrientedPerspective
                 m_raycastHit = value;
             }
         }
+        /// <summary>
+        /// Input for left mouse button click.
+        /// </summary>
         public bool LeftClick
         {
             get
@@ -99,6 +118,9 @@ namespace IsometricOrientedPerspective
                 m_leftClick = value;
             }
         }
+        /// <summary>
+        /// Defines which direction the game object is facing, moving or rotating.
+        /// </summary>
         public MoveDirection Direction
         {
             get
@@ -121,8 +143,11 @@ namespace IsometricOrientedPerspective
             public Vector3 heading = new Vector3();
         }
         #endregion
-        
-        public void MoveSetup()
+
+        /// <summary>
+        /// Sets the isometric directions with the Camera informations.
+        /// </summary>
+        public void IsometricSetup()
         {
             m_isometricForward = Camera.main.transform.forward;
             m_isometricForward.y = 0;

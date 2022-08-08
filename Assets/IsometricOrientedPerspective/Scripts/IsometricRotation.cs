@@ -1,5 +1,3 @@
-using System.Collections;
-using System.IO;
 using UnityEngine;
 
 namespace IsometricOrientedPerspective
@@ -12,9 +10,12 @@ namespace IsometricOrientedPerspective
         private float m_rotationSensibility;
         private LayerMask m_layerMask;        
         private Rigidbody m_Rigidbody;
-        [SerializeField]private Transform m_mouseCursor;
+        private Transform m_mouseCursor;
 
         #region Properties
+        /// <summary>
+        /// Define wheter on not the rotation uses physics.
+        /// </summary>
         public bool IsPhysicsRotation
         {
             get
@@ -30,6 +31,9 @@ namespace IsometricOrientedPerspective
                 m_isPhysicsRotation = value;
             }
         }
+        /// <summary>
+        /// Define the rotation sensibility.
+        /// </summary>
         public float RotationSensibility
         {
             get
@@ -44,7 +48,10 @@ namespace IsometricOrientedPerspective
 
                 m_rotationSensibility = value;
             }
-        }      
+        }
+        /// <summary>
+        /// The rigidbody used to rotate with physics.
+        /// </summary>
         public Rigidbody Rigidbody
         {
             get
@@ -60,6 +67,9 @@ namespace IsometricOrientedPerspective
                 m_Rigidbody = value;
             }
         }
+        /// <summary>
+        /// Target layer for the mouse cursor.
+        /// </summary>
         public LayerMask LayerMask
         {
             get
@@ -74,6 +84,9 @@ namespace IsometricOrientedPerspective
                 m_layerMask = value;    
             }
         }
+        /// <summary>
+        /// Transform for the mouse cursor.
+        /// </summary>
         public Transform MouseCursor
         {
             get
@@ -95,13 +108,18 @@ namespace IsometricOrientedPerspective
                 m_mouseCursor.gameObject.SetActive(false);
         }
 
-        public void Setup()
+        public void Setup(bool p_cursorState)
         {
-            m_mouseCursor = Resources.Load<Transform>("Cursor");
+            m_mouseCursor = Resources.Load<Transform>("Prefabs/Cursor");
 
             m_mouseCursor = Instantiate(m_mouseCursor);
+
+            m_mouseCursor.gameObject.SetActive(p_cursorState);
         }
 
+        /// <summary>
+        /// Resolve the rotation in Isometric Oriented Perspective.
+        /// </summary>
         public void Rotate(Ray p_raycast, Vector3 p_rotatePosition, LayerMask p_layerMask)
         {
             if (!IsometricCamera.m_instance.MovingCamera)

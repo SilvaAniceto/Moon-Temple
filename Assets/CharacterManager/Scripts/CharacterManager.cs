@@ -27,13 +27,17 @@ namespace CharacterManager
         [System.Serializable]
         public class CharacterSettings
         {
+            [Header("Physics Settings")]
             public bool m_physicsMove;
             public bool m_physicsRotation;
-            public float m_movementDistance;
-            [Range(0f, 100f)] public float m_rotationSpeed;
+            [Header("Movement Settings")]
             [Range(1,10)] public float m_movementSpeed;
-            public LayerMask m_layerMask;
+            public float m_movementDistance;
+            [Header("Rotation Settings")]
+            [Range(0f, 100f)] public float m_rotationSpeed;
             public bool m_mouseRotation;
+            [Header("Layer Settings")]
+            public LayerMask m_layerMask;
         }
 
         #region Properties
@@ -69,8 +73,9 @@ namespace CharacterManager
         }
         #endregion
 
-        private CharacterInputs m_inputs = new CharacterInputs();
         [SerializeField] private CharacterSettings m_settings = new CharacterSettings();
+        private CharacterInputs m_inputs = new CharacterInputs();
+        [SerializeField] private AreaMovement m_area;
         
         private void Awake()
         {
@@ -89,14 +94,18 @@ namespace CharacterManager
 
             IsoMovement.Rigidbody = GetComponent<Rigidbody>();
             IsoRotation.Rigidbody = GetComponent<Rigidbody>();
-                        
+
+            Transform obj = Instantiate(Resources.Load<Transform>("Prefabs/MovementRadius"));
+
+            m_area = obj.GetComponent<AreaMovement>();
+
             ApplySettings();
         }
 
         private void Start()
         {
             IsoMovement.Setup();
-            IsoRotation.Setup();            
+            IsoRotation.Setup(m_settings.m_mouseRotation);            
         }
         public void ApplySettings()
         {
@@ -143,10 +152,10 @@ namespace CharacterManager
             if (IsoMovement.OnMove)
             {
                 IsoMovement.GetMoveDistance(IsoMovement.StartPosition);
-                AreaMovement.m_areaMovementInstance.DrawCircle(100, IsoMovement.MoveDistance, new Vector3(IsoMovement.StartPosition.x, -0.85f, IsoMovement.StartPosition.z));
+                m_area.DrawCircle(100, IsoMovement.MoveDistance, new Vector3(IsoMovement.StartPosition.x, -0.85f, IsoMovement.StartPosition.z));
             }
             else
-                AreaMovement.m_areaMovementInstance.DrawCircle(100, IsoMovement.MoveDistance, transform.position);
+                m_area.DrawCircle(100, IsoMovement.MoveDistance, transform.position);
 
             IsometricCamera.m_instance.MoveBase();
 
@@ -173,10 +182,10 @@ namespace CharacterManager
             if (IsoMovement.OnMove)
             {
                 IsoMovement.GetMoveDistance(IsoMovement.StartPosition);
-                AreaMovement.m_areaMovementInstance.DrawCircle(100, IsoMovement.MoveDistance, new Vector3(IsoMovement.StartPosition.x, -0.85f, IsoMovement.StartPosition.z));
+                m_area.DrawCircle(100, IsoMovement.MoveDistance, new Vector3(IsoMovement.StartPosition.x, -0.85f, IsoMovement.StartPosition.z));
             }
             else
-                AreaMovement.m_areaMovementInstance.DrawCircle(100, IsoMovement.MoveDistance, transform.position);
+                m_area.DrawCircle(100, IsoMovement.MoveDistance, transform.position);
 
             IsometricCamera.m_instance.MoveBase();
 
