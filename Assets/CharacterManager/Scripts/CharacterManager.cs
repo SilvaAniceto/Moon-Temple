@@ -75,7 +75,7 @@ namespace CharacterManager
 
         [SerializeField] private CharacterSettings m_settings = new CharacterSettings();
         private CharacterInputs m_inputs = new CharacterInputs();
-        [SerializeField] private AreaMovement m_area;
+        private AreaMovement m_area;
         
         private void Awake()
         {
