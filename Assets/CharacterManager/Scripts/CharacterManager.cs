@@ -41,59 +41,32 @@ namespace CharacterManager
         }
 
         #region Properties
-        public IsometricMove IsoMovement
-        {
-            get
-            {
-                return IsometricMove.m_moveInstance;
-            }
-
-            set
-            {
-                if (IsometricMove.m_moveInstance == value)
-                    return;
-
-                IsometricMove.m_moveInstance = value;
-            }
-        }
-        public IsometricRotation IsoRotation
-        {
-            get
-            {
-                return IsometricRotation.m_rotationInstance;
-            }
-
-            set
-            {
-                if (IsometricRotation.m_rotationInstance == value)
-                    return;
-
-                IsometricRotation.m_rotationInstance = value;
-            }
-        }
+        
         #endregion
 
         [SerializeField] private CharacterSettings m_settings = new CharacterSettings();
         private CharacterInputs m_inputs = new CharacterInputs();
+        private IsometricMove m_isoMove;
+        private IsometricRotation m_isoRotation;
         private AreaMovement m_area;
         
         private void Awake()
         {
-            if (IsoMovement == null)
+            if (m_isoMove == null)
             {
                 gameObject.AddComponent<IsometricMove>();
-                IsoMovement = GetComponent<IsometricMove>();
+                m_isoMove = GetComponent<IsometricMove>();
             }
 
-            if (IsoRotation == null)
+            if (m_isoRotation == null)
             {
                 gameObject.AddComponent<IsometricRotation>();
-                IsoRotation = GetComponent<IsometricRotation>();
-                IsoRotation.enabled = false;
+                m_isoRotation = GetComponent<IsometricRotation>();
+                m_isoRotation.enabled = false;
             }
 
-            IsoMovement.Rigidbody = GetComponent<Rigidbody>();
-            IsoRotation.Rigidbody = GetComponent<Rigidbody>();
+            m_isoMove.Rigidbody = GetComponent<Rigidbody>();
+            m_isoRotation.Rigidbody = GetComponent<Rigidbody>();
 
             Transform obj = Instantiate(Resources.Load<Transform>("Prefabs/MovementRadius"));
 
@@ -104,109 +77,110 @@ namespace CharacterManager
 
         private void Start()
         {
-            IsoMovement.Setup();
-            IsoRotation.Setup(m_settings.m_mouseRotation);            
+            m_isoMove.Setup();
+            m_isoRotation.Setup(m_settings.m_mouseRotation);
+            m_area.SetupArea();
         }
         public void ApplySettings()
         {
-            IsoMovement.IsPhysicsMovement = m_settings.m_physicsMove;
-            IsoMovement.MoveDistance = m_settings.m_movementDistance;
-            IsoMovement.MovementDelta = m_settings.m_movementSpeed;
-            IsoRotation.IsPhysicsRotation = m_settings.m_physicsRotation;
-            IsoRotation.RotationSensibility = m_settings.m_rotationSpeed;
-            IsoRotation.LayerMask = m_settings.m_layerMask;
-            IsoRotation.enabled = m_settings.m_mouseRotation;
+            m_isoMove.IsPhysicsMovement = m_settings.m_physicsMove;
+            m_isoMove.MoveDistance = m_settings.m_movementDistance;
+            m_isoMove.MovementDelta = m_settings.m_movementSpeed;
+            m_isoRotation.IsPhysicsRotation = m_settings.m_physicsRotation;
+            m_isoRotation.RotationSensibility = m_settings.m_rotationSpeed;
+            m_isoRotation.LayerMask = m_settings.m_layerMask;
+            m_isoRotation.enabled = m_settings.m_mouseRotation;
         }
 
         private void Update()
         {
-            IsoMovement.SetInputMoveDelta();
+            m_isoMove.SetInputMoveDelta();
             m_inputs.UpdateInputs();
 
-            IsoMovement.HorizontalMovement = m_inputs.m_horizontalAxi;
-            IsoMovement.VerticalMovement = m_inputs.m_verticalAxi;
-            IsoRotation.LeftClick = m_inputs.m_movePoint;
-            IsoRotation.RotatePosition = m_inputs.m_rotatePosition;
-            IsoRotation.RaycastHit = Camera.main.ScreenPointToRay(IsoRotation.RotatePosition);
+            m_isoMove.HorizontalMovement = m_inputs.m_horizontalAxi;
+            m_isoMove.VerticalMovement = m_inputs.m_verticalAxi;
+            m_isoMove.LeftClick = m_inputs.m_movePoint;
+            m_isoRotation.RotatePosition = m_inputs.m_rotatePosition;
+            m_isoRotation.RaycastHit = Camera.main.ScreenPointToRay(m_isoRotation.RotatePosition);
 
-            if (IsoRotation.enabled)
+            if (m_isoRotation.enabled)
             {
-                IsoRotation.Rotate(IsoRotation.RaycastHit, IsoRotation.RotatePosition, IsoRotation.LayerMask);
+                m_isoRotation.Rotate(m_isoRotation.RaycastHit, m_isoRotation.RotatePosition, m_isoRotation.LayerMask);
 
-                if (Physics.Raycast(IsoRotation.RaycastHit, out RaycastHit raycastHit, float.MaxValue, IsoRotation.LayerMask))
-                    if (IsoRotation.LeftClick && !IsoMovement.OnMove)
+                if (Physics.Raycast(m_isoRotation.RaycastHit, out RaycastHit raycastHit, float.MaxValue, m_isoRotation.LayerMask))
+                    if (m_isoMove.LeftClick && !m_isoMove.OnMove)
                     {
-                        IsoMovement.Direction.direction = new Vector3(IsoRotation.MouseCursor.position.x, transform.position.y, IsoRotation.MouseCursor.position.z);
+                        m_isoMove.Direction.direction = new Vector3(m_isoRotation.MouseCursor.position.x, transform.position.y, m_isoRotation.MouseCursor.position.z);
 
-                        IsoMovement.OnMove = true;
+                        m_isoMove.OnMove = true;
 
-                        IsoMovement.StartPosition = transform.position;
+                        m_isoMove.StartPosition = transform.position;
                     }
 
-                if (IsoMovement.OnMove)
-                    IsoMovement.Move(IsoMovement.Direction.direction.x, IsoMovement.Direction.direction.z);
+                if (m_isoMove.OnMove)
+                    m_isoMove.Move(m_isoMove.Direction.direction.x, m_isoMove.Direction.direction.z);
             }           
             
-            if (IsoMovement.IsPhysicsMovement) return;
+            if (m_isoMove.IsPhysicsMovement) return;
 
-            if (IsoMovement.OnMove)
+            if (m_isoMove.OnMove)
             {
-                IsoMovement.GetMoveDistance(IsoMovement.StartPosition);
-                m_area.DrawCircle(100, IsoMovement.MoveDistance, new Vector3(IsoMovement.StartPosition.x, -0.85f, IsoMovement.StartPosition.z));
+                m_isoMove.GetMoveDistance(m_isoMove.StartPosition);
+                m_area.DrawCircle(100, m_isoMove.MoveDistance, new Vector3(m_isoMove.StartPosition.x, -0.85f, m_isoMove.StartPosition.z));
             }
             else
-                m_area.DrawCircle(100, IsoMovement.MoveDistance, transform.position);
+                m_area.DrawCircle(100, m_isoMove.MoveDistance, transform.position);
 
             IsometricCamera.m_instance.MoveBase();
 
-            if (IsoMovement.MoveDelta != Vector2.zero && !IsoRotation.enabled)
+            if (m_isoMove.MoveDelta != Vector2.zero && !m_isoRotation.enabled)
             {
                 if (m_inputs.m_inputStartMovement)
                 {
                     m_inputs.m_inputStartMovement = false;
-                    IsoMovement.StartPosition = transform.position;
+                    m_isoMove.StartPosition = transform.position;
                 }
-                IsoMovement.Move(IsoMovement.MoveDelta.x, IsoMovement.MoveDelta.y);
+                m_isoMove.Move(m_isoMove.MoveDelta.x, m_isoMove.MoveDelta.y);
             }
-            else if (IsoMovement.MoveDelta == Vector2.zero && !IsoRotation.enabled)
+            else if (m_isoMove.MoveDelta == Vector2.zero && !m_isoRotation.enabled)
             {
                 m_inputs.m_inputStartMovement = true;
-                IsoMovement.OnMove = false;
+                m_isoMove.OnMove = false;
             }
         }
 
         private void FixedUpdate()
         {
-            if (!IsoMovement.IsPhysicsMovement) return;
+            if (!m_isoMove.IsPhysicsMovement) return;
 
-            if (IsoMovement.OnMove)
+            if (m_isoMove.OnMove)
             {
-                IsoMovement.GetMoveDistance(IsoMovement.StartPosition);
-                m_area.DrawCircle(100, IsoMovement.MoveDistance, new Vector3(IsoMovement.StartPosition.x, -0.85f, IsoMovement.StartPosition.z));
+                m_isoMove.GetMoveDistance(m_isoMove.StartPosition);
+                m_area.DrawCircle(100, m_isoMove.MoveDistance, new Vector3(m_isoMove.StartPosition.x, -0.85f, m_isoMove.StartPosition.z));
             }
             else
-                m_area.DrawCircle(100, IsoMovement.MoveDistance, transform.position);
+                m_area.DrawCircle(100, m_isoMove.MoveDistance, transform.position);
 
             IsometricCamera.m_instance.MoveBase();
 
-            if (IsoRotation.enabled)
+            if (m_isoRotation.enabled)
             {
-                if (IsoMovement.OnMove)
-                    IsoMovement.Move(IsoMovement.Direction.direction.x, IsoMovement.Direction.direction.z);
+                if (m_isoMove.OnMove)
+                    m_isoMove.Move(m_isoMove.Direction.direction.x, m_isoMove.Direction.direction.z);
             }
-            else if (IsoMovement.MoveDelta != Vector2.zero && !IsoRotation.enabled)
+            else if (m_isoMove.MoveDelta != Vector2.zero && !m_isoRotation.enabled)
             {
                 if (m_inputs.m_inputStartMovement)
                 {
                     m_inputs.m_inputStartMovement = false;
-                    IsoMovement.StartPosition = transform.position;
+                    m_isoMove.StartPosition = transform.position;
                 }
-                IsoMovement.Move(IsoMovement.MoveDelta.x, IsoMovement.MoveDelta.y);
+                m_isoMove.Move(m_isoMove.MoveDelta.x, m_isoMove.MoveDelta.y);
             }
-            else if (IsoMovement.MoveDelta == Vector2.zero && !IsoRotation.enabled)
+            else if (m_isoMove.MoveDelta == Vector2.zero && !m_isoRotation.enabled)
             {
                 m_inputs.m_inputStartMovement = true;
-                IsoMovement.OnMove = false;
+                m_isoMove.OnMove = false;
             }
         }
     }

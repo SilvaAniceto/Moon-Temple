@@ -4,15 +4,10 @@ namespace CharacterManager
 {
     public class AreaMovement : MonoBehaviour
     {
-        public static AreaMovement m_areaMovementInstance;
-
         private LineRenderer m_lineRenderer;
 
-        private void Awake()
+        public void SetupArea()
         {
-            if (m_areaMovementInstance == null)
-                m_areaMovementInstance = this;
-
             m_lineRenderer = GetComponent<LineRenderer>();
         }
 

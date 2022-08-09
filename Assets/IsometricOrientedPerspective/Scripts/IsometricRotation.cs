@@ -11,6 +11,7 @@ namespace IsometricOrientedPerspective
         private LayerMask m_layerMask;        
         private Rigidbody m_Rigidbody;
         private Transform m_mouseCursor;
+        [SerializeField] private Vector3 m_rotatePosition;
 
         #region Properties
         /// <summary>
@@ -47,6 +48,24 @@ namespace IsometricOrientedPerspective
                     return;
 
                 m_rotationSensibility = value;
+            }
+        }
+        /// <summary>
+        /// Look at position when mouse rotation is enabled.
+        /// </summary>
+        public Vector3 RotatePosition
+        {
+            get
+            {
+                return m_rotatePosition;
+            }
+
+            set
+            {
+                if (m_rotatePosition == value)
+                    return;
+
+                m_rotatePosition = value;
             }
         }
         /// <summary>
@@ -110,6 +129,9 @@ namespace IsometricOrientedPerspective
 
         public void Setup(bool p_cursorState)
         {
+            if (m_rotationInstance == null)
+                m_rotationInstance = this;
+
             m_mouseCursor = Resources.Load<Transform>("Prefabs/Cursor");
 
             m_mouseCursor = Instantiate(m_mouseCursor);

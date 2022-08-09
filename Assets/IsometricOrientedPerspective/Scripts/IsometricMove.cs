@@ -6,6 +6,8 @@ namespace IsometricOrientedPerspective
     {
         public static IsometricMove m_moveInstance;
 
+        private float m_horizontalMovement, m_verticalMovement;
+        private bool m_leftClick;
         private bool m_isPhysicsMovement;
         private float m_moveDistance = 9f;
         private float m_movementDelta = 4f;
@@ -68,6 +70,59 @@ namespace IsometricOrientedPerspective
                     return;
 
                 m_movementDelta = value;
+            }
+        }
+        /// <summary>
+        /// Horizontal axi for movement in Isometric Perspective.
+        /// </summary>
+        public float HorizontalMovement
+        {
+            get
+            {
+                return m_horizontalMovement;
+            }
+
+            set
+            {
+                if (m_horizontalMovement == value)
+                    return;
+
+                m_horizontalMovement = value;
+            }
+        }
+        /// <summary>
+        /// Vertical axi for movement in Isometric Perspective.
+        /// </summary>
+        public float VerticalMovement
+        {
+            get
+            {
+                return m_verticalMovement;
+            }
+            set
+            {
+                if (m_verticalMovement == value)
+                    return;
+
+                m_verticalMovement = value;
+            }
+        }
+        /// <summary>
+        /// Input for left mouse button click.
+        /// </summary>
+        public bool LeftClick
+        {
+            get
+            {
+                return m_leftClick;
+            }
+
+            set
+            {
+                if (m_leftClick == value)
+                    return;
+
+                m_leftClick = value;
             }
         }
         /// <summary>
@@ -146,6 +201,9 @@ namespace IsometricOrientedPerspective
 
         public void Setup()
         {
+            if (m_moveInstance == null)
+                m_moveInstance = this;
+
             IsometricSetup();
         }
 

@@ -6,10 +6,8 @@ namespace IsometricOrientedPerspective
     {
         private static Vector3 m_isometricForward, m_isometricRight;
         private static MoveDirection m_moveDirection;
-        private float m_horizontalMovement, m_verticalMovement;
-        private Vector3 m_rotatePosition;
         private Ray m_raycastHit;
-        private bool m_leftClick;
+        
 
         #region Properties
         /// <summary>
@@ -31,60 +29,7 @@ namespace IsometricOrientedPerspective
             {
                 return m_isometricRight;
             }  
-        }
-        /// <summary>
-        /// Horizontal axi for movement in Isometric Perspective.
-        /// </summary>
-        public float HorizontalMovement
-        {
-            get
-            {
-                return m_horizontalMovement;
-            }
-
-            set
-            {
-                if (m_horizontalMovement == value)
-                    return;
-
-                m_horizontalMovement = value;
-            }
-        }
-        /// <summary>
-        /// Vertical axi for movement in Isometric Perspective.
-        /// </summary>
-        public float VerticalMovement
-        {
-            get
-            {
-                return m_verticalMovement;
-            }
-            set
-            {
-                if (m_verticalMovement == value)
-                    return;
-
-                m_verticalMovement = value;
-            }
-        }
-        /// <summary>
-        /// Look at position when mouse rotation is enabled.
-        /// </summary>
-        public Vector3 RotatePosition
-        {
-            get
-            {
-                return m_rotatePosition;
-            }
-
-            set
-            {
-                if (m_rotatePosition == value)
-                    return;
-
-                m_rotatePosition = value;
-            }
-        }
+        }               
         /// <summary>
         /// Physics ray to define mouse cursor position.
         /// </summary>
@@ -99,25 +44,7 @@ namespace IsometricOrientedPerspective
             {
                 m_raycastHit = value;
             }
-        }
-        /// <summary>
-        /// Input for left mouse button click.
-        /// </summary>
-        public bool LeftClick
-        {
-            get
-            {
-                return m_leftClick;
-            }
-
-            set
-            {
-                if (m_leftClick == value)
-                    return;
-
-                m_leftClick = value;
-            }
-        }
+        }        
         /// <summary>
         /// Defines which direction the game object is facing, moving or rotating.
         /// </summary>
