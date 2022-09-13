@@ -281,7 +281,7 @@ namespace IsometricOrientedPerspective
         /// </summary>
         public void SetInputMoveDelta()
         {
-            if (!m_isPhysicsMovement)
+            if (!IsPhysicsMovement)
             {
                 if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.SOUTH)
                     m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);

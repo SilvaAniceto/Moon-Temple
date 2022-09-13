@@ -6,12 +6,12 @@ namespace IsometricOrientedPerspective
     {
         public static IsometricRotation m_rotationInstance;
 
-        private bool m_isPhysicsRotation;
+        private bool m_isPhysicsRotation, m_enableRotation;
         private float m_rotationSensibility;
         private LayerMask m_layerMask;        
         private Rigidbody m_Rigidbody;
         private Transform m_mouseCursor;
-        [SerializeField] private Vector3 m_rotatePosition;
+        private Vector3 m_rotatePosition;
 
         #region Properties
         /// <summary>
@@ -113,6 +113,18 @@ namespace IsometricOrientedPerspective
                 return m_mouseCursor;
             }
         }
+        public bool EnableRotation
+        {
+            set
+            {
+                if (m_enableRotation == value)
+                    return;
+
+                m_enableRotation = value;
+
+                Setup(m_enableRotation);
+            }
+        }
         #endregion  
 
         private void OnEnable()
@@ -132,11 +144,15 @@ namespace IsometricOrientedPerspective
             if (m_rotationInstance == null)
                 m_rotationInstance = this;
 
-            m_mouseCursor = Resources.Load<Transform>("Prefabs/Cursor");
+            if (m_mouseCursor == null)
+            {
+                m_mouseCursor = Resources.Load<Transform>("Prefabs/Cursor");
 
-            m_mouseCursor = Instantiate(m_mouseCursor);
+                m_mouseCursor = Instantiate(m_mouseCursor);
+            } 
 
             m_mouseCursor.gameObject.SetActive(p_cursorState);
+            this.enabled = p_cursorState;
         }
 
         /// <summary>

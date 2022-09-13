@@ -13,6 +13,7 @@ namespace CharacterManager
             public float m_horizontalAxi;
             public float m_verticalAxi;
             public bool m_movePoint;
+            public bool m_jumpInput;
             public Vector3 m_rotatePosition;
 
             public void UpdateInputs()
@@ -21,6 +22,7 @@ namespace CharacterManager
                 m_verticalAxi = Input.GetAxis("Vertical");
                 m_movePoint = Input.GetMouseButton(0);
                 m_rotatePosition = Input.mousePosition; 
+                m_jumpInput = Input.GetButton("Jump") ? true : Input.GetButtonUp("Jump") ? false : false;
             }
         }
 
@@ -38,10 +40,13 @@ namespace CharacterManager
             public bool m_mouseRotation;
             [Header("Layer Settings")]
             public LayerMask m_layerMask;
+            [Header("Jump Settings")]
+            [SerializeField] public float m_jumpDeltaTime;
+            [Range(50f, 100f)] public  float m_heightDelta;
         }
 
         #region Properties
-        
+       
         #endregion
 
         [SerializeField] private CharacterSettings m_settings = new CharacterSettings();
@@ -49,6 +54,7 @@ namespace CharacterManager
         private IsometricMove m_isoMove;
         private IsometricRotation m_isoRotation;
         private AreaMovement m_area;
+        private JumpSystem m_jumpSystem;
         
         private void Awake()
         {
@@ -63,6 +69,12 @@ namespace CharacterManager
                 gameObject.AddComponent<IsometricRotation>();
                 m_isoRotation = GetComponent<IsometricRotation>();
                 m_isoRotation.enabled = false;
+            }
+
+            if (m_jumpSystem == null)
+            {
+                gameObject.AddComponent<JumpSystem>();
+                m_jumpSystem = GetComponent<JumpSystem>();
             }
 
             m_isoMove.Rigidbody = GetComponent<Rigidbody>();
@@ -80,6 +92,7 @@ namespace CharacterManager
             m_isoMove.Setup();
             m_isoRotation.Setup(m_settings.m_mouseRotation);
             m_area.SetupArea();
+            m_jumpSystem.Setup();
         }
         public void ApplySettings()
         {
@@ -90,6 +103,9 @@ namespace CharacterManager
             m_isoRotation.RotationSensibility = m_settings.m_rotationSpeed;
             m_isoRotation.LayerMask = m_settings.m_layerMask;
             m_isoRotation.enabled = m_settings.m_mouseRotation;
+            m_jumpSystem.LayerMask = m_settings.m_layerMask;
+            m_jumpSystem.JumpTime = m_settings.m_jumpDeltaTime;
+            m_jumpSystem.HeightDelta = m_settings.m_heightDelta;
         }
 
         private void Update()
@@ -97,11 +113,16 @@ namespace CharacterManager
             m_isoMove.SetInputMoveDelta();
             m_inputs.UpdateInputs();
 
+            m_isoMove.LeftClick = m_inputs.m_movePoint;
+
             m_isoMove.HorizontalMovement = m_inputs.m_horizontalAxi;
             m_isoMove.VerticalMovement = m_inputs.m_verticalAxi;
-            m_isoMove.LeftClick = m_inputs.m_movePoint;
+
+            m_isoRotation.enabled = m_settings.m_mouseRotation;
             m_isoRotation.RotatePosition = m_inputs.m_rotatePosition;
             m_isoRotation.RaycastHit = Camera.main.ScreenPointToRay(m_isoRotation.RotatePosition);
+
+            m_jumpSystem.JumpInput = m_inputs.m_jumpInput;
 
             if (m_isoRotation.enabled)
             {
@@ -151,6 +172,8 @@ namespace CharacterManager
 
         private void FixedUpdate()
         {
+            m_jumpSystem.Jump();
+
             if (!m_isoMove.IsPhysicsMovement) return;
 
             if (m_isoMove.OnMove)

@@ -6,23 +6,29 @@ namespace CharacterManager
     {
         public static JumpSystem m_jumpInstance;
 
-        [Header("Time Between Jumps")]
-        [SerializeField] float m_jumpDeltaTime;
-
-        [Header("Max Jump Height")]
-        [Range(50f, 100f)][SerializeField] float m_heightDelta;
-
-        [Header("Ground LayerMask")]
-        [SerializeField] LayerMask m_layerMask;
-
         private bool m_offGroundLevel, m_onGroundLevel, m_jumpInput;
-        private float m_jumpDelayCounter;
+        private float m_jumpDelayCounter, m_heightDelta, m_jumpDeltaTime;
         private Rigidbody m_rigidbody;
         private SphereCollider m_sphereCollider;
         private BoxCollider m_boxCollider;
         private CapsuleCollider m_capsuleCollider;
+        private LayerMask m_layerMask;
 
         #region Properties
+        public float JumpTime
+        {
+            get
+            {
+                return m_jumpDeltaTime;
+            }
+            set
+            {
+                if (m_jumpDeltaTime == value)
+                    return;
+
+                m_jumpDeltaTime = value;
+            }
+        }
         public float HeightDelta
         {
             get
@@ -67,7 +73,7 @@ namespace CharacterManager
                 return m_jumpInput;
             }
 
-            private set
+            set
             {
                 if (m_jumpInput == value)
                     return;
@@ -75,9 +81,24 @@ namespace CharacterManager
                 m_jumpInput = value;
             }
         }
+        public LayerMask LayerMask
+        {
+            get
+            {
+                return m_layerMask;
+            }
+
+            set
+            {
+                if (m_layerMask == value)
+                    return;
+
+                m_layerMask = value;
+            }
+        }
         #endregion
 
-        private void Awake()
+        public void Setup()
         {
             GetCollider();
 
@@ -87,25 +108,17 @@ namespace CharacterManager
             if (m_rigidbody == null)
                 m_rigidbody = gameObject.GetComponent<Rigidbody>();
         }
-
-        private void Update()
-        {
-            if (Input.GetButton("Jump"))
-                m_jumpInput = true;
-            else if (Input.GetButtonUp("Jump"))
-                m_jumpInput = false;
-        }
-
-        private void FixedUpdate()
+        
+        public void Jump()
         { 
-            if (OnGroundLevel && JumpInput)
+            if (OnGroundLevel && m_jumpInput)
             {
                 m_offGroundLevel = true;
                 m_jumpDelayCounter = m_jumpDeltaTime;
                 m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Force);
             }
 
-            if (JumpInput && m_offGroundLevel)
+            if (m_jumpInput && m_offGroundLevel)
             {
                 if (m_jumpDelayCounter > 0)
                 {
@@ -116,7 +129,7 @@ namespace CharacterManager
                     m_offGroundLevel = false;
             }
 
-            if (JumpInput)
+            if (m_jumpInput)
                 m_offGroundLevel = false;
         }
 
