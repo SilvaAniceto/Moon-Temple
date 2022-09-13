@@ -9,20 +9,20 @@ namespace CharacterManager
     {
         public class CharacterInputs
         {
-            public bool m_inputStartMovement;
-            public float m_horizontalAxi;
-            public float m_verticalAxi;
-            public bool m_movePoint;
-            public bool m_jumpInput;
-            public Vector3 m_rotatePosition;
+            public bool inputStartMovement;
+            public float horizontalAxi;
+            public float verticalAxi;
+            public bool movePoint;
+            public bool jumpInput;
+            public Vector3 rotatePosition;
 
             public void UpdateInputs()
             { 
-                m_horizontalAxi  = Input.GetAxis("Horizontal");
-                m_verticalAxi = Input.GetAxis("Vertical");
-                m_movePoint = Input.GetMouseButton(0);
-                m_rotatePosition = Input.mousePosition; 
-                m_jumpInput = Input.GetButton("Jump") ? true : Input.GetButtonUp("Jump") ? false : false;
+                horizontalAxi  = Input.GetAxis("Horizontal");
+                verticalAxi = Input.GetAxis("Vertical");
+                movePoint = Input.GetMouseButton(0);
+                rotatePosition = Input.mousePosition; 
+                jumpInput = Input.GetButton("Jump") ? true : Input.GetButtonUp("Jump") ? false : false;
             }
         }
 
@@ -30,19 +30,20 @@ namespace CharacterManager
         public class CharacterSettings
         {
             [Header("Physics Settings")]
-            public bool m_physicsMove;
-            public bool m_physicsRotation;
+            public bool physicsMove;
+            public bool physicsRotation;
+            public IsometricMove.MoveType moveType = IsometricMove.MoveType.FREE;             
             [Header("Movement Settings")]
-            [Range(1,10)] public float m_movementSpeed;
-            public float m_movementDistance;
+            [Range(1,10)] public float movementSpeed;
+            public float movementDistance;
             [Header("Rotation Settings")]
-            [Range(0f, 100f)] public float m_rotationSpeed;
-            public bool m_mouseRotation;
+            [Range(0f, 100f)] public float rotationSpeed;
+            public bool mouseRotation;
             [Header("Layer Settings")]
-            public LayerMask m_layerMask;
+            public LayerMask layerMask;
             [Header("Jump Settings")]
-            [SerializeField] public float m_jumpDeltaTime;
-            [Range(50f, 100f)] public  float m_heightDelta;
+            [SerializeField] public float jumpDeltaTime;
+            [Range(50f, 100f)] public  float heightDelta;
         }
 
         #region Properties
@@ -90,22 +91,33 @@ namespace CharacterManager
         private void Start()
         {
             m_isoMove.Setup();
-            m_isoRotation.Setup(m_settings.m_mouseRotation);
+            m_isoRotation.Setup(m_settings.mouseRotation);
             m_area.SetupArea();
             m_jumpSystem.Setup();
+
+            IsometricMove.m_moveInstance.OnMoveTypeChange.AddListener(MoveTypeChange);
         }
         public void ApplySettings()
         {
-            m_isoMove.IsPhysicsMovement = m_settings.m_physicsMove;
-            m_isoMove.MoveDistance = m_settings.m_movementDistance;
-            m_isoMove.MovementDelta = m_settings.m_movementSpeed;
-            m_isoRotation.IsPhysicsRotation = m_settings.m_physicsRotation;
-            m_isoRotation.RotationSensibility = m_settings.m_rotationSpeed;
-            m_isoRotation.LayerMask = m_settings.m_layerMask;
-            m_isoRotation.enabled = m_settings.m_mouseRotation;
-            m_jumpSystem.LayerMask = m_settings.m_layerMask;
-            m_jumpSystem.JumpTime = m_settings.m_jumpDeltaTime;
-            m_jumpSystem.HeightDelta = m_settings.m_heightDelta;
+            m_isoMove.IsPhysicsMovement = m_settings.physicsMove;
+            m_isoMove.MoveDistance = m_settings.movementDistance;
+            m_isoMove.MovementDelta = m_settings.movementSpeed;
+            m_isoMove.MoveContext = m_settings.moveType;
+            m_isoRotation.IsPhysicsRotation = m_settings.physicsRotation;
+            m_isoRotation.RotationSensibility = m_settings.rotationSpeed;
+            m_isoRotation.LayerMask = m_settings.layerMask;
+            m_isoRotation.enabled = m_settings.mouseRotation;
+            m_jumpSystem.LayerMask = m_settings.layerMask;
+            m_jumpSystem.JumpTime = m_settings.jumpDeltaTime;
+            m_jumpSystem.HeightDelta = m_settings.heightDelta;
+            MoveTypeChange(m_isoMove.MoveContext);
+        }
+
+        void MoveTypeChange(IsometricMove.MoveType p_moveType)
+        {
+            bool value = p_moveType == IsometricMove.MoveType.COMBAT ? true : false;
+
+            m_area.gameObject.SetActive(value);
         }
 
         private void Update()
@@ -113,16 +125,16 @@ namespace CharacterManager
             m_isoMove.SetInputMoveDelta();
             m_inputs.UpdateInputs();
 
-            m_isoMove.LeftClick = m_inputs.m_movePoint;
+            m_isoMove.MoveContext = m_settings.moveType;
+            m_isoMove.LeftClick = m_inputs.movePoint;
+            m_isoMove.HorizontalMovement = m_inputs.horizontalAxi;
+            m_isoMove.VerticalMovement = m_inputs.verticalAxi;
 
-            m_isoMove.HorizontalMovement = m_inputs.m_horizontalAxi;
-            m_isoMove.VerticalMovement = m_inputs.m_verticalAxi;
-
-            m_isoRotation.enabled = m_settings.m_mouseRotation;
-            m_isoRotation.RotatePosition = m_inputs.m_rotatePosition;
+            m_isoRotation.enabled = m_settings.mouseRotation;
+            m_isoRotation.RotatePosition = m_inputs.rotatePosition;
             m_isoRotation.RaycastHit = Camera.main.ScreenPointToRay(m_isoRotation.RotatePosition);
 
-            m_jumpSystem.JumpInput = m_inputs.m_jumpInput;
+            m_jumpSystem.JumpInput = m_inputs.jumpInput;
 
             if (m_isoRotation.enabled)
             {
@@ -156,16 +168,16 @@ namespace CharacterManager
 
             if (m_isoMove.MoveDelta != Vector2.zero && !m_isoRotation.enabled)
             {
-                if (m_inputs.m_inputStartMovement)
+                if (m_inputs.inputStartMovement)
                 {
-                    m_inputs.m_inputStartMovement = false;
+                    m_inputs.inputStartMovement = false;
                     m_isoMove.StartPosition = transform.position;
                 }
                 m_isoMove.Move(m_isoMove.MoveDelta.x, m_isoMove.MoveDelta.y);
             }
             else if (m_isoMove.MoveDelta == Vector2.zero && !m_isoRotation.enabled)
             {
-                m_inputs.m_inputStartMovement = true;
+                m_inputs.inputStartMovement = true;
                 m_isoMove.OnMove = false;
             }
         }
@@ -193,16 +205,16 @@ namespace CharacterManager
             }
             else if (m_isoMove.MoveDelta != Vector2.zero && !m_isoRotation.enabled)
             {
-                if (m_inputs.m_inputStartMovement)
+                if (m_inputs.inputStartMovement)
                 {
-                    m_inputs.m_inputStartMovement = false;
+                    m_inputs.inputStartMovement = false;
                     m_isoMove.StartPosition = transform.position;
                 }
                 m_isoMove.Move(m_isoMove.MoveDelta.x, m_isoMove.MoveDelta.y);
             }
             else if (m_isoMove.MoveDelta == Vector2.zero && !m_isoRotation.enabled)
             {
-                m_inputs.m_inputStartMovement = true;
+                m_inputs.inputStartMovement = true;
                 m_isoMove.OnMove = false;
             }
         }

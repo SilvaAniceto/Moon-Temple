@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace IsometricOrientedPerspective
 {
@@ -16,6 +17,10 @@ namespace IsometricOrientedPerspective
         private Vector3 m_startPosition;
         private float m_distanceTravelled;
         private bool m_onMove;
+        public enum MoveType { FREE, COMBAT}
+        private MoveType m_moveType = MoveType.FREE;
+
+        public UnityEvent<MoveType> OnMoveTypeChange;
 
         #region Properties
         /// <summary>
@@ -197,6 +202,22 @@ namespace IsometricOrientedPerspective
                 m_startPosition = value;
             }
         }                        
+        public MoveType MoveContext
+        {
+            get
+            {
+                return m_moveType;
+            }
+
+            set
+            {
+                if (m_moveType == value)
+                    return;
+
+                m_moveType = value;
+                OnMoveTypeChange?.Invoke(m_moveType);
+            } 
+        }
         #endregion
 
         public void Setup()
@@ -217,12 +238,17 @@ namespace IsometricOrientedPerspective
                 if (IsPhysicsMovement) 
                 {
                     if (IsometricRotation.m_rotationInstance.enabled)
-                    {
-                                                                                                                                                      //
-                        float distance = Vector3.Distance(Direction.direction, transform.position);                                                   //     Resolve the point and click mouse 
-                        m_onMove = distance > 0.2f ? true : false;                                                                                    // movement and rotation with physics.
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                           //
-                            m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime)); //
+                    {                                                                                                                                     //
+                        float distance = Vector3.Distance(Direction.direction, transform.position);                                                       //     Resolve the point and click mouse 
+                        m_onMove = distance > 0.2f ? true : false;                                                                                        //movement and rotation with physics.
+                                                                                                                                                          //
+                        if (m_moveType == MoveType.COMBAT)                                                                                                //
+                        {                                                                                                                                 //
+                            if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                           //
+                                m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime)); //
+                        }                                                                                                                                 //
+                        else                                                                                                                              //
+                            m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime));     //
                     }
                     else
                     {
@@ -230,8 +256,13 @@ namespace IsometricOrientedPerspective
                                                                                                                                                                 //
                         Direction.direction = Camera.main.transform.TransformDirection(Direction.direction);                                                    //
                         Direction.direction.y = 0;                                                                                                              //   Resolve the axis movement using
-                                                                                                                                                                // physics.
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                                     //
+                                                                                                                                                                //physics.
+                        if (m_moveType == MoveType.COMBAT)                                                                                                      //
+                        {                                                                                                                                       //
+                            if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                                 //
+                                m_Rigidbody.MovePosition(m_Rigidbody.position + Direction.direction);                                                           //
+                        }                                                                                                                                       // 
+                        else                                                                                                                                    //
                             m_Rigidbody.MovePosition(m_Rigidbody.position + Direction.direction);                                                               //
                                                                                                                                                                 //
                         m_onMove = true;                                                                                                                        //
@@ -245,25 +276,38 @@ namespace IsometricOrientedPerspective
                 {
                     if (IsometricRotation.m_rotationInstance.enabled)
                     {
-                        float distance = Vector3.Distance(Direction.direction, transform.position);                                              //
-                        m_onMove = distance > 0.2f ? true : false;                                                                               //   Resolve the point and click mouse movement
-                                                                                                                                                 // and rotation using transform movement.
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                      //
-                            transform.position = Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime); //
+                        float distance = Vector3.Distance(Direction.direction, transform.position);                                                  //
+                        m_onMove = distance > 0.2f ? true : false;                                                                                   //   Resolve the point and click mouse movement
+                                                                                                                                                     //and rotation using transform movement.
+                        if (m_moveType == MoveType.COMBAT)                                                                                           //
+                        {                                                                                                                            //
+                            if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                      //
+                                transform.position = Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime); //
+                        }                                                                                                                            //
+                        else                                                                                                                         //
+                            transform.position = Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime);     //
                     }
                     else
                     {
                         Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);                                             //
                         Direction.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * Direction.direction.x; //
                         Direction.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * Direction.direction.z; //
-                                                                                                                            //
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)                                                 //   Resolve the axis movement using transform movement.
-                        {                                                                                                   //
-                            transform.position += Direction.righMovement;                                                   //
-                            transform.position += Direction.upMovement;                                                     //
-                        }                                                                                                   //
-                                                                                                                            //
-                        m_onMove = true;                                                                                    //
+
+                        if (m_moveType == MoveType.COMBAT)
+                        {
+                            if ((int)m_distanceTravelled < (int)m_moveDistance)                                                 //   Resolve the axis movement using transform movement.
+                            {                                                                                                   //
+                                transform.position += Direction.righMovement;                                                   //
+                                transform.position += Direction.upMovement;                                                     //
+                            }                                                                                                   //
+                        }                                                                                                       //
+                        else                                                                                                    //                                  
+                        {                                                                                                       //
+                            transform.position += Direction.righMovement;                                                       //
+                            transform.position += Direction.upMovement;                                                         //
+                        }                                                                                                       //
+                                                                                                                                //
+                        m_onMove = true;                                                                                        //
                     }
 
                     if (!IsometricRotation.m_rotationInstance.enabled)
