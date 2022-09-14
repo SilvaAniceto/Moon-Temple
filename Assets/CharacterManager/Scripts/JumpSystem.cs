@@ -43,7 +43,7 @@ namespace CharacterManager
 
                 m_heightDelta = value;
             }
-        }
+        }        
         public bool OnGroundLevel
         {
             get

@@ -36,6 +36,7 @@ namespace CharacterManager
             [Header("Movement Settings")]
             [Range(1,10)] public float movementSpeed;
             public float movementDistance;
+            [Range(0, 45)] public float maxSlopeAngle;
             [Header("Rotation Settings")]
             [Range(0f, 100f)] public float rotationSpeed;
             public bool mouseRotation;
@@ -69,7 +70,6 @@ namespace CharacterManager
             {
                 gameObject.AddComponent<IsometricRotation>();
                 m_isoRotation = GetComponent<IsometricRotation>();
-                m_isoRotation.enabled = false;
             }
 
             if (m_jumpSystem == null)
@@ -81,7 +81,7 @@ namespace CharacterManager
             m_isoMove.Rigidbody = GetComponent<Rigidbody>();
             m_isoRotation.Rigidbody = GetComponent<Rigidbody>();
 
-            Transform obj = Instantiate(Resources.Load<Transform>("Prefabs/MovementRadius"));
+            GameObject obj = Instantiate(Resources.Load<GameObject>("Prefabs/MovementRadius"));
 
             m_area = obj.GetComponent<AreaMovement>();
 
@@ -95,22 +95,28 @@ namespace CharacterManager
             m_area.SetupArea();
             m_jumpSystem.Setup();
 
-            IsometricMove.m_moveInstance.OnMoveTypeChange.AddListener(MoveTypeChange);
+            m_isoMove.OnMoveTypeChange.AddListener(MoveTypeChange);
         }
         public void ApplySettings()
         {
             m_isoMove.IsPhysicsMovement = m_settings.physicsMove;
-            m_isoMove.MoveDistance = m_settings.movementDistance;
-            m_isoMove.MovementDelta = m_settings.movementSpeed;
-            m_isoMove.MoveContext = m_settings.moveType;
             m_isoRotation.IsPhysicsRotation = m_settings.physicsRotation;
+
+            m_isoMove.MoveContext = m_settings.moveType;
+
+            m_isoMove.MovementDelta = m_settings.movementSpeed;
+            m_isoMove.MoveDistance = m_settings.movementDistance;
+            m_isoMove.MaxSlopeAngle = m_settings.maxSlopeAngle;
+
             m_isoRotation.RotationSensibility = m_settings.rotationSpeed;
+
             m_isoRotation.LayerMask = m_settings.layerMask;
-            m_isoRotation.enabled = m_settings.mouseRotation;
             m_jumpSystem.LayerMask = m_settings.layerMask;
+
             m_jumpSystem.JumpTime = m_settings.jumpDeltaTime;
             m_jumpSystem.HeightDelta = m_settings.heightDelta;
-            MoveTypeChange(m_isoMove.MoveContext);
+
+            MoveTypeChange(m_settings.moveType);
         }
 
         void MoveTypeChange(IsometricMove.MoveType p_moveType)
@@ -180,7 +186,7 @@ namespace CharacterManager
                 m_inputs.inputStartMovement = true;
                 m_isoMove.OnMove = false;
             }
-        }
+        }        
 
         private void FixedUpdate()
         {
