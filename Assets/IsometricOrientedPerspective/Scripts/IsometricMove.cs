@@ -425,7 +425,7 @@ namespace IsometricOrientedPerspective
 
         public bool OnSlope()
         {
-            if (Physics.Raycast(transform.position, Vector3.down, out m_slopeHit, (transform.localScale.y / 2) + 0.25f))
+            if (Physics.Raycast(transform.position, Vector3.down, out m_slopeHit, transform.localScale.y + 0.25f))
             {
                 float angle = Vector3.Angle(Vector3.up, m_slopeHit.normal);
                 return angle < m_maxSlopeAngle && angle != 0;
@@ -436,6 +436,12 @@ namespace IsometricOrientedPerspective
         public Vector3 GetSlopeMoveDirection()
         {
             return Vector3.ProjectOnPlane(Direction.direction, m_slopeHit.normal).normalized;
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, new Vector3(transform.position.x, transform.position.y -(transform.localScale.y + 0.25f), transform.position.z));
         }
     }
 }

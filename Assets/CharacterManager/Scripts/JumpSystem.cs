@@ -104,7 +104,17 @@ namespace CharacterManager
                 if (value == m_onSlope)
                     return;
 
-                m_onSlope = value;  
+                m_onSlope = value;
+
+                if (m_onSlope && !m_offGroundLevel) m_rigidbody.MovePosition(m_rigidbody.position);
+            }
+        }
+
+        public Rigidbody Rigidbody
+        {
+            get
+            {
+                return m_rigidbody;
             }
         }
         #endregion
