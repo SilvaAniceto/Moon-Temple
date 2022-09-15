@@ -6,7 +6,7 @@ namespace CharacterManager
     {
         public static JumpSystem m_jumpInstance;
 
-        private bool m_offGroundLevel, m_onGroundLevel, m_jumpInput;
+        private bool m_offGroundLevel, m_onGroundLevel, m_jumpInput, m_onSlope;
         private float m_jumpDelayCounter, m_heightDelta, m_jumpDeltaTime;
         private Rigidbody m_rigidbody;
         private SphereCollider m_sphereCollider;
@@ -94,6 +94,17 @@ namespace CharacterManager
                     return;
 
                 m_layerMask = value;
+            }
+        }
+
+        public bool OnSlope
+        {
+            set
+            {
+                if (value == m_onSlope)
+                    return;
+
+                m_onSlope = value;  
             }
         }
         #endregion

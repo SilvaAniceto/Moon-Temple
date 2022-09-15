@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using IsometricOrientedPerspective;
 
 namespace CharacterManager
@@ -57,7 +58,7 @@ namespace CharacterManager
         private IsometricRotation m_isoRotation;
         private AreaMovement m_area;
         private JumpSystem m_jumpSystem;
-        
+
         private void Awake()
         {
             if (m_isoMove == null)
@@ -65,6 +66,9 @@ namespace CharacterManager
                 gameObject.AddComponent<IsometricMove>();
                 m_isoMove = GetComponent<IsometricMove>();
             }
+
+            if (m_isoMove.OnMoveTypeChange == null)
+                m_isoMove.OnMoveTypeChange = new UnityEvent<IsometricMove.MoveType>();
 
             if (m_isoRotation == null)
             {
@@ -124,6 +128,8 @@ namespace CharacterManager
             bool value = p_moveType == IsometricMove.MoveType.COMBAT ? true : false;
 
             m_area.gameObject.SetActive(value);
+
+            m_isoMove.MoveContext = m_settings.moveType;
         }
 
         private void Update()
@@ -131,7 +137,6 @@ namespace CharacterManager
             m_isoMove.SetInputMoveDelta();
             m_inputs.UpdateInputs();
 
-            m_isoMove.MoveContext = m_settings.moveType;
             m_isoMove.LeftClick = m_inputs.movePoint;
             m_isoMove.HorizontalMovement = m_inputs.horizontalAxi;
             m_isoMove.VerticalMovement = m_inputs.verticalAxi;
@@ -141,6 +146,9 @@ namespace CharacterManager
             m_isoRotation.RaycastHit = Camera.main.ScreenPointToRay(m_isoRotation.RotatePosition);
 
             m_jumpSystem.JumpInput = m_inputs.jumpInput;
+
+            if (m_isoMove.MoveDelta == Vector2.zero && m_isoMove.OnSlope())
+                m_jumpSystem.OnSlope = m_isoMove.OnSlope();
 
             if (m_isoRotation.enabled)
             {
