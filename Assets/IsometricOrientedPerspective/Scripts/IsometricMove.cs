@@ -16,7 +16,7 @@ namespace IsometricOrientedPerspective
         private Vector2 m_moveDelta;
         private Vector3 m_startPosition;
         private float m_distanceTravelled;
-        private float m_maxSlopeAngle;
+        private float m_maxSlopeAngle, m_slopeAngle;
         private bool m_onMove;
         private RaycastHit m_slopeHit;
         public enum MoveType { FREE, COMBAT}
@@ -220,6 +220,13 @@ namespace IsometricOrientedPerspective
                 OnMoveTypeChange?.Invoke(m_moveType);
             } 
         }
+        public RaycastHit SlopeHit
+        {
+            get
+            {
+                return m_slopeHit;
+            }
+        }
         public float MaxSlopeAngle
         {
             get
@@ -232,6 +239,21 @@ namespace IsometricOrientedPerspective
                     return;
 
                 m_maxSlopeAngle = value;
+            }
+        }
+
+        public float SlopeAngle
+        {
+            get
+            {
+                return m_slopeAngle;
+            }
+            set
+            {
+                if (m_slopeAngle == value)
+                    return;
+
+                m_slopeAngle = value;
             }
         }
         #endregion
@@ -350,32 +372,36 @@ namespace IsometricOrientedPerspective
                     {
                         if (!OnSlope())
                         {
-                            Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);                                                 
-                            Direction.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * Direction.direction.x;     
+                            Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
+                            Direction.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * Direction.direction.x;
+                            Direction.slopeMovement = Vector3.zero;
                             Direction.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * Direction.direction.z;
                         }
                         else
                         {
                             Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
                             Direction.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * GetSlopeMoveDirection().x;
+                            Direction.slopeMovement = Vector3.up * m_movementDelta * Time.deltaTime * GetSlopeMoveDirection().y;
                             Direction.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * GetSlopeMoveDirection().z;
                         }
 
-                                                                                                                                
-                        if (m_moveType == MoveType.COMBAT)                                                                      
-                        {                                                                                                       
-                            if ((int)m_distanceTravelled < (int)m_moveDistance)                                                 
-                            {                                                                                                   
-                                transform.position += Direction.righMovement;                                                   
-                                transform.position += Direction.upMovement;                                                     
-                            }                                                                                                   
-                        }                                                                                                       
-                        else                                                                                                    
-                        {                                                                                                       
-                            transform.position += Direction.righMovement;                                                       
-                            transform.position += Direction.upMovement;                                                         
-                        }                                                                                                       
-                                                                                                                                
+
+                        if (m_moveType == MoveType.COMBAT)
+                        {
+                            if ((int)m_distanceTravelled < (int)m_moveDistance)
+                            {
+                                transform.position += Direction.righMovement;
+                                transform.position += Direction.slopeMovement;
+                                transform.position += Direction.upMovement;
+                            }
+                        }
+                        else
+                        {
+                            transform.position += Direction.righMovement;
+                            transform.position += Direction.slopeMovement;
+                            transform.position += Direction.upMovement;
+                        }
+
                         m_onMove = true;                                                                                        
                     }
 
@@ -427,21 +453,15 @@ namespace IsometricOrientedPerspective
         {
             if (Physics.Raycast(transform.position, Vector3.down, out m_slopeHit, transform.localScale.y + 0.25f))
             {
-                float angle = Vector3.Angle(Vector3.up, m_slopeHit.normal);
-                return angle < m_maxSlopeAngle && angle != 0;
+                m_slopeAngle = Vector3.Angle(Vector3.up, m_slopeHit.normal);
+                return m_slopeAngle < m_maxSlopeAngle && m_slopeAngle != 0;
             }
             return false;
         }
 
         public Vector3 GetSlopeMoveDirection()
         {
-            return Vector3.ProjectOnPlane(Direction.direction, m_slopeHit.normal).normalized;
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, new Vector3(transform.position.x, transform.position.y -(transform.localScale.y + 0.25f), transform.position.z));
+            return Vector3.ProjectOnPlane(new Vector3(Direction.direction.x, Direction.direction.y * m_slopeAngle, Direction.direction.z), m_slopeHit.normal).normalized;
         }
     }
 }

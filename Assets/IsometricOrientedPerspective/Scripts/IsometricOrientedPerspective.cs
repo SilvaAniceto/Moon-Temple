@@ -67,6 +67,7 @@ namespace IsometricOrientedPerspective
             public Vector3 direction = new Vector3();
             public Vector3 righMovement = new Vector3();
             public Vector3 upMovement = new Vector3();
+            public Vector3 slopeMovement = new Vector3();
             public Vector3 heading = new Vector3();
         }
         #endregion

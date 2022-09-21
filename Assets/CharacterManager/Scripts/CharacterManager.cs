@@ -59,7 +59,8 @@ namespace CharacterManager
         private AreaMovement m_area;
         private JumpSystem m_jumpSystem;
 
-        public bool teste;
+        public Vector3 heading;
+
         private void Awake()
         {
             if (m_isoMove == null)
@@ -135,7 +136,7 @@ namespace CharacterManager
 
         private void Update()
         {
-            teste = m_isoMove.OnSlope();
+            heading = m_isoMove.Direction.slopeMovement;
 
             m_isoMove.SetInputMoveDelta();
             m_inputs.UpdateInputs();
@@ -154,11 +155,7 @@ namespace CharacterManager
                 m_jumpSystem.OnSlope = m_isoMove.OnSlope();
 
             if (m_isoMove.MoveDelta != Vector2.zero && m_isoMove.OnSlope())
-            {
                 m_jumpSystem.OnSlope = !m_isoMove.OnSlope();
-                if (m_jumpSystem.Rigidbody.velocity.y > 0)
-                    m_jumpSystem.Rigidbody.AddForce(Vector3.down * 80f, ForceMode.Force);
-            }
 
             if (m_isoRotation.enabled)
             {
@@ -175,7 +172,9 @@ namespace CharacterManager
                     }
 
                 if (m_isoMove.OnMove)
+                {
                     m_isoMove.Move(m_isoMove.Direction.direction.x, m_isoMove.Direction.direction.z);
+                }
             }           
             
             if (m_isoMove.IsPhysicsMovement) return;
