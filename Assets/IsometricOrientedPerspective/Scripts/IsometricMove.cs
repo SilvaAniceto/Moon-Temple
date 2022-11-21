@@ -9,10 +9,8 @@ namespace IsometricOrientedPerspective
 
         private float m_horizontalMovement, m_verticalMovement;
         private bool m_leftClick;
-        private bool m_isPhysicsMovement;
         private float m_moveDistance = 9f;
         private float m_movementDelta = 4f;
-        private Rigidbody m_Rigidbody;
         private Vector2 m_moveDelta;
         private Vector3 m_startPosition;
         private float m_distanceTravelled;
@@ -25,24 +23,6 @@ namespace IsometricOrientedPerspective
         public UnityEvent<MoveType> OnMoveTypeChange;
 
         #region Properties
-        /// <summary>
-        /// Define wheter on not the movement uses physics.
-        /// </summary>
-        public bool IsPhysicsMovement
-        {
-            get 
-            { 
-                return m_isPhysicsMovement;
-            }
-
-            set
-            {
-                if (m_isPhysicsMovement == value)
-                    return;
-
-                m_isPhysicsMovement = value;
-            }
-        }
         /// <summary>
         /// Define the limit distance that the movement can happen.
         /// </summary>
@@ -151,24 +131,6 @@ namespace IsometricOrientedPerspective
             }
         }
         /// <summary>
-        /// The rigidbody used to move with physics.
-        /// </summary>
-        public Rigidbody Rigidbody
-        {
-            get 
-            { 
-                return m_Rigidbody;
-            }
-
-            set
-            {
-                if (m_Rigidbody != null)
-                    return;
-
-                m_Rigidbody = value;
-            }
-        }
-        /// <summary>
         /// Delta of the axis of movement input.
         /// </summary>
         public Vector2 MoveDelta
@@ -267,160 +229,159 @@ namespace IsometricOrientedPerspective
         }
 
         /// <summary>
-        /// Resolve the movement in Isometric Oriented Perspective.
+        /// Resolve the movement in Isometric Oriented Perspective with no Physics.
         /// </summary>
         public void Move(float p_xAxis, float p_zAxis)
         {
-            if (!IsometricCamera.m_instance.MovingCamera) // Prevents that the movement happens when the Camera is moving.
-            { 
-                if (IsPhysicsMovement) 
+            if (IsometricCamera.m_instance.MovingCamera) return; // Prevents that the movement happens when the Camera is moving.
+            
+            if (IsometricRotation.m_rotationInstance.enabled)
+            {
+                float distance = Vector3.Distance(Direction.direction, transform.position);                                           
+                m_onMove = distance > 0.2f ? true : false;
+
+                if (!OnSlope())
                 {
-                    if (IsometricRotation.m_rotationInstance.enabled)
-                    {
-                        float distance = Vector3.Distance(Direction.direction, transform.position);                                                           
-                        m_onMove = distance > 0.2f ? true : false;                                                                                            
-                                                                                                                                                              
-                        if (!OnSlope())                                                                                                                       
-                        {                                                                                                                                     
-                                                                                                                                                              
-                            if (m_moveType == MoveType.COMBAT)                                                                                                
-                            {                                                                                                                                 
-                                if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                           
-                                    m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime)); 
-                            }                                                                                                                                 
-                            else                                                                                                                              
-                                m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime));     
-                        }
-                        else
-                        {                                                                                                                                     
-                            if (m_moveType == MoveType.COMBAT)                                                                                                
-                            {                                                                                                                                 
-                                if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                           
-                                    m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime)); 
-                            }                                                                                                                                 
-                            else                                                                                                                              
-                                m_Rigidbody.MovePosition(Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime));     
-                        }
-                    }
-                    else
-                    {
-                        Direction.direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime, 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime); 
-                                                                                                                                                                    
-                        Direction.direction = Camera.main.transform.TransformDirection(Direction.direction);                                                    
-                        Direction.direction.y = 0;                                                                                                              
-
-                        if (!OnSlope())
-                        {
-                                                                                                                                                                    
-                            if (m_moveType == MoveType.COMBAT)                                                                                                      
-                            {                                                                                                                                       
-                                if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                                 
-                                    m_Rigidbody.MovePosition(m_Rigidbody.position + Direction.direction);                                                           
-                            }                                                                                                                                       
-                            else                                                                                                                                    
-                                m_Rigidbody.MovePosition(m_Rigidbody.position + Direction.direction);                                                               
-                                                                                                                                                                    
-                            m_onMove = true;                                                                                                                        
-                        }
-                        else
-                        {                                                                                                                   
-                            if (m_moveType == MoveType.COMBAT)                                                                                                     
-                            {                                                                                                                                      
-                                if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                                
-                                    m_Rigidbody.MovePosition(m_Rigidbody.position + GetSlopeMoveDirection());                                                          
-                            }                                                                                                                                      
-                            else                                                                                                                                   
-                                m_Rigidbody.MovePosition(m_Rigidbody.position + GetSlopeMoveDirection());                                                              
-                                                                                                                                                                   
-                            m_onMove = true;
-                        }
-                    }
-
-                    if (!IsometricRotation.m_rotationInstance.enabled)                                                                        
-                        if (Direction.direction != Vector3.zero)                                                                              
-                            m_Rigidbody.rotation = Quaternion.Slerp(m_Rigidbody.rotation, Quaternion.LookRotation(Direction.direction), 0.5f);
+                    if (m_moveType == MoveType.COMBAT)                                                                                    
+                    {                                                                                                                            
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                      
+                            transform.position = Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime); 
+                    }                                                                                                                            
+                    else                                                                                                                         
+                        transform.position = Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime);
                 }
                 else
                 {
-                    if (IsometricRotation.m_rotationInstance.enabled)
+                    if (m_moveType == MoveType.COMBAT)
                     {
-                        float distance = Vector3.Distance(Direction.direction, transform.position);                                           
-                        m_onMove = distance > 0.2f ? true : false;
-
-                        if (!OnSlope())
-                        {
-                            if (m_moveType == MoveType.COMBAT)                                                                                    
-                            {                                                                                                                            
-                                if ((int)m_distanceTravelled < (int)m_moveDistance)                                                                      
-                                    transform.position = Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime); 
-                            }                                                                                                                            
-                            else                                                                                                                         
-                                transform.position = Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime);
-                        }
-                        else
-                        {
-                            if (m_moveType == MoveType.COMBAT)
-                            {
-                                if ((int)m_distanceTravelled < (int)m_moveDistance)
-                                    transform.position = Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime);
-                            }
-                            else
-                                transform.position = Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime);
-                        }
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                            transform.position = Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime);
                     }
                     else
-                    {
-                        if (!OnSlope())
-                        {
-                            Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
-                            Direction.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * Direction.direction.x;
-                            Direction.slopeMovement = Vector3.zero;
-                            Direction.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * Direction.direction.z;
-                        }
-                        else
-                        {
-                            Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
-                            Direction.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * GetSlopeMoveDirection().x;
-                            Direction.slopeMovement = Vector3.up * m_movementDelta * Time.deltaTime * GetSlopeMoveDirection().y;
-                            Direction.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * GetSlopeMoveDirection().z;
-                        }
-
-
-                        if (m_moveType == MoveType.COMBAT)
-                        {
-                            if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            {
-                                transform.position += Direction.righMovement;
-                                transform.position += Direction.slopeMovement;
-                                transform.position += Direction.upMovement;
-                            }
-                        }
-                        else
-                        {
-                            transform.position += Direction.righMovement;
-                            transform.position += Direction.slopeMovement;
-                            transform.position += Direction.upMovement;
-                        }
-
-                        m_onMove = true;                                                                                        
-                    }
-
-                    if (!IsometricRotation.m_rotationInstance.enabled)
-                    {
-                        Direction.heading = Vector3.Normalize(Direction.righMovement + Direction.upMovement); 
-                        if (Direction.heading != Vector3.zero)                                                
-                            transform.forward = Vector3.Lerp(transform.forward, Direction.heading, 0.40f);    
-                    }
+                        transform.position = Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime);
                 }
             }
+            else
+            {
+                if (!OnSlope())
+                {
+                    Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
+                    Direction.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * Direction.direction.x;
+                    Direction.slopeMovement = Vector3.zero;
+                    Direction.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * Direction.direction.z;
+
+                    Direction.direction = Direction.righMovement + Direction.slopeMovement + Direction.upMovement;
+                }
+                else
+                {
+                    Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
+                    Direction.righMovement = IsometricRight * m_movementDelta * Time.deltaTime * Direction.direction.x;
+                    Direction.slopeMovement = Vector3.up * m_movementDelta * Time.deltaTime * GetSlopeMoveDirection().y;
+                    Direction.upMovement = IsometricForward * m_movementDelta * Time.deltaTime * Direction.direction.z;
+
+                    Direction.direction = Direction.righMovement + Direction.slopeMovement + Direction.upMovement;
+                }
+
+
+                if (m_moveType == MoveType.COMBAT)
+                {
+                    if ((int)m_distanceTravelled < (int)m_moveDistance)
+                        transform.position += Direction.direction;
+                }
+                else  
+                    transform.position += Direction.direction;
+
+                m_onMove = true;                                                                                        
+            }
+
+            if (!IsometricRotation.m_rotationInstance.enabled)
+            {
+                Direction.heading = Vector3.Normalize(Direction.righMovement + Direction.upMovement); 
+                if (Direction.heading != Vector3.zero)                                                
+                    transform.forward = Vector3.Lerp(transform.forward, Direction.heading, 0.40f);    
+            }
+        }
+
+        /// <summary>
+        /// Resolve the movement in Isometric Oriented Perspective with Physics.
+        /// </summary>
+        public void Move(float p_xAxis, float p_zAxis, Rigidbody p_rigidbody)
+        {
+            if (IsometricCamera.m_instance.MovingCamera) return; // Prevents that the movement happens when the Camera is moving.
+              
+            if (IsometricRotation.m_rotationInstance.enabled)
+            {
+                float distance = Vector3.Distance(Direction.direction, transform.position);
+                m_onMove = distance > 0.2f ? true : false;
+
+                if (!OnSlope())
+                {
+                    if (m_moveType == MoveType.COMBAT)
+                    {
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                            p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime));
+                    }
+                    else
+                        p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime));
+                }
+                else
+                {
+                    if (m_moveType == MoveType.COMBAT)
+                    {
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                            p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime));
+                    }
+                    else
+                        p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime));
+                }
+            }
+            else
+            {
+                Direction.direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime, 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
+
+                Direction.direction = IsometricCamera.m_instance.Camera.transform.TransformDirection(Direction.direction);
+                Direction.direction.y = 0;
+
+                if (!OnSlope())
+                {
+                    if (m_moveType == MoveType.COMBAT)
+                    {
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                            p_rigidbody.MovePosition(p_rigidbody.position + Direction.direction);
+                    }
+                    else
+                        p_rigidbody.MovePosition(p_rigidbody.position + Direction.direction);
+
+                    m_onMove = true;
+                }
+                else
+                {
+                    if (m_moveType == MoveType.COMBAT)
+                    {
+                        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                            p_rigidbody.MovePosition(p_rigidbody.position + GetSlopeMoveDirection());
+                    }
+                    else
+                        p_rigidbody.MovePosition(p_rigidbody.position + GetSlopeMoveDirection());
+
+                    m_onMove = true;
+                }
+            }
+
+            if (!IsometricRotation.m_rotationInstance.enabled)
+                if (Direction.direction != Vector3.zero)
+                {
+                    p_rigidbody.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Direction.direction), 0.8f);
+                    transform.rotation = p_rigidbody.rotation;
+                }
         }
 
         /// <summary>
         /// Defines the input direction after changing the camera position.
         /// </summary>
-        public void SetInputMoveDelta()
+        public void SetInputMoveDelta(bool p_isPhysics)
         {
-            if (!IsPhysicsMovement)
+            if (!p_isPhysics)
             {
                 if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.SOUTH)
                     m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
@@ -461,7 +422,7 @@ namespace IsometricOrientedPerspective
 
         public Vector3 GetSlopeMoveDirection()
         {
-            return Vector3.ProjectOnPlane(new Vector3(Direction.direction.x, Direction.direction.y * m_slopeAngle, Direction.direction.z), m_slopeHit.normal).normalized;
+            return Vector3.ProjectOnPlane(new Vector3(Direction.direction.x, (int)(Direction.direction.y * (int)m_slopeAngle), Direction.direction.z), m_slopeHit.normal).normalized;
         }
     }
 }

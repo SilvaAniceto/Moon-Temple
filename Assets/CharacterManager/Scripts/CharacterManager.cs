@@ -58,8 +58,7 @@ namespace CharacterManager
         private IsometricRotation m_isoRotation;
         private AreaMovement m_area;
         private JumpSystem m_jumpSystem;
-
-        public Vector3 heading;
+        private Rigidbody m_rigidbody;
 
         private void Awake()
         {
@@ -84,12 +83,14 @@ namespace CharacterManager
                 m_jumpSystem = GetComponent<JumpSystem>();
             }
 
-            m_isoMove.Rigidbody = GetComponent<Rigidbody>();
-            m_isoRotation.Rigidbody = GetComponent<Rigidbody>();
+            //m_isoMove.Rigidbody = GetComponent<Rigidbody>();
+            //m_isoRotation.Rigidbody = GetComponent<Rigidbody>();
 
             GameObject obj = Instantiate(Resources.Load<GameObject>("Prefabs/MovementRadius"));
 
             m_area = obj.GetComponent<AreaMovement>();
+
+            m_rigidbody = gameObject.GetComponent<Rigidbody>();
 
             ApplySettings();
         }
@@ -105,8 +106,8 @@ namespace CharacterManager
         }
         public void ApplySettings()
         {
-            m_isoMove.IsPhysicsMovement = m_settings.physicsMove;
-            m_isoRotation.IsPhysicsRotation = m_settings.physicsRotation;
+            //m_isoMove.IsPhysicsMovement = m_settings.physicsMove;
+            //m_isoRotation.IsPhysicsRotation = m_settings.physicsRotation;
 
             m_isoMove.MoveContext = m_settings.moveType;
 
@@ -136,9 +137,7 @@ namespace CharacterManager
 
         private void Update()
         {
-            heading = m_isoMove.Direction.slopeMovement;
-
-            m_isoMove.SetInputMoveDelta();
+            m_isoMove.SetInputMoveDelta(m_settings.physicsMove);
             m_inputs.UpdateInputs();
 
             m_isoMove.LeftClick = m_inputs.movePoint;
@@ -159,7 +158,7 @@ namespace CharacterManager
 
             if (m_isoRotation.enabled)
             {
-                m_isoRotation.Rotate(m_isoRotation.RaycastHit, m_isoRotation.RotatePosition, m_isoRotation.LayerMask);
+                m_isoRotation.Rotate(m_isoRotation.RaycastHit, m_isoRotation.RotatePosition, m_isoRotation.LayerMask, m_settings.physicsMove, m_rigidbody);
 
                 if (Physics.Raycast(m_isoRotation.RaycastHit, out RaycastHit raycastHit, float.MaxValue, m_isoRotation.LayerMask))
                     if (m_isoMove.LeftClick && !m_isoMove.OnMove)
@@ -172,12 +171,10 @@ namespace CharacterManager
                     }
 
                 if (m_isoMove.OnMove)
-                {
                     m_isoMove.Move(m_isoMove.Direction.direction.x, m_isoMove.Direction.direction.z);
-                }
             }           
             
-            if (m_isoMove.IsPhysicsMovement) return;
+            if (m_settings.physicsMove) return;
 
             if (m_isoMove.OnMove)
             {
@@ -209,7 +206,7 @@ namespace CharacterManager
         {
             m_jumpSystem.Jump();
 
-            if (!m_isoMove.IsPhysicsMovement) return;
+            if (!m_settings.physicsMove) return;
 
             if (m_isoMove.OnMove)
             {
@@ -224,7 +221,7 @@ namespace CharacterManager
             if (m_isoRotation.enabled)
             {
                 if (m_isoMove.OnMove)
-                    m_isoMove.Move(m_isoMove.Direction.direction.x, m_isoMove.Direction.direction.z);
+                    m_isoMove.Move(m_isoMove.Direction.direction.x, m_isoMove.Direction.direction.z, m_rigidbody);
             }
             else if (m_isoMove.MoveDelta != Vector2.zero && !m_isoRotation.enabled)
             {
@@ -233,7 +230,7 @@ namespace CharacterManager
                     m_inputs.inputStartMovement = false;
                     m_isoMove.StartPosition = transform.position;
                 }
-                m_isoMove.Move(m_isoMove.MoveDelta.x, m_isoMove.MoveDelta.y);
+                m_isoMove.Move(m_isoMove.MoveDelta.x, m_isoMove.MoveDelta.y, m_rigidbody);
             }
             else if (m_isoMove.MoveDelta == Vector2.zero && !m_isoRotation.enabled)
             {

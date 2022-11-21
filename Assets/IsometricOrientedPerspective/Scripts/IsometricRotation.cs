@@ -6,32 +6,13 @@ namespace IsometricOrientedPerspective
     {
         public static IsometricRotation m_rotationInstance;
 
-        private bool m_isPhysicsRotation, m_enableRotation;
+        private bool m_enableRotation;
         private float m_rotationSensibility;
-        private LayerMask m_layerMask;        
-        private Rigidbody m_Rigidbody;
+        private LayerMask m_layerMask; 
         private Transform m_mouseCursor;
         private Vector3 m_rotatePosition;
 
         #region Properties
-        /// <summary>
-        /// Define wheter on not the rotation uses physics.
-        /// </summary>
-        public bool IsPhysicsRotation
-        {
-            get
-            {
-                return m_isPhysicsRotation;
-            }
-
-            set
-            {
-                if (m_isPhysicsRotation == value)
-                    return;
-
-                m_isPhysicsRotation = value;
-            }
-        }
         /// <summary>
         /// Define the rotation sensibility.
         /// </summary>
@@ -66,24 +47,6 @@ namespace IsometricOrientedPerspective
                     return;
 
                 m_rotatePosition = value;
-            }
-        }
-        /// <summary>
-        /// The rigidbody used to rotate with physics.
-        /// </summary>
-        public Rigidbody Rigidbody
-        {
-            get
-            {
-                return m_Rigidbody;
-            }
-
-            set
-            {
-                if (m_Rigidbody != null)
-                    return;
-
-                m_Rigidbody = value;
             }
         }
         /// <summary>
@@ -158,7 +121,7 @@ namespace IsometricOrientedPerspective
         /// <summary>
         /// Resolve the rotation in Isometric Oriented Perspective.
         /// </summary>
-        public void Rotate(Ray p_raycast, Vector3 p_rotatePosition, LayerMask p_layerMask)
+        public void Rotate(Ray p_raycast, Vector3 p_rotatePosition, LayerMask p_layerMask, bool p_isPhysics, Rigidbody p_rigidbody)
         {
             if (!IsometricCamera.m_instance.MovingCamera)
             {
@@ -171,12 +134,12 @@ namespace IsometricOrientedPerspective
                     m_mouseCursor.position = new Vector3(p_rotatePosition.x, raycastHit.point.y, p_rotatePosition.z);
                 }
 
-                if (m_isPhysicsRotation)
+                if (p_isPhysics)
                 {
                     Quaternion rotation = Quaternion.LookRotation(p_rotatePosition - transform.position);
 
                     if (Vector3.Distance(transform.position, m_mouseCursor.position) > 3 && !IsometricMove.m_moveInstance.OnMove)
-                        m_Rigidbody.rotation = rotation;
+                        p_rigidbody.rotation = rotation;
                 }
                 else
                 {

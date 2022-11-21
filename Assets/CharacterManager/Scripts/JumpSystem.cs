@@ -99,6 +99,10 @@ namespace CharacterManager
 
         public bool OnSlope
         {
+            get
+            {
+                return m_onSlope;
+            }
             set
             {
                 if (value == m_onSlope)
