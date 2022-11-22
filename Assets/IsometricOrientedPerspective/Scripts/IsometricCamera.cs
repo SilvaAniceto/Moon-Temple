@@ -242,8 +242,9 @@ namespace IsometricOrientedPerspective
 
         void Update()
         {
-            var targetRotation = Quaternion.LookRotation(new Vector3(m_target.position.x, m_target.position.y + m_verticalOffset, m_target.position.z) - transform.position);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 100f * Time.fixedDeltaTime);
+            var targetRotation = Quaternion.LookRotation(new Vector3(m_target.position.x, m_target.position.y, m_target.position.z) - transform.position);
+
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
 
             m_zoom = Input.GetAxis("CameraZoom");
 

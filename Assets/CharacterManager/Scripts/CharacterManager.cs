@@ -106,9 +106,6 @@ namespace CharacterManager
         }
         public void ApplySettings()
         {
-            //m_isoMove.IsPhysicsMovement = m_settings.physicsMove;
-            //m_isoRotation.IsPhysicsRotation = m_settings.physicsRotation;
-
             m_isoMove.MoveContext = m_settings.moveType;
 
             m_isoMove.MovementDelta = m_settings.movementSpeed;
@@ -154,7 +151,7 @@ namespace CharacterManager
                 m_jumpSystem.OnSlope = m_isoMove.OnSlope();
 
             if (m_isoMove.MoveDelta != Vector2.zero && m_isoMove.OnSlope())
-                m_jumpSystem.OnSlope = !m_isoMove.OnSlope();
+                m_jumpSystem.OnSlope = !m_isoMove.OnSlope();            
 
             if (m_isoRotation.enabled)
             {

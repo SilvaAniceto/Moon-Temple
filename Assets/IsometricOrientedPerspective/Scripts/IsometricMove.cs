@@ -22,6 +22,8 @@ namespace IsometricOrientedPerspective
 
         public UnityEvent<MoveType> OnMoveTypeChange;
 
+        public Vector3 vector3;
+
         #region Properties
         /// <summary>
         /// Define the limit distance that the movement can happen.
@@ -296,7 +298,7 @@ namespace IsometricOrientedPerspective
 
             if (!IsometricRotation.m_rotationInstance.enabled)
             {
-                Direction.heading = Vector3.Normalize(Direction.righMovement + Direction.upMovement); 
+                Direction.heading = Vector3.Normalize(Direction.righMovement + Direction.upMovement);
                 if (Direction.heading != Vector3.zero)                                                
                     transform.forward = Vector3.Lerp(transform.forward, Direction.heading, 0.40f);    
             }
@@ -337,13 +339,16 @@ namespace IsometricOrientedPerspective
             }
             else
             {
-                Direction.direction = new Vector3(p_xAxis * m_movementDelta * Time.fixedDeltaTime, 0, p_zAxis * m_movementDelta * Time.fixedDeltaTime);
+                Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
+                Direction.righMovement = IsometricRight * m_movementDelta * Time.fixedDeltaTime * Direction.direction.x;
+                Direction.slopeMovement = Vector3.zero;
+                Direction.upMovement = IsometricForward * m_movementDelta * Time.fixedDeltaTime * Direction.direction.z;
 
-                Direction.direction = IsometricCamera.m_instance.Camera.transform.TransformDirection(Direction.direction);
-                Direction.direction.y = 0;
+                Direction.direction = Direction.righMovement + Direction.slopeMovement + Direction.upMovement;
 
                 if (!OnSlope())
                 {
+
                     if (m_moveType == MoveType.COMBAT)
                     {
                         if ((int)m_distanceTravelled < (int)m_moveDistance)
@@ -359,21 +364,20 @@ namespace IsometricOrientedPerspective
                     if (m_moveType == MoveType.COMBAT)
                     {
                         if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            p_rigidbody.MovePosition(p_rigidbody.position + GetSlopeMoveDirection());
+                            p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized / 2.5f);
                     }
                     else
-                        p_rigidbody.MovePosition(p_rigidbody.position + GetSlopeMoveDirection());
+                        p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized / 2.5f);
 
                     m_onMove = true;
                 }
             }
 
+            vector3 = GetSlopeMoveDirection().normalized;
+
             if (!IsometricRotation.m_rotationInstance.enabled)
                 if (Direction.direction != Vector3.zero)
-                {
-                    p_rigidbody.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Direction.direction), 0.8f);
-                    transform.rotation = p_rigidbody.rotation;
-                }
+                    p_rigidbody.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Direction.direction, transform.up), 0.8f);
         }
 
         /// <summary>

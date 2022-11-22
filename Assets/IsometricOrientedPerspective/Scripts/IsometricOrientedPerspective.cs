@@ -8,7 +8,6 @@ namespace IsometricOrientedPerspective
         private static MoveDirection m_moveDirection;
         private Ray m_raycastHit;
         
-
         #region Properties
         /// <summary>
         /// New forward orientation for Isometric Perspective.
