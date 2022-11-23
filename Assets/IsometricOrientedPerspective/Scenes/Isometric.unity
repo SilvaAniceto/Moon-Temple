@@ -344,20 +344,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 296a396fe0cb8d64b87674a69acdbd0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_settings:
-    physicsMove: 0
-    physicsRotation: 0
-    moveType: 0
-    movementSpeed: 10
-    movementDistance: 9
-    maxSlopeAngle: 45
-    rotationSpeed: 35
-    mouseRotation: 0
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 8
-    jumpDeltaTime: 0.25
-    heightDelta: 100
+  moveType: 0
+  controllerType: 0
+  movementSpeed: 2
+  movementDistance: 10
+  maxSlopeAngle: 45
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  jumpDeltaTime: 0
+  heightDelta: 0
 --- !u!1 &468327141
 GameObject:
   m_ObjectHideFlags: 0

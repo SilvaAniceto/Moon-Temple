@@ -1,13 +1,22 @@
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace IsometricOrientedPerspective
+namespace IOP
 {
     public class IsometricOrientedPerspective : MonoBehaviour
     {
         private static Vector3 m_isometricForward, m_isometricRight;
         private static MoveDirection m_moveDirection;
         private Ray m_raycastHit;
-        
+        public enum ControllType
+        {
+            PointAndClick,
+            KeyBoard,
+            Joystick
+        }
+        private static ControllType m_controllerType = ControllType.KeyBoard;
+        public static UnityEvent<string> OnControllTypeChange = new UnityEvent<string>();
+
         #region Properties
         /// <summary>
         /// New forward orientation for Isometric Perspective.
@@ -57,7 +66,21 @@ namespace IsometricOrientedPerspective
             {
                 m_moveDirection = value;
             }
-        }        
+        }
+        public static ControllType Type
+        {
+            get
+            {
+                return m_controllerType;
+            }
+            set
+            {
+                if (m_controllerType == value) return;
+                m_controllerType = value;
+
+                OnControllTypeChange?.Invoke(m_controllerType.ToString());
+            }
+        }
         #endregion
 
         #region Classes

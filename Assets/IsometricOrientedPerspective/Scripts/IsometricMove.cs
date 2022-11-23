@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace IsometricOrientedPerspective
+namespace IOP
 {
     public class IsometricMove : IsometricOrientedPerspective
     {
@@ -21,8 +21,6 @@ namespace IsometricOrientedPerspective
         private MoveType m_moveType = MoveType.FREE;
 
         public UnityEvent<MoveType> OnMoveTypeChange;
-
-        public Vector3 vector3;
 
         #region Properties
         /// <summary>
@@ -205,7 +203,6 @@ namespace IsometricOrientedPerspective
                 m_maxSlopeAngle = value;
             }
         }
-
         public float SlopeAngle
         {
             get
@@ -310,97 +307,134 @@ namespace IsometricOrientedPerspective
         public void Move(float p_xAxis, float p_zAxis, Rigidbody p_rigidbody)
         {
             if (IsometricCamera.m_instance.MovingCamera) return; // Prevents that the movement happens when the Camera is moving.
-              
-            if (IsometricRotation.m_rotationInstance.enabled)
-            {
-                float distance = Vector3.Distance(Direction.direction, transform.position);
-                m_onMove = distance > 0.2f ? true : false;
 
-                if (!OnSlope())
+            #region DEPRECATED
+            //if (IsometricRotation.m_rotationInstance.enabled)
+            //{
+            //    float distance = Vector3.Distance(Direction.direction, transform.position);
+            //    m_onMove = distance > 0.2f ? true : false;
+
+            //    if (!OnSlope())
+            //    {
+            //        if (m_moveType == MoveType.COMBAT)
+            //        {
+            //            if ((int)m_distanceTravelled < (int)m_moveDistance)
+            //                p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime));
+            //        }
+            //        else
+            //            p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime));
+            //    }
+            //    else
+            //    {
+            //        if (m_moveType == MoveType.COMBAT)
+            //        {
+            //            if ((int)m_distanceTravelled < (int)m_moveDistance)
+            //                p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime));
+            //        }
+            //        else
+            //            p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime));
+            //    }
+            //}
+            //else
+            //{
+            //    Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
+            //    Direction.righMovement = IsometricRight * m_movementDelta * Time.fixedDeltaTime * Direction.direction.x;
+            //    Direction.slopeMovement = Vector3.zero;
+            //    Direction.upMovement = IsometricForward * m_movementDelta * Time.fixedDeltaTime * Direction.direction.z;
+
+            //    Direction.direction = Direction.righMovement + Direction.slopeMovement + Direction.upMovement;
+
+            //    if (!OnSlope())
+            //    {
+
+            //        if (m_moveType == MoveType.COMBAT)
+            //        {
+            //            if ((int)m_distanceTravelled < (int)m_moveDistance)
+            //                p_rigidbody.MovePosition(p_rigidbody.position + Direction.direction);
+            //        }
+            //        else
+            //            p_rigidbody.MovePosition(p_rigidbody.position + Direction.direction);
+
+            //        m_onMove = true;
+            //    }
+            //    else
+            //    {
+            //        if (m_moveType == MoveType.COMBAT)
+            //        {
+            //            if ((int)m_distanceTravelled < (int)m_moveDistance)
+            //                p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized);
+            //        }
+            //        else
+            //            p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized);
+
+            //        m_onMove = true;
+            //    }
+            //}
+            #endregion
+
+            Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
+            Direction.righMovement = IsometricRight * m_movementDelta * Time.fixedDeltaTime * Direction.direction.x;
+            Direction.slopeMovement = Vector3.zero;
+            Direction.upMovement = IsometricForward * m_movementDelta * Time.fixedDeltaTime * Direction.direction.z;
+
+            Direction.direction = Direction.righMovement + Direction.slopeMovement + Direction.upMovement;
+
+            if (!OnSlope())
+            {
+
+                if (m_moveType == MoveType.COMBAT)
                 {
-                    if (m_moveType == MoveType.COMBAT)
-                    {
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime));
-                    }
-                    else
-                        p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, Direction.direction, m_movementDelta * Time.deltaTime));
+                    if ((int)m_distanceTravelled < (int)m_moveDistance)
+                        p_rigidbody.MovePosition(p_rigidbody.position + Direction.direction);
                 }
                 else
-                {
-                    if (m_moveType == MoveType.COMBAT)
-                    {
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime));
-                    }
-                    else
-                        p_rigidbody.MovePosition(Vector3.MoveTowards(transform.position, GetSlopeMoveDirection(), m_movementDelta * Time.deltaTime));
-                }
+                    p_rigidbody.MovePosition(p_rigidbody.position + Direction.direction);
+
+                m_onMove = true;
             }
             else
             {
-                Direction.direction = new Vector3(p_xAxis, 0, p_zAxis);
-                Direction.righMovement = IsometricRight * m_movementDelta * Time.fixedDeltaTime * Direction.direction.x;
-                Direction.slopeMovement = Vector3.zero;
-                Direction.upMovement = IsometricForward * m_movementDelta * Time.fixedDeltaTime * Direction.direction.z;
-
-                Direction.direction = Direction.righMovement + Direction.slopeMovement + Direction.upMovement;
-
-                if (!OnSlope())
+                if (m_moveType == MoveType.COMBAT)
                 {
-
-                    if (m_moveType == MoveType.COMBAT)
-                    {
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            p_rigidbody.MovePosition(p_rigidbody.position + Direction.direction);
-                    }
-                    else
-                        p_rigidbody.MovePosition(p_rigidbody.position + Direction.direction);
-
-                    m_onMove = true;
+                    if ((int)m_distanceTravelled < (int)m_moveDistance)
+                        p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized / 5);
                 }
                 else
-                {
-                    if (m_moveType == MoveType.COMBAT)
-                    {
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized / 2.5f);
-                    }
-                    else
-                        p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized / 2.5f);
+                    p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized / 5);
 
-                    m_onMove = true;
-                }
+                m_onMove = true;
             }
 
-            vector3 = GetSlopeMoveDirection().normalized;
-
-            if (!IsometricRotation.m_rotationInstance.enabled)
-                if (Direction.direction != Vector3.zero)
-                    p_rigidbody.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Direction.direction, transform.up), 0.8f);
+            if (Direction.direction != Vector3.zero)
+                p_rigidbody.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Direction.direction, transform.up), 0.8f);
         }
 
         /// <summary>
         /// Defines the input direction after changing the camera position.
         /// </summary>
-        public void SetInputMoveDelta(bool p_isPhysics)
+        public void SetInputMoveDelta(ControllType p_controllerType)
         {
-            if (!p_isPhysics)
+            switch (p_controllerType)
             {
-                if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.SOUTH)
+                case ControllType.PointAndClick:
                     m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
+                    break;
+                case ControllType.KeyBoard:
+                    if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.SOUTH)
+                        m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
 
-                if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.WEST)
-                    m_moveDelta = new Vector2(VerticalMovement, -HorizontalMovement);
+                    if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.WEST)
+                        m_moveDelta = new Vector2(VerticalMovement, -HorizontalMovement);
 
-                if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.NORTH)
-                    m_moveDelta = new Vector2(-HorizontalMovement, -VerticalMovement);
+                    if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.NORTH)
+                        m_moveDelta = new Vector2(-HorizontalMovement, -VerticalMovement);
 
-                if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.EAST)
-                    m_moveDelta = new Vector2(-VerticalMovement, HorizontalMovement);
+                    if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.EAST)
+                        m_moveDelta = new Vector2(-VerticalMovement, HorizontalMovement);
+                    break;
+                case ControllType.Joystick:
+                    break;
             }
-            else
-                m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
         }
 
         /// <summary>
