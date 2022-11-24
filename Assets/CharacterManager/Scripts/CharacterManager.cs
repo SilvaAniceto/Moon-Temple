@@ -49,6 +49,7 @@ namespace CharacterManager
         private AreaMovement m_area;
         private JumpSystem m_jumpSystem;
         private Rigidbody m_rigidbody;
+        private RaycastHit m_raycastHit;
 
         private void Awake()
         {
@@ -139,14 +140,14 @@ namespace CharacterManager
 
             Ray ray = IsometricCamera.m_instance.GetRay(m_inputs.rotatePosition);
 
-            if (Physics.Raycast(ray, float.MaxValue, layerMask))
+            if (Physics.Raycast(ray, out m_raycastHit ,float.MaxValue, layerMask))
                 m_isoMove.LeftClick = m_inputs.leftClick;
 
             switch (controllerType)
             {
                 case IsometricOrientedPerspective.ControllType.PointAndClick:
-                    m_isoRotation.Rotate(m_inputs.rotatePosition, layerMask);
-                    m_isoMove.Move(m_isoRotation.MouseCursor.position, m_isoMove.LeftClick);
+                    m_isoRotation.Rotate(m_raycastHit.point, layerMask);
+                    m_isoMove.Move(m_raycastHit.point, m_isoMove.LeftClick);
                     break;
                 case IsometricOrientedPerspective.ControllType.KeyBoard:
                     m_isoMove.Move(m_isoMove.MoveDelta, m_rigidbody);

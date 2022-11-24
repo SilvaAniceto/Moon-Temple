@@ -7,7 +7,6 @@ namespace IOP
         public static IsometricRotation m_rotationInstance;
 
         private Transform m_mouseCursor;
-        private RaycastHit m_raycastHit;
 
         #region Properties
         /// <summary>
@@ -46,18 +45,8 @@ namespace IOP
         {
             if (IsometricCamera.m_instance.MovingCamera) return; // Prevents that the movement happens when the Camera is moving.            
 
-            Ray ray = IsometricCamera.m_instance.GetRay(p_rotatePosition);
-
-            if (!Physics.Raycast(ray, float.MaxValue, p_layerMask))
-                return;
-            else
-            {
-                Physics.Raycast(ray, out m_raycastHit, float.MaxValue, p_layerMask);
-
-                p_rotatePosition = m_raycastHit.point;
-                p_rotatePosition.y = transform.position.y;
-                m_mouseCursor.position = new Vector3(p_rotatePosition.x, m_raycastHit.point.y, p_rotatePosition.z);
-            }
+            m_mouseCursor.position = p_rotatePosition;
+            p_rotatePosition.y = transform.position.y;
 
             if (Vector3.Distance(transform.position, p_rotatePosition) > 3 && !IsometricMove.m_moveInstance.OnMove)
                 transform.LookAt(p_rotatePosition, Vector3.up);
