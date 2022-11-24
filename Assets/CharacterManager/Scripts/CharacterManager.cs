@@ -147,7 +147,7 @@ namespace CharacterManager
             {
                 case IsometricOrientedPerspective.ControllType.PointAndClick:
                     m_isoRotation.Rotate(m_raycastHit.point, layerMask);
-                    m_isoMove.Move(m_raycastHit.point, m_isoMove.LeftClick);
+                    m_isoMove.Move(m_raycastHit.point, m_isoMove.LeftClick, m_rigidbody);
                     break;
                 case IsometricOrientedPerspective.ControllType.KeyBoard:
                     m_isoMove.Move(m_isoMove.MoveDelta, m_rigidbody);

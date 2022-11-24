@@ -231,7 +231,7 @@ namespace IOP
         /// <summary>
         /// Resolve the movement in Isometric Oriented Perspective with no Physics.
         /// </summary>
-        public void Move(Vector3 p_vector3, bool p_click)
+        public void Move(Vector3 p_vector3, bool p_click, Rigidbody p_rigidbody)
         {
             if (IsometricCamera.m_instance.MovingCamera) return; // Prevents that the movement happens when the Camera is moving.
 
@@ -252,6 +252,44 @@ namespace IOP
 
             if (m_direction.normalized != Vector3.zero)
             {
+                #region 
+                //if (!OnSlope())
+                //{
+                //    m_direction = new Vector3(m_auxDirection.x, transform.position.y, m_auxDirection.z);
+
+                //    if (m_moveType == MoveType.COMBAT)
+                //    {
+                //        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                //            transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
+                //        else
+                //            m_onMove = false;
+                //    }
+                //    else
+                //    {
+                //        transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
+                //        float distance = Vector3.Distance(m_direction, transform.position);
+                //        m_onMove = distance > 0.2f ? true : false;
+                //    }
+                //}
+                //else
+                //{
+                //    m_direction = new Vector3(m_auxDirection.x, m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, m_auxDirection.z);
+                //
+                //    if (m_moveType == MoveType.COMBAT)
+                //    {
+                //        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                //            transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
+                //        else
+                //            m_onMove = false;
+                //    }
+                //    else
+                //    {
+                //        transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
+                //        float distance = Vector3.Distance(m_direction, transform.position);
+                //        m_onMove = distance > 0.2f ? true : false;
+                //    }
+                //}
+                #endregion
                 if (!OnSlope())
                 {
                     m_direction = new Vector3(m_auxDirection.x, transform.position.y, m_auxDirection.z);
@@ -259,36 +297,36 @@ namespace IOP
                     if (m_moveType == MoveType.COMBAT)
                     {
                         if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
+                            p_rigidbody.MovePosition(Vector3.MoveTowards(p_rigidbody.position, m_direction, m_movementDelta * Time.fixedDeltaTime));
                         else
                             m_onMove = false;
                     }
                     else
                     {
-                        transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
+                        p_rigidbody.MovePosition(Vector3.MoveTowards(p_rigidbody.position, m_direction, m_movementDelta * Time.fixedDeltaTime));
                         float distance = Vector3.Distance(m_direction, transform.position);
                         m_onMove = distance > 0.2f ? true : false;
                     }
                 }
                 else
                 {
-                    m_direction = new Vector3(m_auxDirection.x, m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, m_auxDirection.z); 
+                    m_direction = new Vector3(m_auxDirection.x, m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, m_auxDirection.z);
 
                     if (m_moveType == MoveType.COMBAT)
                     {
                         if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
+                            p_rigidbody.MovePosition(Vector3.MoveTowards(p_rigidbody.position, m_direction, m_movementDelta * Time.fixedDeltaTime));
                         else
                             m_onMove = false;
                     }
                     else
                     {
-                        transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
+                        p_rigidbody.MovePosition(Vector3.MoveTowards(p_rigidbody.position, m_direction, m_movementDelta * Time.fixedDeltaTime));
                         float distance = Vector3.Distance(m_direction, transform.position);
                         m_onMove = distance > 0.2f ? true : false;
                     }
                 }
-            }    
+            }
         }
 
         /// <summary>
