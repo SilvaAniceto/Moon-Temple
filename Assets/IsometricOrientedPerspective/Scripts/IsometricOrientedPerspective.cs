@@ -15,7 +15,7 @@ namespace IOP
             Joystick
         }
         private static ControllType m_controllerType = ControllType.KeyBoard;
-        public static UnityEvent<string> OnControllTypeChange = new UnityEvent<string>();
+        public static UnityEvent<ControllType> OnControllTypeChange = new UnityEvent<ControllType>();
 
         #region Properties
         /// <summary>
@@ -78,7 +78,7 @@ namespace IOP
                 if (m_controllerType == value) return;
                 m_controllerType = value;
 
-                OnControllTypeChange?.Invoke(m_controllerType.ToString());
+                OnControllTypeChange?.Invoke(m_controllerType);
             }
         }
         #endregion
@@ -86,7 +86,6 @@ namespace IOP
         #region Classes
         public class MoveDirection
         {
-            public Vector3 direction = new Vector3();
             public Vector3 righMovement = new Vector3();
             public Vector3 upMovement = new Vector3();
             public Vector3 slopeMovement = new Vector3();

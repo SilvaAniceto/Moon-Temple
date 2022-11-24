@@ -11,7 +11,7 @@ namespace CharacterManager
             public bool inputStartMovement;
             public float horizontalAxi;
             public float verticalAxi;
-            public bool movePoint;
+            public bool leftClick;
             public bool jumpInput;
             public Vector3 rotatePosition;
 
@@ -19,7 +19,7 @@ namespace CharacterManager
             { 
                 horizontalAxi  = Input.GetAxis("Horizontal");
                 verticalAxi = Input.GetAxis("Vertical");
-                movePoint = Input.GetMouseButton(0);
+                leftClick = Input.GetMouseButton(0);
                 rotatePosition = Input.mousePosition; 
                 jumpInput = Input.GetButton("Jump") ? true : Input.GetButtonUp("Jump") ? false : false;
             }
@@ -49,7 +49,6 @@ namespace CharacterManager
         private AreaMovement m_area;
         private JumpSystem m_jumpSystem;
         private Rigidbody m_rigidbody;
-        private Ray m_ray;
 
         private void Awake()
         {
@@ -85,12 +84,15 @@ namespace CharacterManager
 
         private void Start()
         {
-            m_isoMove.Setup();
+            m_isoMove.Setup(controllerType);
+            m_isoRotation.Setup(controllerType);
+
             m_area.SetupArea();
             m_jumpSystem.Setup();
 
             m_isoMove.OnMoveTypeChange.AddListener(MoveTypeChange);
             IsometricOrientedPerspective.OnControllTypeChange.AddListener(m_isoRotation.Setup);
+            IsometricOrientedPerspective.OnControllTypeChange.AddListener(m_isoMove.Setup);
         }
         public void ApplySettings()
         {
@@ -114,21 +116,18 @@ namespace CharacterManager
 
             m_area.gameObject.SetActive(value);
 
-            m_isoMove.MoveContext = moveType;
         }
 
         private void Update()
         {
             IsometricOrientedPerspective.Type = controllerType;
 
+            m_isoMove.MoveContext = moveType;
             m_isoMove.SetInputMoveDelta(IsometricOrientedPerspective.Type);
             m_inputs.UpdateInputs();
 
-            m_isoMove.LeftClick = m_inputs.movePoint;
             m_isoMove.HorizontalMovement = m_inputs.horizontalAxi;
             m_isoMove.VerticalMovement = m_inputs.verticalAxi;
-
-            m_ray = Camera.main.ScreenPointToRay(m_inputs.rotatePosition);
 
             m_jumpSystem.JumpInput = m_inputs.jumpInput;
 
@@ -138,60 +137,19 @@ namespace CharacterManager
             if (m_isoMove.MoveDelta != Vector2.zero && m_isoMove.OnSlope())
                 m_jumpSystem.OnSlope = !m_isoMove.OnSlope();
 
-            #region DEPRECATED
-            //if (m_isoRotation.enabled)
-            //{
-            //    m_isoRotation.Rotate(m_isoRotation.RaycastHit, m_isoRotation.RotatePosition, m_isoRotation.LayerMask, m_settings.physicsMove, m_rigidbody);
+            Ray ray = IsometricCamera.m_instance.GetRay(m_inputs.rotatePosition);
 
-            //    if (Physics.Raycast(m_isoRotation.RaycastHit, out RaycastHit raycastHit, float.MaxValue, m_isoRotation.LayerMask))
-            //        if (m_isoMove.LeftClick && !m_isoMove.OnMove)
-            //        {
-            //            m_isoMove.Direction.direction = new Vector3(m_isoRotation.MouseCursor.position.x, transform.position.y, m_isoRotation.MouseCursor.position.z);
-
-            //            m_isoMove.OnMove = true;
-
-            //            m_isoMove.StartPosition = transform.position;
-            //        }
-
-            //    if (m_isoMove.OnMove)
-            //        m_isoMove.Move(m_isoMove.Direction.direction.x, m_isoMove.Direction.direction.z);
-            //}           
-
-            //if (m_settings.physicsMove) return;
-
-            //if (m_isoMove.OnMove)
-            //{
-            //    m_isoMove.GetMoveDistance(m_isoMove.StartPosition);
-            //    m_area.DrawCircle(100, m_isoMove.MoveDistance, new Vector3(m_isoMove.StartPosition.x, -0.85f, m_isoMove.StartPosition.z));
-            //}
-            //else
-            //    m_area.DrawCircle(100, m_isoMove.MoveDistance, transform.position);
-
-            //IsometricCamera.m_instance.MoveBase();
-
-            //if (m_isoMove.MoveDelta != Vector2.zero && !m_isoRotation.enabled)
-            //{
-            //    if (m_inputs.inputStartMovement)
-            //    {
-            //        m_inputs.inputStartMovement = false;
-            //        m_isoMove.StartPosition = transform.position;
-            //    }
-            //    m_isoMove.Move(m_isoMove.MoveDelta.x, m_isoMove.MoveDelta.y, m_rigidbody);
-            //}
-            //else if (m_isoMove.MoveDelta == Vector2.zero && !m_isoRotation.enabled)
-            //{
-            //    m_inputs.inputStartMovement = true;
-            //    m_isoMove.OnMove = false;
-            //}
-            #endregion
+            if (Physics.Raycast(ray, float.MaxValue, layerMask))
+                m_isoMove.LeftClick = m_inputs.leftClick;
 
             switch (controllerType)
             {
                 case IsometricOrientedPerspective.ControllType.PointAndClick:
-                    m_isoRotation.Rotate(m_ray, m_inputs.rotatePosition, layerMask);
+                    m_isoRotation.Rotate(m_inputs.rotatePosition, layerMask);
+                    m_isoMove.Move(m_isoRotation.MouseCursor.position, m_isoMove.LeftClick);
                     break;
                 case IsometricOrientedPerspective.ControllType.KeyBoard:
-                    m_isoMove.Move(m_isoMove.MoveDelta.x, m_isoMove.MoveDelta.y, m_rigidbody);
+                    m_isoMove.Move(m_isoMove.MoveDelta, m_rigidbody);
                     break;
             }
 

@@ -379,5 +379,10 @@ namespace IOP
             if (m_currentOffset == m_deltaPosition[3])
                 m_cameraPosition = CameraPosition.WEST;
         }
+
+        public Ray GetRay(Vector3 p_value)
+        {
+            return m_camera.ScreenPointToRay(p_value);
+        }
     }
 }
