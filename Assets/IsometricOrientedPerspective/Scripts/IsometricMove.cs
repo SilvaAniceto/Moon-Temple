@@ -239,8 +239,30 @@ namespace IOP
             {
                 if (p_click)
                 {
-                    m_direction = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
-                    m_auxDirection = p_vector3;
+                    //m_direction = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
+                    //m_auxDirection = p_vector3;
+                    if (p_vector3.y < transform.position.y)
+                    {
+                        Vector3 ponto = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
+                        float catetoAdjacente = Vector3.Distance(transform.position, ponto);
+                        float tangente = Mathf.Tan(m_slopeAngle);
+                        float catetoOposto = catetoAdjacente * tangente;
+
+                        m_auxDirection = new Vector3(ponto.x, ponto.y - catetoOposto, ponto.z);
+                    }
+                    else if(p_vector3.y > transform.position.y)
+                    {
+                        Vector3 ponto = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
+                        float catetoAdjacente = Vector3.Distance(transform.position, ponto);
+                        float tangente = Mathf.Tan(m_slopeAngle);
+                        float catetoOposto = catetoAdjacente * tangente;
+
+                        m_auxDirection = new Vector3(ponto.x, ponto.y + catetoOposto + 0.1f, ponto.z);
+                    }
+                    else
+                        m_auxDirection = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
+
+                    m_direction = m_auxDirection;
                     m_onMove = true;
                 }
 
@@ -250,7 +272,8 @@ namespace IOP
             if (m_onMove)
                 GetMoveDistance(m_startPosition);
 
-            if (m_direction.normalized != Vector3.zero)
+            //if (m_direction.normalized != Vector3.zero)
+            if (m_auxDirection.normalized != Vector3.zero)
             {
                 #region 
                 //if (!OnSlope())
@@ -292,7 +315,7 @@ namespace IOP
                 #endregion
                 if (!OnSlope())
                 {
-                    m_direction = new Vector3(m_auxDirection.x, transform.position.y, m_auxDirection.z);
+                   // m_direction = new Vector3(m_auxDirection.x, transform.position.y, m_auxDirection.z);
 
                     if (m_moveType == MoveType.COMBAT)
                     {
@@ -310,7 +333,11 @@ namespace IOP
                 }
                 else
                 {
-                    m_direction = new Vector3(m_auxDirection.x, m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, m_auxDirection.z);
+
+                    //if (m_auxDirection.y < transform.position.y - GetComponent<CapsuleCollider>().bounds.extents.y)
+                    //    m_direction = m_auxDirection;
+                    //else
+                    //    m_direction = new Vector3(m_auxDirection.x, m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, m_auxDirection.z);
 
                     if (m_moveType == MoveType.COMBAT)
                     {
