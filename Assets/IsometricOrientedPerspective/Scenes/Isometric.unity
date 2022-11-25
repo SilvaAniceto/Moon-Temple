@@ -344,10 +344,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 296a396fe0cb8d64b87674a69acdbd0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveType: 0
-  controllerType: 1
-  movementSpeed: 5
-  movementDistance: 5
+  moveType: 1
+  controllerType: 0
+  movementSpeed: 2
+  movementDistance: 10
   maxSlopeAngle: 45
   layerMask:
     serializedVersion: 2

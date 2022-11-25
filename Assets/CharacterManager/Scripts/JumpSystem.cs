@@ -6,7 +6,7 @@ namespace CharacterManager
     {
         public static JumpSystem m_jumpInstance;
 
-        private bool m_offGroundLevel, m_onGroundLevel, m_jumpInput, m_onSlope;
+        private bool m_offGroundLevel, m_onGroundLevel, m_onSlope;
         private float m_jumpDelayCounter, m_heightDelta, m_jumpDeltaTime;
         private Rigidbody m_rigidbody;
         private SphereCollider m_sphereCollider;
@@ -66,21 +66,6 @@ namespace CharacterManager
                 m_onGroundLevel = value;
             }
         }
-        public bool JumpInput
-        {
-            get
-            {
-                return m_jumpInput;
-            }
-
-            set
-            {
-                if (m_jumpInput == value)
-                    return;
-
-                m_jumpInput = value;
-            }
-        }
         public LayerMask LayerMask
         {
             get
@@ -96,7 +81,6 @@ namespace CharacterManager
                 m_layerMask = value;
             }
         }
-
         public bool OnSlope
         {
             get
@@ -113,14 +97,6 @@ namespace CharacterManager
                 if (m_onSlope && !m_offGroundLevel) m_rigidbody.MovePosition(m_rigidbody.position);
             }
         }
-
-        public Rigidbody Rigidbody
-        {
-            get
-            {
-                return m_rigidbody;
-            }
-        }
         #endregion
 
         public void Setup()
@@ -134,27 +110,27 @@ namespace CharacterManager
                 m_rigidbody = gameObject.GetComponent<Rigidbody>();
         }
         
-        public void Jump()
+        public void Jump(bool p_jumpInput)
         { 
-            if (OnGroundLevel && m_jumpInput)
+            if (OnGroundLevel && p_jumpInput)
             {
                 m_offGroundLevel = true;
                 m_jumpDelayCounter = m_jumpDeltaTime;
-                m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Force);
+                m_rigidbody.AddForce(Vector3.up * m_heightDelta * Time.fixedDeltaTime, ForceMode.Force);
             }
 
-            if (m_jumpInput && m_offGroundLevel)
+            if (p_jumpInput && m_offGroundLevel)
             {
                 if (m_jumpDelayCounter > 0)
                 {
-                    m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Force);
+                    m_rigidbody.AddForce(Vector3.up * m_heightDelta * Time.fixedDeltaTime, ForceMode.Force);
                     m_jumpDelayCounter -= Time.deltaTime;
                 }
                 else
                     m_offGroundLevel = false;
             }
 
-            if (m_jumpInput)
+            if (p_jumpInput)
                 m_offGroundLevel = false;
         }
 

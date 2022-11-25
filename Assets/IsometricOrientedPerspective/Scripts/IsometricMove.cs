@@ -11,7 +11,7 @@ namespace IOP
         private bool m_leftClick, m_onMove;
         private float m_moveDistance = 9f;
         private float m_movementDelta = 4f;
-        private float m_distanceTravelled, m_horizontalMovement, m_verticalMovement, m_maxSlopeAngle, m_slopeAngle;
+        private float m_distanceTravelled, m_maxSlopeAngle, m_slopeAngle;
         private Vector2 m_moveDelta;
         private Vector3 m_startPosition, m_direction, m_auxDirection;
         private RaycastHit m_slopeHit;
@@ -55,41 +55,6 @@ namespace IOP
                     return;
 
                 m_movementDelta = value;
-            }
-        }
-        /// <summary>
-        /// Horizontal axi for movement in Isometric Perspective.
-        /// </summary>
-        public float HorizontalMovement
-        {
-            get
-            {
-                return m_horizontalMovement;
-            }
-
-            set
-            {
-                if (m_horizontalMovement == value)
-                    return;
-
-                m_horizontalMovement = value;
-            }
-        }
-        /// <summary>
-        /// Vertical axi for movement in Isometric Perspective.
-        /// </summary>
-        public float VerticalMovement
-        {
-            get
-            {
-                return m_verticalMovement;
-            }
-            set
-            {
-                if (m_verticalMovement == value)
-                    return;
-
-                m_verticalMovement = value;
             }
         }
         /// <summary>
@@ -229,7 +194,7 @@ namespace IOP
         }
 
         /// <summary>
-        /// Resolve the movement in Isometric Oriented Perspective with no Physics.
+        /// Resolve the Point&Click movement in Isometric Oriented Perspective.
         /// </summary>
         public void Move(Vector3 p_vector3, bool p_click, Rigidbody p_rigidbody)
         {
@@ -239,31 +204,28 @@ namespace IOP
             {
                 if (p_click)
                 {
-                    //m_direction = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
-                    //m_auxDirection = p_vector3;
-                    if (p_vector3.y < transform.position.y)
+                    if (OnSlope())
                     {
-                        Vector3 ponto = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
-                        float catetoAdjacente = Vector3.Distance(transform.position, ponto);
-                        float tangente = Mathf.Tan(m_slopeAngle);
-                        float catetoOposto = catetoAdjacente * tangente;
+                        if (p_vector3.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f < transform.position.y)
+                        {
+                            Vector3 refPoint = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
+                            float directionDelta = Vector3.Distance(transform.position, refPoint);
 
-                        m_auxDirection = new Vector3(ponto.x, ponto.y - catetoOposto, ponto.z);
-                    }
-                    else if(p_vector3.y > transform.position.y)
-                    {
-                        Vector3 ponto = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
-                        float catetoAdjacente = Vector3.Distance(transform.position, ponto);
-                        float tangente = Mathf.Tan(m_slopeAngle);
-                        float catetoOposto = catetoAdjacente * tangente;
-
-                        m_auxDirection = new Vector3(ponto.x, ponto.y + catetoOposto + 0.1f, ponto.z);
+                            m_auxDirection = new Vector3(refPoint.x, refPoint.y - directionDelta, refPoint.z);
+                        }
+                        else
+                        {
+                            m_direction = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
+                            m_auxDirection = p_vector3;
+                            m_onMove = true;
+                        }
                     }
                     else
-                        m_auxDirection = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
-
-                    m_direction = m_auxDirection;
-                    m_onMove = true;
+                    {
+                        m_direction = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
+                        m_auxDirection = p_vector3;
+                        m_onMove = true;
+                    }
                 }
 
                 m_startPosition = transform.position;
@@ -272,50 +234,11 @@ namespace IOP
             if (m_onMove)
                 GetMoveDistance(m_startPosition);
 
-            //if (m_direction.normalized != Vector3.zero)
-            if (m_auxDirection.normalized != Vector3.zero)
+            if (m_direction.normalized != Vector3.zero)
             {
-                #region 
-                //if (!OnSlope())
-                //{
-                //    m_direction = new Vector3(m_auxDirection.x, transform.position.y, m_auxDirection.z);
-
-                //    if (m_moveType == MoveType.COMBAT)
-                //    {
-                //        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                //            transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
-                //        else
-                //            m_onMove = false;
-                //    }
-                //    else
-                //    {
-                //        transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
-                //        float distance = Vector3.Distance(m_direction, transform.position);
-                //        m_onMove = distance > 0.2f ? true : false;
-                //    }
-                //}
-                //else
-                //{
-                //    m_direction = new Vector3(m_auxDirection.x, m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, m_auxDirection.z);
-                //
-                //    if (m_moveType == MoveType.COMBAT)
-                //    {
-                //        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                //            transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
-                //        else
-                //            m_onMove = false;
-                //    }
-                //    else
-                //    {
-                //        transform.position = Vector3.MoveTowards(transform.position, m_direction, m_movementDelta * Time.fixedDeltaTime);
-                //        float distance = Vector3.Distance(m_direction, transform.position);
-                //        m_onMove = distance > 0.2f ? true : false;
-                //    }
-                //}
-                #endregion
                 if (!OnSlope())
                 {
-                   // m_direction = new Vector3(m_auxDirection.x, transform.position.y, m_auxDirection.z);
+                    m_direction = new Vector3(m_auxDirection.x, transform.position.y, m_auxDirection.z);
 
                     if (m_moveType == MoveType.COMBAT)
                     {
@@ -333,11 +256,10 @@ namespace IOP
                 }
                 else
                 {
-
-                    //if (m_auxDirection.y < transform.position.y - GetComponent<CapsuleCollider>().bounds.extents.y)
-                    //    m_direction = m_auxDirection;
-                    //else
-                    //    m_direction = new Vector3(m_auxDirection.x, m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, m_auxDirection.z);
+                    if (m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f < transform.position.y)
+                        m_direction = m_auxDirection;
+                    else
+                        m_direction = new Vector3(m_auxDirection.x, m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, m_auxDirection.z);
 
                     if (m_moveType == MoveType.COMBAT)
                     {
@@ -357,7 +279,7 @@ namespace IOP
         }
 
         /// <summary>
-        /// Resolve the movement in Isometric Oriented Perspective with Physics.
+        /// Resolve the Keyboard movement in Isometric Oriented Perspective.
         /// </summary>
         public void Move(Vector2 p_vector, Rigidbody p_rigidbody)
         {
@@ -433,25 +355,25 @@ namespace IOP
         /// <summary>
         /// Defines the input direction after changing the camera position.
         /// </summary>
-        public void SetInputMoveDelta(ControllType p_controllerType)
+        public void SetInputMoveDelta(ControllType p_controllerType, float p_horizontalAxis, float p_vertivalAxis)
         {
             switch (p_controllerType)
             {
                 case ControllType.PointAndClick:
-                    m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
+                    m_moveDelta = new Vector2(p_horizontalAxis, p_vertivalAxis);
                     break;
                 case ControllType.KeyBoard:
                     if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.SOUTH)
-                        m_moveDelta = new Vector2(HorizontalMovement, VerticalMovement);
+                        m_moveDelta = new Vector2(p_horizontalAxis, p_vertivalAxis);
 
                     if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.WEST)
-                        m_moveDelta = new Vector2(VerticalMovement, -HorizontalMovement);
+                        m_moveDelta = new Vector2(p_vertivalAxis, -p_horizontalAxis);
 
                     if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.NORTH)
-                        m_moveDelta = new Vector2(-HorizontalMovement, -VerticalMovement);
+                        m_moveDelta = new Vector2(-p_horizontalAxis, -p_vertivalAxis);
 
                     if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.EAST)
-                        m_moveDelta = new Vector2(-VerticalMovement, HorizontalMovement);
+                        m_moveDelta = new Vector2(-p_vertivalAxis, p_horizontalAxis);
                     break;
                 case ControllType.Joystick:
                     break;
@@ -471,7 +393,7 @@ namespace IOP
 
         public bool OnSlope()
         {
-            if (Physics.Raycast(transform.position, Vector3.down, out m_slopeHit, transform.localScale.y + 0.25f))
+            if (Physics.Raycast(transform.position, Vector3.down, out m_slopeHit, GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f))
             {
                 m_slopeAngle = Vector3.Angle(Vector3.up, m_slopeHit.normal);
                 return m_slopeAngle < m_maxSlopeAngle && m_slopeAngle != 0;

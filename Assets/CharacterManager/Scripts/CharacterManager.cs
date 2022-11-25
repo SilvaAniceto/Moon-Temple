@@ -24,7 +24,8 @@ namespace CharacterManager
                 jumpInput = Input.GetButton("Jump") ? true : Input.GetButtonUp("Jump") ? false : false;
             }
         }
-                
+
+        #region CHARACTER SETTINGS
         [Header("Physics Settings")]
         [SerializeField] IsometricMove.MoveType moveType = IsometricMove.MoveType.FREE;
         [Header("Controller Type")]
@@ -38,9 +39,10 @@ namespace CharacterManager
         [Header("Jump Settings")]
         [SerializeField] public float jumpDeltaTime;
         [Range(50f, 100f)] public  float heightDelta;
+        #endregion
 
         #region Properties
-        
+
         #endregion
 
         private CharacterInputs m_inputs = new CharacterInputs();
@@ -124,13 +126,8 @@ namespace CharacterManager
             IsometricOrientedPerspective.Type = controllerType;
 
             m_isoMove.MoveContext = moveType;
-            m_isoMove.SetInputMoveDelta(IsometricOrientedPerspective.Type);
+            m_isoMove.SetInputMoveDelta(IsometricOrientedPerspective.Type, m_inputs.horizontalAxi, m_inputs.verticalAxi);
             m_inputs.UpdateInputs();
-
-            m_isoMove.HorizontalMovement = m_inputs.horizontalAxi;
-            m_isoMove.VerticalMovement = m_inputs.verticalAxi;
-
-            m_jumpSystem.JumpInput = m_inputs.jumpInput;
 
             if (m_isoMove.MoveDelta == Vector2.zero && m_isoMove.OnSlope())
                 m_jumpSystem.OnSlope = m_isoMove.OnSlope();
@@ -140,60 +137,25 @@ namespace CharacterManager
 
             Ray ray = IsometricCamera.m_instance.GetRay(m_inputs.rotatePosition);
 
-            if (Physics.Raycast(ray, out m_raycastHit ,float.MaxValue, layerMask))
+            if (Physics.Raycast(ray, out m_raycastHit, float.MaxValue, layerMask))
                 m_isoMove.LeftClick = m_inputs.leftClick;
 
             switch (controllerType)
             {
                 case IsometricOrientedPerspective.ControllType.PointAndClick:
                     m_isoRotation.Rotate(m_raycastHit.point, layerMask);
-                    m_isoMove.Move(m_raycastHit.point, m_isoMove.LeftClick, m_rigidbody);
+                    m_isoMove.Move(m_raycastHit.point, m_inputs.leftClick, m_rigidbody);
                     break;
                 case IsometricOrientedPerspective.ControllType.KeyBoard:
                     m_isoMove.Move(m_isoMove.MoveDelta, m_rigidbody);
                     break;
             }
+            
+            m_jumpSystem.Jump(m_inputs.jumpInput);
 
             IsometricCamera.m_instance.MoveBase();
-        }
 
-        private void FixedUpdate()
-        {
-            m_jumpSystem.Jump();
-
-            #region DEPRECATED
-            //if (!m_settings.physicsMove) return;
-
-            //if (m_isoMove.OnMove)
-            //{
-            //    m_isoMove.GetMoveDistance(m_isoMove.StartPosition);
-            //    m_area.DrawCircle(100, m_isoMove.MoveDistance, new Vector3(m_isoMove.StartPosition.x, -0.85f, m_isoMove.StartPosition.z));
-            //}
-            //else
-            //    m_area.DrawCircle(100, m_isoMove.MoveDistance, transform.position);
-
-            
-
-            //if (m_isoRotation.enabled)
-            //{
-            //    if (m_isoMove.OnMove)
-            //        m_isoMove.Move(m_isoMove.Direction.direction.x, m_isoMove.Direction.direction.z, m_rigidbody);
-            //}
-            //else if (m_isoMove.MoveDelta != Vector2.zero && !m_isoRotation.enabled)
-            //{
-            //    if (m_inputs.inputStartMovement)
-            //    {
-            //        m_inputs.inputStartMovement = false;
-            //        m_isoMove.StartPosition = transform.position;
-            //    }
-            //    m_isoMove.Move(m_isoMove.MoveDelta.x, m_isoMove.MoveDelta.y, m_rigidbody);
-            //}
-            //else if (m_isoMove.MoveDelta == Vector2.zero && !m_isoRotation.enabled)
-            //{
-            //    m_inputs.inputStartMovement = true;
-            //    m_isoMove.OnMove = false;
-            //}
-            #endregion
+            m_area.DrawCircle(100, movementDistance, new Vector3(transform.position.x, transform.position.y - GetComponent<CapsuleCollider>().bounds.extents.y, transform.position.z));
         }
     }
 }

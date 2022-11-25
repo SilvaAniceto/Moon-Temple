@@ -7,7 +7,6 @@ namespace IOP
     {
         private static Vector3 m_isometricForward, m_isometricRight;
         private static MoveDirection m_moveDirection;
-        private Ray m_raycastHit;
         public enum ControllType
         {
             PointAndClick,
@@ -37,22 +36,7 @@ namespace IOP
             {
                 return m_isometricRight;
             }  
-        }               
-        /// <summary>
-        /// Physics ray to define mouse cursor position.
-        /// </summary>
-        public Ray RaycastHit
-        {
-            get
-            {
-                return m_raycastHit;
-            }
-
-            set
-            {
-                m_raycastHit = value;
-            }
-        }        
+        }      
         /// <summary>
         /// Defines which direction the game object is facing, moving or rotating.
         /// </summary>

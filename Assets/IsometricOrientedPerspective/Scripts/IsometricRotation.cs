@@ -9,16 +9,7 @@ namespace IOP
         private Transform m_mouseCursor;
 
         #region Properties
-        /// <summary>
-        /// Transform for the mouse cursor.
-        /// </summary>
-        public Transform MouseCursor
-        {
-            get
-            {
-                return m_mouseCursor;
-            }
-        }
+        
         #endregion  
 
         public void Setup(ControllType p_value)
