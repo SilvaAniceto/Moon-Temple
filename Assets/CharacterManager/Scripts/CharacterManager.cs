@@ -102,7 +102,7 @@ namespace CharacterManager
             m_isoMove.MoveContext = moveType;
 
             m_isoMove.MovementDelta = movementSpeed;
-            m_isoMove.MoveDistance = movementDistance;
+            m_isoMove.LimitDistance = movementDistance;
             m_isoMove.MaxSlopeAngle = maxSlopeAngle;
 
             m_jumpSystem.LayerMask = layerMask;
@@ -129,6 +129,8 @@ namespace CharacterManager
             m_isoMove.SetInputMoveDelta(IsometricOrientedPerspective.Type, m_inputs.horizontalAxi, m_inputs.verticalAxi);
             m_inputs.UpdateInputs();
 
+            m_jumpSystem.JumpInput = m_inputs.jumpInput;
+            
             if (m_isoMove.MoveDelta == Vector2.zero && m_isoMove.OnSlope())
                 m_jumpSystem.OnSlope = m_isoMove.OnSlope();
 
@@ -145,17 +147,38 @@ namespace CharacterManager
                 case IsometricOrientedPerspective.ControllType.PointAndClick:
                     m_isoRotation.Rotate(m_raycastHit.point, layerMask);
                     m_isoMove.Move(m_raycastHit.point, m_inputs.leftClick, m_rigidbody);
+                    switch (moveType)
+                    {
+                        case IsometricMove.MoveType.FREE:
+                            m_isoRotation.CursorColor = Color.blue;
+                            break;
+                        case IsometricMove.MoveType.COMBAT:
+                            if (Mathf.FloorToInt(Vector3.Distance(m_raycastHit.point, transform.position)) > movementDistance)
+                                m_isoRotation.CursorColor = Color.red;
+                            else
+                                m_isoRotation.CursorColor = Color.blue;
+                            break;
+                    }
                     break;
+
                 case IsometricOrientedPerspective.ControllType.KeyBoard:
                     m_isoMove.Move(m_isoMove.MoveDelta, m_rigidbody);
+                    if (moveType == IsometricMove.MoveType.COMBAT)
+                    {
+                        m_area.DrawCircle(100, movementDistance, new Vector3(m_area.transform.position.x, transform.position.y - GetComponent<CapsuleCollider>().bounds.extents.y, m_area.transform.position.z));
+
+                        if (!m_isoMove.OnMove)
+                            m_area.transform.position = new Vector3(transform.position.x, transform.position.y - GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, transform.position.z);
+                    }
                     break;
             }
-            
-            m_jumpSystem.Jump(m_inputs.jumpInput);
 
             IsometricCamera.m_instance.MoveBase();
+        }
 
-            m_area.DrawCircle(100, movementDistance, new Vector3(transform.position.x, transform.position.y - GetComponent<CapsuleCollider>().bounds.extents.y, transform.position.z));
+        private void FixedUpdate()
+        {
+            m_jumpSystem.Jump();
         }
     }
 }

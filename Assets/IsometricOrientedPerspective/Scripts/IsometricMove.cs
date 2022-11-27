@@ -9,14 +9,15 @@ namespace IOP
         public static IsometricMove m_moveInstance;
 
         private bool m_leftClick, m_onMove;
-        private float m_moveDistance = 9f;
+        private float m_limitDistance = 9f;
         private float m_movementDelta = 4f;
-        private float m_distanceTravelled, m_maxSlopeAngle, m_slopeAngle;
-        private Vector2 m_moveDelta;
-        private Vector3 m_startPosition, m_direction, m_auxDirection;
+        private float m_distanceToTravel, m_distanceTravelled, m_maxSlopeAngle, m_slopeAngle;
+        private Vector2 m_moveDelta, m_startPosition;
+        private Vector3 m_direction, m_auxDirection;
         private RaycastHit m_slopeHit;
         public enum MoveType { FREE, COMBAT}
         private MoveType m_moveType = MoveType.FREE;
+        private GameObject m_slopeCheck;
 
         public UnityEvent<MoveType> OnMoveTypeChange;
 
@@ -24,19 +25,19 @@ namespace IOP
         /// <summary>
         /// Define the limit distance that the movement can happen.
         /// </summary>
-        public float MoveDistance
+        public float LimitDistance
         {
             get
             {
-                return m_moveDistance;
+                return m_limitDistance;
             }
 
             set
             {
-                if (m_moveDistance == value)
+                if (m_limitDistance == value)
                     return;
 
-                m_moveDistance = value;
+                m_limitDistance = value;
             }
         }
         /// <summary>
@@ -114,7 +115,7 @@ namespace IOP
         /// <summary>
         /// The start position when the movement begins.
         /// </summary>
-        public Vector3 StartPosition
+        public Vector2 StartPosition
         {
             get
             {
@@ -190,6 +191,13 @@ namespace IOP
                 IsometricSetup();
             }
 
+            if (m_slopeCheck == null)
+            {
+                m_slopeCheck = new GameObject("Slope Check");
+                m_slopeCheck.transform.SetParent(transform);
+                m_slopeCheck.transform.localPosition = new Vector3(0, 0, GetComponent<CapsuleCollider>().bounds.extents.z - 0.25f);
+            }
+
             m_onMove = false;
         }
 
@@ -203,77 +211,74 @@ namespace IOP
             if (!m_onMove)
             {
                 if (p_click)
-                {
-                    if (OnSlope())
-                    {
-                        if (p_vector3.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f < transform.position.y)
-                        {
-                            Vector3 refPoint = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
-                            float directionDelta = Vector3.Distance(transform.position, refPoint);
+                {                    
+                    m_direction = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
+                    m_auxDirection = m_direction;
+                    m_onMove = true;
 
-                            m_auxDirection = new Vector3(refPoint.x, refPoint.y - directionDelta, refPoint.z);
-                        }
-                        else
-                        {
-                            m_direction = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
-                            m_auxDirection = p_vector3;
-                            m_onMove = true;
-                        }
-                    }
-                    else
-                    {
-                        m_direction = new Vector3(p_vector3.x, transform.position.y, p_vector3.z);
-                        m_auxDirection = p_vector3;
-                        m_onMove = true;
-                    }
+                    m_direction = m_direction.normalized;
+
+                    Direction.righMovement = Vector3.zero;
+                    Direction.slopeMovement = Vector3.zero;
+                    Direction.upMovement = transform.forward * m_movementDelta * Time.fixedDeltaTime * m_direction.z;
+
+                    m_direction = Direction.righMovement + Direction.slopeMovement + Direction.upMovement;
                 }
 
-                m_startPosition = transform.position;
+                m_startPosition = new Vector2(transform.position.x, transform.position.z);
+
+                m_distanceToTravel = Mathf.FloorToInt(Vector2.Distance(m_startPosition, new Vector2(m_auxDirection.x, m_auxDirection.z)));
             }
 
             if (m_onMove)
                 GetMoveDistance(m_startPosition);
-
-            if (m_direction.normalized != Vector3.zero)
+            else
+                return;
+            
+            if (!OnSlope())
             {
-                if (!OnSlope())
+                if (m_moveType == MoveType.COMBAT)
                 {
-                    m_direction = new Vector3(m_auxDirection.x, transform.position.y, m_auxDirection.z);
+                    if (Mathf.FloorToInt(Vector3.Distance(m_auxDirection, transform.position)) > m_limitDistance)
+                    {
+                        m_onMove = false;
+                        return;
+                    }
 
-                    if (m_moveType == MoveType.COMBAT)
-                    {
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            p_rigidbody.MovePosition(Vector3.MoveTowards(p_rigidbody.position, m_direction, m_movementDelta * Time.fixedDeltaTime));
-                        else
-                            m_onMove = false;
-                    }
+                    if (m_distanceTravelled == m_distanceToTravel)
+                        m_onMove = false;
+                    else if ((int)m_distanceTravelled < (int)m_limitDistance)
+                        p_rigidbody.MovePosition(p_rigidbody.position + m_direction);
                     else
-                    {
-                        p_rigidbody.MovePosition(Vector3.MoveTowards(p_rigidbody.position, m_direction, m_movementDelta * Time.fixedDeltaTime));
-                        float distance = Vector3.Distance(m_direction, transform.position);
-                        m_onMove = distance > 0.2f ? true : false;
-                    }
+                        m_onMove = false;
                 }
                 else
                 {
-                    if (m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f < transform.position.y)
-                        m_direction = m_auxDirection;
-                    else
-                        m_direction = new Vector3(m_auxDirection.x, m_auxDirection.y + GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, m_auxDirection.z);
+                    if (m_onMove)
+                        p_rigidbody.MovePosition(p_rigidbody.position + m_direction);
+                }
+            }
+            else
+            {
+                if (m_moveType == MoveType.COMBAT)
+                {
+                    if (Mathf.FloorToInt(Vector3.Distance(m_auxDirection, transform.position)) > m_limitDistance)
+                    {
+                        m_onMove = false;
+                        return;
+                    }
 
-                    if (m_moveType == MoveType.COMBAT)
-                    {
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
-                            p_rigidbody.MovePosition(Vector3.MoveTowards(p_rigidbody.position, m_direction, m_movementDelta * Time.fixedDeltaTime));
-                        else
-                            m_onMove = false;
-                    }
+                    if (m_distanceTravelled == m_distanceToTravel)
+                        m_onMove = false;
+                    else if ((int)m_distanceTravelled < (int)m_limitDistance)
+                        p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized / (m_movementDelta + 2));
                     else
-                    {
-                        p_rigidbody.MovePosition(Vector3.MoveTowards(p_rigidbody.position, m_direction, m_movementDelta * Time.fixedDeltaTime));
-                        float distance = Vector3.Distance(m_direction, transform.position);
-                        m_onMove = distance > 0.2f ? true : false;
-                    }
+                        m_onMove = false;
+                }
+                else
+                {
+                    if (m_onMove)
+                        p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized / (m_movementDelta + 2));
                 }
             }
         }
@@ -301,12 +306,12 @@ namespace IOP
                 case MoveType.COMBAT:
                     if (p_vector != Vector2.zero)
                     {
-                        if ((int)m_distanceTravelled < (int)m_moveDistance)
+                        if ((int)m_distanceTravelled < (int)m_limitDistance)
                         {
                             if (!m_onMove)
                             {
                                 m_onMove = true;
-                                m_startPosition = transform.position;
+                                m_startPosition = new Vector2(transform.position.x, transform.position.z); ;
                             }
                         }
                     }
@@ -327,11 +332,13 @@ namespace IOP
 
             if (m_onMove) GetMoveDistance(m_startPosition);
 
+            if (m_direction.normalized == Vector3.zero) return;
+
             if (!OnSlope())
             {
                 if (m_moveType == MoveType.COMBAT)
                 {
-                    if ((int)m_distanceTravelled < (int)m_moveDistance)
+                    if ((int)m_distanceTravelled < (int)m_limitDistance)
                         p_rigidbody.MovePosition(p_rigidbody.position + m_direction);
                 }
                 else
@@ -341,11 +348,11 @@ namespace IOP
             {
                 if (m_moveType == MoveType.COMBAT)
                 {
-                    if ((int)m_distanceTravelled < (int)m_moveDistance)
-                        p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized / 5);
+                    if ((int)m_distanceTravelled < (int)m_limitDistance)
+                        p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection() / m_movementDelta);
                 }
                 else
-                    p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection().normalized / 5);
+                    p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection() / m_movementDelta);
             }
 
             if (m_direction != Vector3.zero)
@@ -383,17 +390,30 @@ namespace IOP
         /// <summary>
         /// Calculate the distance travelled when the movement begins.
         /// </summary>
-        public void GetMoveDistance(Vector3 p_startPosition)
+        public void GetMoveDistance(Vector2 p_startPosition)
         {
-            m_distanceTravelled = Vector3.Distance(p_startPosition, transform.position);
+            m_distanceTravelled = Mathf.FloorToInt(Vector2.Distance(p_startPosition, new Vector2(transform.position.x, transform.position.z)));
 
-            if (m_distanceTravelled >= m_moveDistance)
-                m_onMove = false;
+            switch (m_moveType)
+            {
+                case MoveType.FREE:
+                    if (m_distanceTravelled == m_distanceToTravel)
+                        m_onMove = false;
+                    break;
+                case MoveType.COMBAT:
+                    if (m_distanceTravelled >= m_limitDistance)
+                        m_onMove = false;
+                    break;
+                default:
+                    break;
+            }
+
+            
         }
 
         public bool OnSlope()
         {
-            if (Physics.Raycast(transform.position, Vector3.down, out m_slopeHit, GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f))
+            if (Physics.Raycast(m_slopeCheck.transform.position, Vector3.down, out m_slopeHit, GetComponent<CapsuleCollider>().bounds.extents.y + 1f))
             {
                 m_slopeAngle = Vector3.Angle(Vector3.up, m_slopeHit.normal);
                 return m_slopeAngle < m_maxSlopeAngle && m_slopeAngle != 0;
@@ -404,6 +424,12 @@ namespace IOP
         public Vector3 GetSlopeMoveDirection()
         {
             return Vector3.ProjectOnPlane(new Vector3(m_direction.x, (int)(m_direction.y * (int)m_slopeAngle), m_direction.z), m_slopeHit.normal).normalized;
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(m_slopeCheck.transform.position, new Vector3(m_slopeCheck.transform.position.x, transform.position.y - (GetComponent<CapsuleCollider>().bounds.extents.y + 1f), m_slopeCheck.transform.position.z));
         }
     }
 }

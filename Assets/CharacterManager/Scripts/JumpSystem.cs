@@ -6,7 +6,7 @@ namespace CharacterManager
     {
         public static JumpSystem m_jumpInstance;
 
-        private bool m_offGroundLevel, m_onGroundLevel, m_onSlope;
+        private bool m_offGroundLevel, m_onGroundLevel, m_onSlope, m_jumpInput;
         private float m_jumpDelayCounter, m_heightDelta, m_jumpDeltaTime;
         private Rigidbody m_rigidbody;
         private SphereCollider m_sphereCollider;
@@ -97,6 +97,16 @@ namespace CharacterManager
                 if (m_onSlope && !m_offGroundLevel) m_rigidbody.MovePosition(m_rigidbody.position);
             }
         }
+        public bool JumpInput
+        {
+            set
+            {
+                if (m_jumpInput == value)
+                    return;
+
+                m_jumpInput = value;
+            }
+        }
         #endregion
 
         public void Setup()
@@ -110,27 +120,27 @@ namespace CharacterManager
                 m_rigidbody = gameObject.GetComponent<Rigidbody>();
         }
         
-        public void Jump(bool p_jumpInput)
+        public void Jump()
         { 
-            if (OnGroundLevel && p_jumpInput)
+            if (OnGroundLevel && m_jumpInput)
             {
                 m_offGroundLevel = true;
                 m_jumpDelayCounter = m_jumpDeltaTime;
-                m_rigidbody.AddForce(Vector3.up * m_heightDelta * Time.fixedDeltaTime, ForceMode.Force);
+                m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Force);
             }
 
-            if (p_jumpInput && m_offGroundLevel)
+            if (m_jumpInput && m_offGroundLevel)
             {
                 if (m_jumpDelayCounter > 0)
                 {
-                    m_rigidbody.AddForce(Vector3.up * m_heightDelta * Time.fixedDeltaTime, ForceMode.Force);
+                    m_rigidbody.AddForce(Vector3.up * m_heightDelta, ForceMode.Force);
                     m_jumpDelayCounter -= Time.deltaTime;
                 }
                 else
                     m_offGroundLevel = false;
             }
 
-            if (p_jumpInput)
+            if (m_jumpInput)
                 m_offGroundLevel = false;
         }
 

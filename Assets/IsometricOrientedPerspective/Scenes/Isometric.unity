@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 296a396fe0cb8d64b87674a69acdbd0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveType: 1
+  moveType: 0
   controllerType: 0
   movementSpeed: 2
   movementDistance: 10
@@ -352,8 +352,8 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 8
-  jumpDeltaTime: 2
-  heightDelta: 60
+  jumpDeltaTime: 10
+  heightDelta: 71.3
 --- !u!1 &468327141
 GameObject:
   m_ObjectHideFlags: 0

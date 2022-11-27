@@ -7,9 +7,25 @@ namespace IOP
         public static IsometricRotation m_rotationInstance;
 
         private Transform m_mouseCursor;
+        private Color m_color = Color.white;
 
         #region Properties
-        
+        public Color CursorColor
+        {
+            get
+            {
+                return m_color;
+            }
+
+            set
+            {
+                if (m_color == value)
+                    return;
+
+                m_color = value;
+                m_mouseCursor.gameObject.GetComponent<MeshRenderer>().materials[0].color = value;
+            }
+        }
         #endregion  
 
         public void Setup(ControllType p_value)
