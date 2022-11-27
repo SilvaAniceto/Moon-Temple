@@ -8,11 +8,8 @@ namespace CharacterManager
     {
         public class CharacterInputs
         {
-            public bool inputStartMovement;
-            public float horizontalAxi;
-            public float verticalAxi;
-            public bool leftClick;
-            public bool jumpInput;
+            public float horizontalAxi, verticalAxi;
+            public bool leftClick, jumpInput, inputStartMovement;
             public Vector3 rotatePosition;
 
             public void UpdateInputs()
@@ -106,6 +103,7 @@ namespace CharacterManager
             m_isoMove.MaxSlopeAngle = maxSlopeAngle;
 
             m_jumpSystem.LayerMask = layerMask;
+            m_isoMove.LayerMask = layerMask;
 
             m_jumpSystem.JumpTime = jumpDeltaTime;
             m_jumpSystem.HeightDelta = heightDelta;
@@ -127,6 +125,7 @@ namespace CharacterManager
 
             m_isoMove.MoveContext = moveType;
             m_isoMove.SetInputMoveDelta(IsometricOrientedPerspective.Type, m_inputs.horizontalAxi, m_inputs.verticalAxi);
+
             m_inputs.UpdateInputs();
 
             m_jumpSystem.JumpInput = m_inputs.jumpInput;
@@ -145,20 +144,22 @@ namespace CharacterManager
             switch (controllerType)
             {
                 case IsometricOrientedPerspective.ControllType.PointAndClick:
-                    m_isoRotation.Rotate(m_raycastHit.point, layerMask);
-                    m_isoMove.Move(m_raycastHit.point, m_inputs.leftClick, m_rigidbody);
-                    switch (moveType)
-                    {
-                        case IsometricMove.MoveType.FREE:
-                            m_isoRotation.CursorColor = Color.blue;
-                            break;
-                        case IsometricMove.MoveType.COMBAT:
-                            if (Mathf.FloorToInt(Vector3.Distance(m_raycastHit.point, transform.position)) > movementDistance)
-                                m_isoRotation.CursorColor = Color.red;
-                            else
-                                m_isoRotation.CursorColor = Color.blue;
-                            break;
-                    }
+                    #region DISABLE FOR NOW
+                    //m_isoRotation.Rotate(m_raycastHit.point);
+                    //m_isoMove.Move(m_raycastHit.point, m_inputs.leftClick, m_rigidbody);
+                    //switch (moveType)
+                    //{
+                    //    case IsometricMove.MoveType.FREE:
+                    //        m_isoRotation.CursorColor = Color.blue;
+                    //        break;
+                    //    case IsometricMove.MoveType.COMBAT:
+                    //        if (Mathf.FloorToInt(Vector3.Distance(m_raycastHit.point, transform.position)) > movementDistance)
+                    //            m_isoRotation.CursorColor = Color.red;
+                    //        else
+                    //            m_isoRotation.CursorColor = Color.blue;
+                    //        break;
+                    //}
+                    #endregion
                     break;
 
                 case IsometricOrientedPerspective.ControllType.KeyBoard:

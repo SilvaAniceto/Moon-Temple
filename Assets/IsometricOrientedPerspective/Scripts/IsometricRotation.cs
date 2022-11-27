@@ -48,14 +48,14 @@ namespace IOP
         /// <summary>
         /// Resolve the rotation in Isometric Oriented Perspective.
         /// </summary>
-        public void Rotate(Vector3 p_rotatePosition, LayerMask p_layerMask)
+        public void Rotate(Vector3 p_rotatePosition)
         {
             if (IsometricCamera.m_instance.MovingCamera) return; // Prevents that the movement happens when the Camera is moving.            
 
             m_mouseCursor.position = p_rotatePosition;
             p_rotatePosition.y = transform.position.y;
 
-            if (Vector3.Distance(transform.position, p_rotatePosition) > 3 && !IsometricMove.m_moveInstance.OnMove)
+            if (Vector3.Distance(transform.position, p_rotatePosition) > 3 /*&& !IsometricMove.m_moveInstance.OnMove*/)
                 transform.LookAt(p_rotatePosition, Vector3.up);
         }
     }

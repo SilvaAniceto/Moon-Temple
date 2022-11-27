@@ -17,7 +17,8 @@ namespace IOP
         private RaycastHit m_slopeHit;
         public enum MoveType { FREE, COMBAT}
         private MoveType m_moveType = MoveType.FREE;
-        private GameObject m_slopeCheck;
+        private GameObject m_slopeCheck, m_obstacleCheck;
+        private LayerMask m_layerMask;
 
         public UnityEvent<MoveType> OnMoveTypeChange;
 
@@ -181,6 +182,21 @@ namespace IOP
                 m_slopeAngle = value;
             }
         }
+        public LayerMask LayerMask
+        {
+            get
+            {
+                return m_layerMask;
+            }
+
+            set
+            {
+                if (m_layerMask == value)
+                    return;
+
+                m_layerMask = value;
+            }
+        }
         #endregion
 
         public void Setup(ControllType p_value)
@@ -196,6 +212,13 @@ namespace IOP
                 m_slopeCheck = new GameObject("Slope Check");
                 m_slopeCheck.transform.SetParent(transform);
                 m_slopeCheck.transform.localPosition = new Vector3(0, 0, GetComponent<CapsuleCollider>().bounds.extents.z - 0.25f);
+            }
+
+            if (m_obstacleCheck == null)
+            {
+                m_obstacleCheck = new GameObject("Obstacle Check");
+                m_obstacleCheck.transform.SetParent(transform);
+                m_obstacleCheck.transform.localPosition = new Vector3(0, GetComponent<CapsuleCollider>().bounds.extents.y / 2, GetComponent<CapsuleCollider>().bounds.extents.z / 2);
             }
 
             m_onMove = false;
@@ -330,9 +353,15 @@ namespace IOP
 
             m_direction = Direction.righMovement + Direction.slopeMovement + Direction.upMovement;
 
-            if (m_onMove) GetMoveDistance(m_startPosition);
+            if (m_direction != Vector3.zero)
+                p_rigidbody.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(m_direction, transform.up), 0.8f);
 
-            if (m_direction.normalized == Vector3.zero) return;
+            FindObstacle();
+
+            if (m_onMove) GetMoveDistance(m_startPosition);
+            else return;
+
+            //if (m_direction.normalized == Vector3.zero) return;
 
             if (!OnSlope())
             {
@@ -349,14 +378,11 @@ namespace IOP
                 if (m_moveType == MoveType.COMBAT)
                 {
                     if ((int)m_distanceTravelled < (int)m_limitDistance)
-                        p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection() / m_movementDelta);
+                        p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection() / (m_movementDelta + 2));
                 }
                 else
-                    p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection() / m_movementDelta);
+                    p_rigidbody.MovePosition(transform.position + GetSlopeMoveDirection() / (m_movementDelta + 2));
             }
-
-            if (m_direction != Vector3.zero)
-                p_rigidbody.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(m_direction, transform.up), 0.8f);
         }
 
         /// <summary>
@@ -421,6 +447,12 @@ namespace IOP
             return false;
         }
 
+        void FindObstacle()
+        {
+            if (Physics.CheckSphere(m_obstacleCheck.transform.position, GetComponent<CapsuleCollider>().radius - 0.15f, m_layerMask))
+                m_onMove = false;
+        }
+
         public Vector3 GetSlopeMoveDirection()
         {
             return Vector3.ProjectOnPlane(new Vector3(m_direction.x, (int)(m_direction.y * (int)m_slopeAngle), m_direction.z), m_slopeHit.normal).normalized;
@@ -430,6 +462,7 @@ namespace IOP
         {
             Gizmos.color = Color.red;
             Gizmos.DrawLine(m_slopeCheck.transform.position, new Vector3(m_slopeCheck.transform.position.x, transform.position.y - (GetComponent<CapsuleCollider>().bounds.extents.y + 1f), m_slopeCheck.transform.position.z));
+            Gizmos.DrawWireSphere(m_obstacleCheck.transform.position, GetComponent<CapsuleCollider>().radius -0.15f);
         }
     }
 }

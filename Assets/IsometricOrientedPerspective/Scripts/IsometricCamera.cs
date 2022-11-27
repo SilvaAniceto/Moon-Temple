@@ -27,7 +27,7 @@ namespace IOP
         private List<Vector3> m_auxDeltaPosition = new List<Vector3>();
 
         private float m_horizontalAxis;
-        private float m_zoom;
+        private float m_zoomInput;
         private bool m_movingCamera;
         public enum CameraPosition { SOUTH, EAST, NORTH, WEST }
         private CameraPosition m_cameraPosition = CameraPosition.SOUTH;
@@ -219,6 +219,20 @@ namespace IOP
                 return m_movingCamera;
             }
         }
+        public float ZoomInput
+        {
+            get
+            {
+                return m_zoomInput;
+            }
+
+            set
+            {
+                if (m_zoomInput == value) return;
+
+                m_zoomInput = value;
+            }
+        }
         #endregion
 
         private void Awake()
@@ -245,24 +259,23 @@ namespace IOP
 
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
 
-            m_zoom = Input.GetAxis("CameraZoom");
+            m_zoomInput = Input.GetAxis("CameraZoom");
 
-            m_camera.orthographicSize += -m_zoom * m_zoomMultiplier * m_zoomSensibility * Time.deltaTime;
-            m_camera.orthographicSize = Mathf.Clamp(m_camera.orthographicSize, 5, 15);
+            m_camera.orthographicSize += Mathf.Clamp(m_zoomInput * 10, -1, 1) * m_zoomMultiplier * m_zoomSensibility * Time.deltaTime;
+            m_camera.orthographicSize = Mathf.Clamp(m_camera.orthographicSize, 5, 25);
 
             if (m_movingCamera) return;
 
             if (Input.GetButton("CameraControll"))
             {
-                Vector3 direction = new Vector3(Input.GetAxis("HorizontalCameraRotation"), 0, 0);
-                Vector3 righMovement = transform.right * 4.5f * Time.deltaTime * direction.x;
+                Vector3 righMovement = transform.right * 2f * Time.deltaTime * Input.GetAxis("HorizontalCameraRotation");
 
                 if (!m_movingCamera)
                     transform.position += righMovement;
 
                 GetLeftRightOffSet(m_currentOffset, Input.GetAxis("HorizontalCameraRotation"));
             }
-            if (Input.GetButton("CameraControll2"))
+            if (Input.GetAxis("CameraControll2") < 0)
             {
                 GetLeftRightOffSet(m_currentOffset, Input.GetAxis("HorizontalCameraRotation"));
 
@@ -353,7 +366,7 @@ namespace IOP
 
             if (p_horizontalAxis > 0) m_offset = m_rightOffset;
             
-            LeanTween.move(this.gameObject, m_target.position + m_offset, m_cameraSpeed * Time.fixedDeltaTime).setOnComplete(() =>
+            LeanTween.move(this.gameObject, m_target.position + m_offset, m_cameraSpeed * 0.05f).setOnComplete(() =>
             {
                 m_horizontalAxis = 0;
                 m_currentOffset = m_offset;

@@ -433,7 +433,7 @@ InputManager:
     dead: 0
     sensitivity: 0.1
     snap: 0
-    invert: 0
+    invert: 1
     type: 1
     axis: 2
     joyNum: 0
@@ -458,7 +458,7 @@ InputManager:
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
-    positiveButton: joystick button 5
+    positiveButton: 
     altNegativeButton: 
     altPositiveButton: 
     gravity: 1000
@@ -466,8 +466,8 @@ InputManager:
     sensitivity: 1000
     snap: 0
     invert: 0
-    type: 0
-    axis: 0
+    type: 2
+    axis: 2
     joyNum: 0
   - serializedVersion: 3
     m_Name: CameraZoom
@@ -481,7 +481,7 @@ InputManager:
     dead: 0.5
     sensitivity: 1
     snap: 1
-    invert: 1
+    invert: 0
     type: 2
     axis: 4
     joyNum: 0
