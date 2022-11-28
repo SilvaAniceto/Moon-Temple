@@ -166,7 +166,7 @@ namespace CharacterManager
                     m_isoMove.Move(m_isoMove.MoveDelta, m_rigidbody);
                     if (moveType == IsometricMove.MoveType.COMBAT)
                     {
-                        m_area.DrawCircle(100, movementDistance, new Vector3(m_area.transform.position.x, transform.position.y - GetComponent<CapsuleCollider>().bounds.extents.y, m_area.transform.position.z));
+                        m_area.DrawCircle(8, movementDistance, new Vector3(m_area.transform.position.x, transform.position.y - GetComponent<CapsuleCollider>().bounds.extents.y, m_area.transform.position.z));
 
                         if (!m_isoMove.OnMove)
                             m_area.transform.position = new Vector3(transform.position.x, transform.position.y - GetComponent<CapsuleCollider>().bounds.extents.y + 0.1f, transform.position.z);
