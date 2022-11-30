@@ -11,6 +11,7 @@ namespace CustomInterface
         [SerializeField] private List<GameObject> m_alignmentAnchor = new List<GameObject>();
         [SerializeField] private int m_anchorRadius;
         [SerializeField] private Color m_color = Color.white;
+        [SerializeField] private float m_rotationAngle;
        
         // Start is called before the first frame update
         void Start()
@@ -31,12 +32,18 @@ namespace CustomInterface
 
                 m_alignmentAnchor[i].GetComponent<RectTransform>().localScale = Vector3.one * 0.5f;
             }
+
+            m_rotationAngle = 360 / m_alignmentAnchor.Count;
         }
 
         // Update is called once per frame
         void Update()
         {
             DrawCircle(m_alignmentAnchor.Count, m_anchorRadius);
+
+            if (Input.GetButtonDown("Submit"))
+                GetComponent<RectTransform>().rotation = Quaternion.Slerp(GetComponent<RectTransform>().rotation, new Quaternion(0, 0,Mathf.Deg2Rad * m_rotationAngle, 0), 0.8f);
+
         }
 
         public void DrawCircle(int p_steps, float p_radius)
