@@ -1,52 +1,74 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.WSA;
 
 namespace CustomInterface
 {
-    //[ExecuteInEditMode]
+    [ExecuteInEditMode]
     public class CustomInterface : MonoBehaviour
     {
 
         [SerializeField] private List<GameObject> m_alignmentAnchor = new List<GameObject>();
-        [SerializeField] private int m_anchorRadius;
         [SerializeField] private Color m_color = Color.white;
         [SerializeField] private float m_rotationAngle;
+        [SerializeField] private int m_radius;
+
+        private int radius;
+        private int anchorCount;
+        public int AnchorCount
+        {
+            get 
+            { 
+                return anchorCount; 
+            }
+
+            private set
+            {
+                if (anchorCount == value)
+                    return;
+
+                anchorCount = value;
+
+                DestroyObjects();
+
+                if (anchorCount >= 3)
+                    ArrangeGameObjects(true);
+            }
+        }
+
+        public int Radius
+        {
+            get
+            {
+                return radius;
+            }
+
+            private set
+            {
+                if (radius == value)
+                    return;
+
+                radius = value;
+
+                ArrangeGameObjects(false);
+            }
+        }
        
         // Start is called before the first frame update
         void Start()
         {
-            for (int i = 0; i < m_alignmentAnchor.Count; i++)
-            {
-                GameObject obj = new GameObject("Anchor", typeof(RectTransform));
-
-                m_alignmentAnchor[i] = obj;
-
-                m_alignmentAnchor[i].transform.SetParent(transform);
-
-                m_alignmentAnchor[i].AddComponent<Image>();
-
-                m_alignmentAnchor[i].GetComponent<Image>().color = m_color;
-
-                m_alignmentAnchor[i].GetComponent<RectTransform>().localPosition = Vector3.zero;
-
-                m_alignmentAnchor[i].GetComponent<RectTransform>().localScale = Vector3.one * 0.5f;
-            }
-
-            m_rotationAngle = 360 / m_alignmentAnchor.Count;
+            
         }
 
         // Update is called once per frame
         void Update()
         {
-            DrawCircle(m_alignmentAnchor.Count, m_anchorRadius);
-
-            if (Input.GetButtonDown("Submit"))
-                GetComponent<RectTransform>().rotation = Quaternion.Slerp(GetComponent<RectTransform>().rotation, new Quaternion(0, 0,Mathf.Deg2Rad * m_rotationAngle, 0), 0.8f);
-
+            AnchorCount = m_alignmentAnchor.Count;
+            Radius = m_radius;
         }
 
-        public void DrawCircle(int p_steps, float p_radius)
+        public void SetPoligonalVertex(int p_steps, float p_radius)
         {
             for (int currentStep = 0; currentStep < p_steps; currentStep++)
             {
@@ -61,6 +83,44 @@ namespace CustomInterface
                 float y = yScaled * p_radius;
 
                 m_alignmentAnchor[currentStep].GetComponent<RectTransform>().localPosition = new Vector3(x, y, 0);
+            }
+        }
+
+        public void ArrangeGameObjects(bool p_newObjects)
+        {
+            if (p_newObjects)
+            {
+                for (int i = 0; i < m_alignmentAnchor.Count; i++)
+                {   
+                    GameObject obj = new GameObject("Anchor", typeof(RectTransform));
+
+                    m_alignmentAnchor[i] = obj;
+
+                    m_alignmentAnchor[i].transform.SetParent(transform);
+
+                    m_alignmentAnchor[i].AddComponent<Image>();
+
+                    m_alignmentAnchor[i].GetComponent<Image>().color = m_color;
+
+                    m_alignmentAnchor[i].GetComponent<RectTransform>().localPosition = Vector3.zero;
+
+                    m_alignmentAnchor[i].GetComponent<RectTransform>().localScale = Vector3.one * 0.5f;
+                }
+
+                m_rotationAngle = 360 / m_alignmentAnchor.Count;
+            }
+
+            SetPoligonalVertex(AnchorCount, Radius);
+        }
+
+        void DestroyObjects()
+        {
+            if (transform.childCount == 0) return;
+
+            int childCount = transform.childCount;
+            for (int i = childCount-1; i >= 0; i--)
+            {
+                DestroyImmediate(transform.GetChild(i).gameObject, false);
             }
         }
     }
