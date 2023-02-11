@@ -2,25 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace CustomRPGSystem
 {
     public class CharacterEditor : MonoBehaviour
     {
-        [SerializeField] InputField name;
-        [SerializeField] Dropdown level;
-        [SerializeField] Dropdown race;
-        [SerializeField] Dropdown classes;
-
+        [SerializeField] TMP_InputField characterName;
+        [SerializeField] TMP_Dropdown level;
+        [SerializeField] TMP_Dropdown race;
+        [SerializeField] TMP_Dropdown classes;
+        
  
         public List<PlayerCharacterData> CharacterData = new List<PlayerCharacterData>();
         // Start is called before the first frame update
         public void Create()
         {
-            if (string.IsNullOrEmpty(name.text)) return;
+            if (string.IsNullOrEmpty(characterName.text)) return;
 
-            CharacterData.Add(new PlayerCharacterData(name.text, level.value, (PlayerCharacterData.CharacterInfo.Race)race.value, (PlayerCharacterData.CharacterInfo.Class)classes.value));           
-            FileHandler.SaveToJSON<PlayerCharacterData>(CharacterData, name.text);
+            CharacterData.Add(new PlayerCharacterData(characterName.text, level.value, (PlayerCharacterData.CharacterInfo.Race)race.value, (PlayerCharacterData.CharacterInfo.Class)classes.value));           
+            FileHandler.SaveToJSON<PlayerCharacterData>(CharacterData, characterName.text);
         }
     }
 }
