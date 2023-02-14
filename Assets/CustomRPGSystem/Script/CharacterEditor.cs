@@ -13,7 +13,6 @@ namespace CustomRPGSystem
         [SerializeField] TMP_Dropdown race;
         [SerializeField] TMP_Dropdown classes;
         
- 
         public List<PlayerCharacterData> CharacterData = new List<PlayerCharacterData>();
         // Start is called before the first frame update
         public void Create()
