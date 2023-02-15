@@ -6,21 +6,96 @@ using TMPro;
 
 namespace CustomRPGSystem
 {
-    public class CharacterEditor : MonoBehaviour
+    public class CharacterEditor : CharacterCreator
     {
-        [SerializeField] TMP_InputField characterName;
-        [SerializeField] TMP_Dropdown level;
-        [SerializeField] TMP_Dropdown race;
-        [SerializeField] TMP_Dropdown classes;
-        
-        public List<PlayerCharacterData> CharacterData = new List<PlayerCharacterData>();
-        // Start is called before the first frame update
-        public void Create()
-        {
-            if (string.IsNullOrEmpty(characterName.text)) return;
+        [SerializeField] private TMP_InputField characterName;
+        [SerializeField] private TMP_Dropdown level;
+        [SerializeField] private TMP_Dropdown race;
+        [SerializeField] private TMP_Dropdown classes;
+        [SerializeField] private Button createSave;
 
-            CharacterData.Add(new PlayerCharacterData(characterName.text, level.value, (PlayerCharacterData.CharacterInfo.Race)race.value, (PlayerCharacterData.CharacterInfo.Class)classes.value));           
-            FileHandler.SaveToJSON<PlayerCharacterData>(CharacterData, characterName.text);
+        private void Awake()
+        {
+            level.AddOptions(new List<TMP_Dropdown.OptionData>
+            {
+                new TMP_Dropdown.OptionData() {text = "1"},
+                new TMP_Dropdown.OptionData() {text = "2"},
+                new TMP_Dropdown.OptionData() {text = "3"},
+                new TMP_Dropdown.OptionData() {text = "4"},
+                new TMP_Dropdown.OptionData() {text = "5"},
+                new TMP_Dropdown.OptionData() {text = "6"},
+                new TMP_Dropdown.OptionData() {text = "7"},
+                new TMP_Dropdown.OptionData() {text = "8"},
+                new TMP_Dropdown.OptionData() {text = "9"},
+                new TMP_Dropdown.OptionData() {text = "10"},
+                new TMP_Dropdown.OptionData() {text = "11"},
+                new TMP_Dropdown.OptionData() {text = "12"},
+                new TMP_Dropdown.OptionData() {text = "13"},
+                new TMP_Dropdown.OptionData() {text = "14"},
+                new TMP_Dropdown.OptionData() {text = "15"},
+                new TMP_Dropdown.OptionData() {text = "16"},
+                new TMP_Dropdown.OptionData() {text = "17"},
+                new TMP_Dropdown.OptionData() {text = "18"},
+                new TMP_Dropdown.OptionData() {text = "19"},
+                new TMP_Dropdown.OptionData() {text = "20"}
+            });
+
+            race.AddOptions(new List<TMP_Dropdown.OptionData>
+            {
+                new TMP_Dropdown.OptionData() {text = "None"},
+                new TMP_Dropdown.OptionData() {text = "Dragonborn"},
+                new TMP_Dropdown.OptionData() {text = "Hill Dwarf"},
+                new TMP_Dropdown.OptionData() {text = "Montain Dwarf"},
+                new TMP_Dropdown.OptionData() {text = "High Elf"},
+                new TMP_Dropdown.OptionData() {text = "Wood Elf"},
+                new TMP_Dropdown.OptionData() {text = "Shadow Elf"},
+                new TMP_Dropdown.OptionData() {text = "Forest Gnome"},
+                new TMP_Dropdown.OptionData() {text = "Rock Gnome"},
+                new TMP_Dropdown.OptionData() {text = "Half Elf"},
+                new TMP_Dropdown.OptionData() {text = "Half Orc"},
+                new TMP_Dropdown.OptionData() {text = "Lighfoot Halfling"},
+                new TMP_Dropdown.OptionData() {text = "Stout Halfling"},
+                new TMP_Dropdown.OptionData() {text = "Human"},
+                new TMP_Dropdown.OptionData() {text = "Tiefling"}
+            });
+
+            classes.AddOptions(new List<TMP_Dropdown.OptionData>
+            {
+                new TMP_Dropdown.OptionData() {text = "None"},
+                new TMP_Dropdown.OptionData() {text = "Barbarian"},
+                new TMP_Dropdown.OptionData() {text = "Bard"},
+                new TMP_Dropdown.OptionData() {text = "Cleric"},
+                new TMP_Dropdown.OptionData() {text = "Druid"},
+                new TMP_Dropdown.OptionData() {text = "Fighter"},
+                new TMP_Dropdown.OptionData() {text = "Monk"},
+                new TMP_Dropdown.OptionData() {text = "Paladin"},
+                new TMP_Dropdown.OptionData() {text = "Ranger"},
+                new TMP_Dropdown.OptionData() {text = "Rogue"},
+                new TMP_Dropdown.OptionData() {text = "Sorcerer"},
+                new TMP_Dropdown.OptionData() {text = "Warlock"},
+                new TMP_Dropdown.OptionData() {text = "Wizard"}
+            });
+        }
+
+        private void Start()
+        {
+            level.onValueChanged.AddListener(delegate {
+                m_levelValue = level.value;
+            });
+
+            race.onValueChanged.AddListener(delegate {
+                m_raceValue = race.value;
+            });
+
+            classes.onValueChanged.AddListener(delegate {
+                m_classValue = classes.value;
+            });
+
+            createSave.onClick.AddListener(delegate
+            {
+                m_characterName = characterName.text;
+                Create();
+            });
         }
     }
 }
