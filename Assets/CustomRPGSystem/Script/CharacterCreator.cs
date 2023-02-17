@@ -46,6 +46,9 @@ namespace CustomRPGSystem
         {
             if (Instance == null) Instance = this;
 
+            m_UIButtonLayout.SetActive(true);
+            m_characterEditor.gameObject.SetActive(false);
+
             if (!Directory.Exists(PlayerDirectory))
             {
                 Directory.CreateDirectory(PlayerDirectory);
