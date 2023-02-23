@@ -6,16 +6,15 @@ using UnityEngine;
 
 public static class FileHandler
 {
-
-    public static void SaveToJSON<T> (List<T> toSave, string filename) {
-        Debug.Log (GetPath (filename));
+    public static void SaveToJSON<T> (List<T> toSave, string path) {
+        Debug.Log (path);
         string content = JsonHelper.ToJson<T> (toSave.ToArray ());
-        WriteFile (GetPath (filename), content);
+        WriteFile (path, content);
     }
 
-    public static void SaveToJSON<T> (T toSave, string filename) {
+    public static void SaveToJSON<T> (T toSave, string filename, string path) {
         string content = JsonUtility.ToJson (toSave);
-        WriteFile (GetPath (filename), content);
+        WriteFile (path, content);
     }
 
     public static List<T> ReadListFromJSON<T> (string filename) {
@@ -45,7 +44,7 @@ public static class FileHandler
     }
 
     private static string GetPath (string filename) {
-        return Application.persistentDataPath + "/" + filename;
+        return filename;
     }
 
     private static void WriteFile (string path, string content) {

@@ -18,12 +18,17 @@ namespace CustomRPGSystem
         [Header("Character Editor")]
         [SerializeField] private CharacterEditor m_characterEditor;
 
-        protected string m_characterName = "";
-        protected int m_levelValue;
-        protected int m_raceValue;
-        protected int m_classValue;
+        [Header("Character Ability Editor")]
+        [SerializeField] private CharacterAbilityEditor m_characterAbilityEditor;
 
-        public static List<PlayerCharacterData> CharacterData = new List<PlayerCharacterData>();
+        public static string m_playerName = "";
+        public static string m_characterName = "";
+        public static int m_levelValue;
+        public static int m_raceValue;
+        public static int m_classValue;
+
+        public static List<PlayerCharacterData> CharacterList = new List<PlayerCharacterData>();
+        public static PlayerCharacterData CharacterData;
 
         #region PROPERTIES
         public string PlayerDirectory
@@ -48,6 +53,9 @@ namespace CustomRPGSystem
 
             m_UIButtonLayout.SetActive(true);
             m_characterEditor.gameObject.SetActive(false);
+            m_characterAbilityEditor.gameObject.SetActive(false);
+
+            m_characterEditor.createSave.onClick.AddListener(Create);
 
             if (!Directory.Exists(PlayerDirectory))
             {
@@ -85,12 +93,23 @@ namespace CustomRPGSystem
         
         }
 
-        public void Create()
+        private void Create()
         {
             if (string.IsNullOrEmpty(m_characterName)) return;
 
-            CharacterData.Add(new PlayerCharacterData(m_characterName, m_levelValue, (PlayerCharacterData.CharacterInfo.Race)m_raceValue, (PlayerCharacterData.CharacterInfo.Class)m_classValue));
-            FileHandler.SaveToJSON<PlayerCharacterData>(CharacterData, m_characterName);
+            CharacterData = new PlayerCharacterData(m_characterName, m_levelValue, (PlayerCharacterData.CharacterInfo.Race)m_raceValue, (PlayerCharacterData.CharacterInfo.Class)m_classValue);
+
+            CharacterList.Add(CharacterData);
+            
+            //FileHandler.SaveToJSON<PlayerCharacterData>(CharacterList, MainCharacterDirectory + "/" + m_playerName);
+
+            ManagerCreatorPages();
+        }
+
+        void ManagerCreatorPages()
+        {
+            m_characterEditor.gameObject.SetActive(false);
+            m_characterAbilityEditor.gameObject.SetActive(true);
         }
     }
 }

@@ -6,13 +6,14 @@ using TMPro;
 
 namespace CustomRPGSystem
 {
-    public class CharacterEditor : CharacterCreator
+    public class CharacterEditor : MonoBehaviour
     {
-        [SerializeField] private TMP_InputField characterName;
-        [SerializeField] private TMP_Dropdown level;
-        [SerializeField] private TMP_Dropdown race;
-        [SerializeField] private TMP_Dropdown classes;
-        [SerializeField] private Button createSave;
+        public TMP_InputField playerName;
+        public TMP_InputField characterName;
+        public TMP_Dropdown level;
+        public TMP_Dropdown race;
+        public TMP_Dropdown classes;
+        public Button createSave;
 
         private void Awake()
         {
@@ -77,25 +78,36 @@ namespace CustomRPGSystem
             });
         }
 
-        private void Start()
+        private void OnEnable()
         {
             level.onValueChanged.AddListener(delegate {
-                m_levelValue = level.value;
+                CharacterCreator.m_levelValue = level.value;
             });
 
             race.onValueChanged.AddListener(delegate {
-                m_raceValue = race.value;
+                CharacterCreator.m_raceValue = race.value;
             });
 
             classes.onValueChanged.AddListener(delegate {
-                m_classValue = classes.value;
+                CharacterCreator.m_classValue = classes.value;
             });
 
             createSave.onClick.AddListener(delegate
             {
-                m_characterName = characterName.text;
-                Create();
+                CharacterCreator.m_characterName = characterName.text;
+                CharacterCreator.m_playerName = playerName.text;
             });
+        }
+
+        private void OnDisable()
+        {
+            level.onValueChanged.RemoveAllListeners();
+
+            race.onValueChanged.RemoveAllListeners();
+
+            classes.onValueChanged.RemoveAllListeners();
+
+            createSave.onClick.RemoveAllListeners();
         }
     }
 }

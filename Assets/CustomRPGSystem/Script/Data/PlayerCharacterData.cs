@@ -108,9 +108,9 @@ namespace CustomRPGSystem
             public int bonus = 0;
         }
 
-        [SerializeField] CharacterInfo info = new CharacterInfo();
-        [SerializeField] AbilityScore[] abilityScore;
-        [SerializeField] Skills[] skills;
+        [HideInInspector] public CharacterInfo info = new CharacterInfo();
+        [HideInInspector] public AbilityScore[] abilityScore;
+        [HideInInspector] public Skills[] skills;
 
         public PlayerCharacterData(string p_characterName, int p_level, CharacterInfo.Race p_race,CharacterInfo.Class p_class)
         {
@@ -429,7 +429,6 @@ namespace CustomRPGSystem
                 }
             }
         }
-
         private int SetAbilityModifier(int value)
         {
             int modifierValue = 0;
@@ -527,6 +526,8 @@ namespace CustomRPGSystem
                     modifierValue = 10;
                     break;
             }
+
+            if (value > 30) modifierValue = 10;
 
             return modifierValue;
         }
