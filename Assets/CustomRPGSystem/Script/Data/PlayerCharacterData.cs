@@ -108,9 +108,9 @@ namespace CustomRPGSystem
             public int bonus = 0;
         }
 
-        [HideInInspector] public CharacterInfo info = new CharacterInfo();
-        [HideInInspector] public AbilityScore[] abilityScore;
-        [HideInInspector] public Skills[] skills;
+        /*[HideInInspector]*/ public CharacterInfo info = new CharacterInfo();
+        /*[HideInInspector]*/ public AbilityScore[] abilityScore;
+        /*[HideInInspector]*/ public Skills[] skills;
 
         public PlayerCharacterData(string p_characterName, int p_level, CharacterInfo.Race p_race,CharacterInfo.Class p_class)
         {
@@ -429,7 +429,7 @@ namespace CustomRPGSystem
                 }
             }
         }
-        private int SetAbilityModifier(int value)
+        public int SetAbilityModifier(int value)
         {
             int modifierValue = 0;
 

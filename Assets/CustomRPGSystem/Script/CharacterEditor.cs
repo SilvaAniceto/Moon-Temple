@@ -8,12 +8,12 @@ namespace CustomRPGSystem
 {
     public class CharacterEditor : MonoBehaviour
     {
-        public TMP_InputField playerName;
-        public TMP_InputField characterName;
-        public TMP_Dropdown level;
-        public TMP_Dropdown race;
-        public TMP_Dropdown classes;
-        public Button createSave;
+        [SerializeField] private TMP_InputField playerName;
+        [SerializeField] private TMP_InputField characterName;
+        [SerializeField] private TMP_Dropdown level;
+        [SerializeField] private TMP_Dropdown race;
+        [SerializeField] private TMP_Dropdown classes;
+        public Button editAbilities;
 
         private void Awake()
         {
@@ -80,6 +80,16 @@ namespace CustomRPGSystem
 
         private void OnEnable()
         {
+            playerName.onValueChanged.AddListener(delegate
+            {
+                CharacterCreator.m_playerName = playerName.text;
+            });
+
+            characterName.onValueChanged.AddListener(delegate
+            {
+                CharacterCreator.m_characterName = characterName.text;
+            });
+
             level.onValueChanged.AddListener(delegate {
                 CharacterCreator.m_levelValue = level.value;
             });
@@ -91,12 +101,6 @@ namespace CustomRPGSystem
             classes.onValueChanged.AddListener(delegate {
                 CharacterCreator.m_classValue = classes.value;
             });
-
-            createSave.onClick.AddListener(delegate
-            {
-                CharacterCreator.m_characterName = characterName.text;
-                CharacterCreator.m_playerName = playerName.text;
-            });
         }
 
         private void OnDisable()
@@ -107,7 +111,7 @@ namespace CustomRPGSystem
 
             classes.onValueChanged.RemoveAllListeners();
 
-            createSave.onClick.RemoveAllListeners();
+            editAbilities.onClick.RemoveAllListeners();
         }
     }
 }

@@ -15,12 +15,36 @@ namespace CustomRPGSystem
         public Button m_plusButton;
         public PlayerCharacterData.AbilityScore.Ability m_ability = PlayerCharacterData.AbilityScore.Ability.Strenght;
 
-        public void SetUIAbilityScore(PlayerCharacterData.AbilityScore.Ability ability, string value, string modifier, bool hasPoint)
+        private int m_standardScore;
+        private int m_currentScore;
+
+        #region Properties
+        public int StandardScore
+        {
+            get
+            {
+                return m_standardScore;
+            }
+        }
+        public int CurrentScore
+        {
+            get 
+            { 
+                return m_currentScore; 
+            }
+        }
+        #endregion
+
+        public void SetUIAbilityScore(PlayerCharacterData.AbilityScore.Ability ability, int value, bool hasPoint)
         {
             m_ability = ability;
             m_abilityDescription.text = ability.ToString();
-            m_abilityValue.text = value;
-            m_abilityModifier.text = modifier;
+
+            m_standardScore = value;
+            m_abilityValue.text = m_standardScore.ToString();
+            m_currentScore = m_standardScore;
+
+            m_abilityModifier.text = CharacterCreator.CharacterData.SetAbilityModifier(m_standardScore).ToString();
 
             m_minusButton.onClick.AddListener(delegate 
             {
@@ -45,18 +69,14 @@ namespace CustomRPGSystem
 
         public void AddPoints(PlayerCharacterData.AbilityScore.Ability ability)
         {
-            CharacterAbilityEditor.m_spentPoints++;
-
             for (int i = 0; i < CharacterCreator.CharacterData.abilityScore.Length; i++)
             {
                 if (CharacterCreator.CharacterData.abilityScore[i].ability == ability)
                 {
-                    int value = CharacterCreator.CharacterData.abilityScore[i].score + 1;
-                    CharacterCreator.CharacterData.SetAbilityScore(CharacterCreator.CharacterData, ability, value);
+                    m_currentScore++;
 
-                    m_abilityValue.text = CharacterCreator.CharacterData.abilityScore[i].score.ToString();
-                    m_abilityModifier.text = CharacterCreator.CharacterData.abilityScore[i].modifier.ToString();
-                    
+                    m_abilityValue.text = m_currentScore.ToString();
+                    m_abilityModifier.text = CharacterCreator.CharacterData.SetAbilityModifier(m_currentScore).ToString();
                 }
             }
 
@@ -65,17 +85,14 @@ namespace CustomRPGSystem
 
         public void SubtractPoints(PlayerCharacterData.AbilityScore.Ability ability)
         {
-            CharacterAbilityEditor.m_spentPoints--;
-
             for (int i = 0; i < CharacterCreator.CharacterData.abilityScore.Length; i++)
             {
                 if (CharacterCreator.CharacterData.abilityScore[i].ability == ability)
                 {
-                    int value = CharacterCreator.CharacterData.abilityScore[i].score - 1;
-                    CharacterCreator.CharacterData.SetAbilityScore(CharacterCreator.CharacterData, ability, value);
+                    m_currentScore--;
 
-                    m_abilityValue.text = CharacterCreator.CharacterData.abilityScore[i].score.ToString();
-                    m_abilityModifier.text = CharacterCreator.CharacterData.abilityScore[i].modifier.ToString();
+                    m_abilityValue.text = m_currentScore.ToString();
+                    m_abilityModifier.text = CharacterCreator.CharacterData.SetAbilityModifier(m_currentScore).ToString();
                 }
             }
 

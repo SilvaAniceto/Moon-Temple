@@ -30,6 +30,8 @@ namespace CustomRPGSystem
         public static List<PlayerCharacterData> CharacterList = new List<PlayerCharacterData>();
         public static PlayerCharacterData CharacterData;
 
+        public PlayerCharacterData c;
+
         #region PROPERTIES
         public string PlayerDirectory
         {
@@ -55,7 +57,9 @@ namespace CustomRPGSystem
             m_characterEditor.gameObject.SetActive(false);
             m_characterAbilityEditor.gameObject.SetActive(false);
 
-            m_characterEditor.createSave.onClick.AddListener(Create);
+            m_characterEditor.editAbilities.onClick.AddListener(Create);
+
+            m_characterAbilityEditor.editSkills.onClick.AddListener(SetAbilities);
 
             if (!Directory.Exists(PlayerDirectory))
             {
@@ -99,11 +103,27 @@ namespace CustomRPGSystem
 
             CharacterData = new PlayerCharacterData(m_characterName, m_levelValue, (PlayerCharacterData.CharacterInfo.Race)m_raceValue, (PlayerCharacterData.CharacterInfo.Class)m_classValue);
 
-            CharacterList.Add(CharacterData);
+            c = CharacterData;
+
+            //CharacterList.Add(CharacterData);
             
             //FileHandler.SaveToJSON<PlayerCharacterData>(CharacterList, MainCharacterDirectory + "/" + m_playerName);
 
             ManagerCreatorPages();
+        }
+
+        private void SetAbilities()
+        {
+            for (int i = 0; i < CharacterData.abilityScore.Length; i++)
+            {
+                for (int j = 0; j < m_characterAbilityEditor.Ability.Count; j++)
+                {
+                    if (CharacterData.abilityScore[i].ability == m_characterAbilityEditor.Ability[j].m_ability)
+                    {
+                        CharacterData.SetAbilityScore(CharacterData, m_characterAbilityEditor.Ability[j].m_ability, m_characterAbilityEditor.Ability[j].CurrentScore);
+                    }
+                }
+            }
         }
 
         void ManagerCreatorPages()

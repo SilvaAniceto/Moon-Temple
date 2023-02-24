@@ -13,12 +13,9 @@ namespace CustomRPGSystem
         [SerializeField] private TMP_Text m_race;
         [SerializeField] private TMP_Text m_class;
         [SerializeField] private TMP_Text m_availablePoints;
+        public Button editSkills;
 
-        [SerializeField] public List<UIAbilityScore> m_UIAbility = new List<UIAbilityScore>();
-
-        private bool m_hasAvailablePoints = false;
-        private int m_startingPoins = 0;
-        public static int m_spentPoints = 0;
+        [SerializeField] private List<UIAbilityScore> m_UIAbility = new List<UIAbilityScore>();
 
         #region PROPERTIES
         public int AvailablePoints
@@ -28,25 +25,36 @@ namespace CustomRPGSystem
                 return CharacterCreator.CharacterData.info.abilityPoints;
             }
         }
+        public bool HasAvailablePoints
+        {
+            get
+            {
+                return AvailablePoints > 0 ? true : false;
+            }
+        }
+        public List<UIAbilityScore> Ability
+        {
+            get
+            {
+                return m_UIAbility;
+            }
+        }
         #endregion
+
         private void Awake()
         {
-            m_hasAvailablePoints = AvailablePoints > 0 ? true : false;
-
-            m_startingPoins = CharacterCreator.CharacterData.info.abilityPoints;
             m_availablePoints.text = CharacterCreator.CharacterData.info.abilityPoints.ToString();
 
             for (int i = 0; i < CharacterCreator.CharacterData.abilityScore.Length; i++)
             {
                 m_UIAbility[i].SetUIAbilityScore(CharacterCreator.CharacterData.abilityScore[i].ability,
-                                                 CharacterCreator.CharacterData.abilityScore[i].score.ToString(),
-                                                 CharacterCreator.CharacterData.abilityScore[i].modifier.ToString(),
-                                                 m_hasAvailablePoints);
-                m_UIAbility[i].m_plusButton.onClick.AddListener(UpdatePoints);
-                m_UIAbility[i].m_minusButton.onClick.AddListener(UpdatePoints);
+                                                 CharacterCreator.CharacterData.abilityScore[i].score,
+                                                 HasAvailablePoints);
+                m_UIAbility[i].m_plusButton.onClick.AddListener(UpdateUIPoints);
+                m_UIAbility[i].m_minusButton.onClick.AddListener(UpdateUIPoints);
             }
 
-            UpdatePoints();
+            UpdateUIPoints();
         }
 
         private void Start()
@@ -57,35 +65,29 @@ namespace CustomRPGSystem
             m_class.text = CharacterCreator.CharacterData.info.classes.ToString();
         }
 
-        private void UpdatePoints()
+        private void UpdateUIPoints()
         {
-            if (m_spentPoints == 0)
+            foreach (UIAbilityScore uIAbility in m_UIAbility)
             {
-                foreach (UIAbilityScore uIAbility in m_UIAbility)
-                {
-                    uIAbility.m_minusButton.gameObject.SetActive(false);
-                }
-            }
-            else
-            {
-                foreach (UIAbilityScore uIAbility in m_UIAbility)
-                {
-                    uIAbility.m_minusButton.gameObject.SetActive(true);
-                }
-            }
-
-            if (m_spentPoints == m_startingPoins)
-            {
-                foreach (UIAbilityScore uIAbility in m_UIAbility)
+                if (!HasAvailablePoints && uIAbility.CurrentScore > uIAbility.StandardScore)
                 {
                     uIAbility.m_plusButton.gameObject.SetActive(false);
+                    uIAbility.m_minusButton.gameObject.SetActive(true);
                 }
-            }
-            else
-            {
-                foreach (UIAbilityScore uIAbility in m_UIAbility)
+                else if(!HasAvailablePoints && uIAbility.CurrentScore == uIAbility.StandardScore)
+                {
+                    uIAbility.m_plusButton.gameObject.SetActive(false);
+                    uIAbility.m_minusButton.gameObject.SetActive(false);
+                }
+                else if(HasAvailablePoints && uIAbility.CurrentScore == uIAbility.StandardScore)
                 {
                     uIAbility.m_plusButton.gameObject.SetActive(true);
+                    uIAbility.m_minusButton.gameObject.SetActive(false);
+                }
+                else if (HasAvailablePoints && uIAbility.CurrentScore > uIAbility.StandardScore)
+                {
+                    uIAbility.m_plusButton.gameObject.SetActive(true);
+                    uIAbility.m_minusButton.gameObject.SetActive(true);
                 }
             }
 
