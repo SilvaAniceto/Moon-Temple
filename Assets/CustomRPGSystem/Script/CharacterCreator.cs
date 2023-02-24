@@ -14,6 +14,7 @@ namespace CustomRPGSystem
         [SerializeField] private GameObject m_UIButtonLayout;
         [SerializeField] private Button m_NewCharacterButton;
         [SerializeField] private Button m_LoadCharacterButton;
+        [SerializeField] private Button m_backButton;
 
         [Header("Character Editor")]
         [SerializeField] private CharacterEditor m_characterEditor;
@@ -31,6 +32,8 @@ namespace CustomRPGSystem
         public static PlayerCharacterData CharacterData;
 
         public PlayerCharacterData c;
+
+        [SerializeField] private List<GameObject> UIPages = new List<GameObject>();
 
         #region PROPERTIES
         public string PlayerDirectory
@@ -53,13 +56,15 @@ namespace CustomRPGSystem
         {
             if (Instance == null) Instance = this;
 
-            m_UIButtonLayout.SetActive(true);
-            m_characterEditor.gameObject.SetActive(false);
-            m_characterAbilityEditor.gameObject.SetActive(false);
+            UIPages.Add(m_UIButtonLayout);
+            UIPages.Add(m_characterEditor.gameObject);
+            UIPages.Add(m_characterAbilityEditor.gameObject);
 
             m_characterEditor.editAbilities.onClick.AddListener(Create);
 
             m_characterAbilityEditor.editSkills.onClick.AddListener(SetAbilities);
+
+            m_backButton.onClick.AddListener(OnBackButton);
 
             if (!Directory.Exists(PlayerDirectory))
             {
@@ -79,10 +84,11 @@ namespace CustomRPGSystem
                 m_LoadCharacterButton.gameObject.SetActive(false);
                 m_NewCharacterButton.onClick.AddListener(delegate
                 {
-                    m_UIButtonLayout.SetActive(false);
-                    m_characterEditor.gameObject.SetActive(true);
+                    NextPage();
                 });
             }
+
+            ManagerCreatorPages(0);
         }
 
         // Start is called before the first frame update
@@ -97,7 +103,7 @@ namespace CustomRPGSystem
         
         }
 
-        private void Create()
+        void Create()
         {
             if (string.IsNullOrEmpty(m_characterName)) return;
 
@@ -106,13 +112,13 @@ namespace CustomRPGSystem
             c = CharacterData;
 
             //CharacterList.Add(CharacterData);
-            
+
             //FileHandler.SaveToJSON<PlayerCharacterData>(CharacterList, MainCharacterDirectory + "/" + m_playerName);
 
-            ManagerCreatorPages();
+            NextPage();
         }
 
-        private void SetAbilities()
+        void SetAbilities()
         {
             for (int i = 0; i < CharacterData.abilityScore.Length; i++)
             {
@@ -126,10 +132,47 @@ namespace CustomRPGSystem
             }
         }
 
-        void ManagerCreatorPages()
+        void ManagerCreatorPages(int p_pageIndex)
         {
-            m_characterEditor.gameObject.SetActive(false);
-            m_characterAbilityEditor.gameObject.SetActive(true);
+            if (p_pageIndex == 0) m_backButton.gameObject.SetActive(false);
+            else m_backButton.gameObject.SetActive(true);
+
+            for (int i = 0; i < UIPages.Count; i++)
+            {
+                UIPages[i].SetActive(false);
+            }
+
+            UIPages[p_pageIndex].SetActive(true);
+        }
+
+        void OnBackButton()
+        {
+            int index = 0;
+
+            for (int i = 0; i < UIPages.Count; i++)
+            {
+                if (UIPages[i].activeInHierarchy)
+                {
+                    index = i;
+                }
+            }
+
+            ManagerCreatorPages(index - 1);
+        }
+
+        void NextPage()
+        {
+            int index = 0;
+
+            for (int i = 0; i < UIPages.Count; i++)
+            {
+                if (UIPages[i].activeInHierarchy)
+                {
+                    index = i;
+                }
+            }
+
+            ManagerCreatorPages(index + 1);
         }
     }
 }

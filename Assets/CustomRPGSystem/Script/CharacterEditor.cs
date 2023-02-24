@@ -102,16 +102,5 @@ namespace CustomRPGSystem
                 CharacterCreator.m_classValue = classes.value;
             });
         }
-
-        private void OnDisable()
-        {
-            level.onValueChanged.RemoveAllListeners();
-
-            race.onValueChanged.RemoveAllListeners();
-
-            classes.onValueChanged.RemoveAllListeners();
-
-            editAbilities.onClick.RemoveAllListeners();
-        }
     }
 }
