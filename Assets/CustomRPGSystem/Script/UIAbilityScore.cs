@@ -1,7 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 
 namespace CustomRPGSystem
@@ -14,6 +13,7 @@ namespace CustomRPGSystem
         public Button m_minusButton;
         public Button m_plusButton;
         public PlayerCharacterData.AbilityScore.Ability m_ability = PlayerCharacterData.AbilityScore.Ability.Strenght;
+        public UnityEvent<int> OnPointsChanged = new UnityEvent<int>();
 
         private int m_standardScore;
         private int m_currentScore;
@@ -79,8 +79,8 @@ namespace CustomRPGSystem
                     m_abilityModifier.text = CharacterCreator.CharacterData.SetAbilityModifier(m_currentScore).ToString();
                 }
             }
-
-            CharacterCreator.CharacterData.info.abilityPoints--;
+            OnPointsChanged?.Invoke(+1);
+            //CharacterCreator.CharacterData.info.abilityPoints--;
         }
 
         public void SubtractPoints(PlayerCharacterData.AbilityScore.Ability ability)
@@ -95,8 +95,8 @@ namespace CustomRPGSystem
                     m_abilityModifier.text = CharacterCreator.CharacterData.SetAbilityModifier(m_currentScore).ToString();
                 }
             }
-
-            CharacterCreator.CharacterData.info.abilityPoints++;
+            OnPointsChanged?.Invoke(+1);
+            //CharacterCreator.CharacterData.info.abilityPoints++;
         }
     }
 }

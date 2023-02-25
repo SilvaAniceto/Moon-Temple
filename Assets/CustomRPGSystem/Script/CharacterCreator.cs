@@ -22,6 +22,9 @@ namespace CustomRPGSystem
         [Header("Character Ability Editor")]
         [SerializeField] private CharacterAbilityEditor m_characterAbilityEditor;
 
+        [Header("Character Skill Editor")]
+        [SerializeField] private CharacterSkillEditor m_characterSkillEditor;
+
         public static string m_playerName = "";
         public static string m_characterName = "";
         public static int m_levelValue;
@@ -33,7 +36,7 @@ namespace CustomRPGSystem
 
         public PlayerCharacterData c;
 
-        [SerializeField] private List<GameObject> UIPages = new List<GameObject>();
+        private List<GameObject> UIPages = new List<GameObject>();
 
         #region PROPERTIES
         public string PlayerDirectory
@@ -59,6 +62,7 @@ namespace CustomRPGSystem
             UIPages.Add(m_UIButtonLayout);
             UIPages.Add(m_characterEditor.gameObject);
             UIPages.Add(m_characterAbilityEditor.gameObject);
+            UIPages.Add(m_characterSkillEditor.gameObject);
 
             m_characterEditor.editAbilities.onClick.AddListener(Create);
 
@@ -107,6 +111,8 @@ namespace CustomRPGSystem
         {
             if (string.IsNullOrEmpty(m_characterName)) return;
 
+            CharacterData = null;
+
             CharacterData = new PlayerCharacterData(m_characterName, m_levelValue, (PlayerCharacterData.CharacterInfo.Race)m_raceValue, (PlayerCharacterData.CharacterInfo.Class)m_classValue);
 
             c = CharacterData;
@@ -130,6 +136,10 @@ namespace CustomRPGSystem
                     }
                 }
             }
+
+            CharacterData.info.abilityPoints = m_characterAbilityEditor.CurrentAvailablePoints;
+
+            NextPage();
         }
 
         void ManagerCreatorPages(int p_pageIndex)

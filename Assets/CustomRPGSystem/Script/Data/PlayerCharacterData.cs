@@ -50,8 +50,10 @@ namespace CustomRPGSystem
             };
             public Class classes = Class.None;
 
-            [Range(0, 18)] public int proficiencyPoints = 0;
+            public int proficiencyPoints = 0;
             public int proficiencyBonus = 0;
+            [Range(0, 18)] public int raceProficiencyPoints;
+            [Range(0, 18)] public int classProficiencyPoints;
             public int abilityPoints = 0;
             [Range(1, 20)] public int level = 1;
         }
@@ -105,12 +107,15 @@ namespace CustomRPGSystem
             public Skill skill;
 
             public bool proficient = false;
-            public int bonus = 0;
+            //public int bonus = 0;
+            public bool isChangable = false;
         }
 
         /*[HideInInspector]*/ public CharacterInfo info = new CharacterInfo();
         /*[HideInInspector]*/ public AbilityScore[] abilityScore;
         /*[HideInInspector]*/ public Skills[] skills;
+        public List<Skills> raceSkills = new List<Skills>();
+        public List<Skills> classSkills = new List<Skills>();
 
         public PlayerCharacterData(string p_characterName, int p_level, CharacterInfo.Race p_race,CharacterInfo.Class p_class)
         {
@@ -123,9 +128,9 @@ namespace CustomRPGSystem
             m_info.level = p_level + 1;
             m_info.race = p_race;
             m_info.classes = p_class;
-            m_info.abilityPoints = 84;
+            m_info.abilityPoints = 72;
             m_info.proficiencyBonus = SetProficiencyBonus(m_info.level);
-
+            m_info.proficiencyPoints = 0;
             this.info = m_info;
 
             for (int i = 1; i < 7; i++)
@@ -140,6 +145,12 @@ namespace CustomRPGSystem
             {
                 m_skills.Add(new Skills());
                 m_skills[i].skill = (Skills.Skill)i;
+
+                this.raceSkills.Add(new Skills());
+                this.raceSkills[i].skill = (Skills.Skill)i;
+
+                this.classSkills.Add(new Skills());
+                this.classSkills[i].skill = (Skills.Skill)i;
 
                 switch (m_skills[i].skill)
                 {
@@ -211,86 +222,154 @@ namespace CustomRPGSystem
             switch (player.info.race)
             {
                 case CharacterInfo.Race.None:
-                    player.info.proficiencyPoints = 0;
+                    player.info.raceProficiencyPoints += 0;
                     break;
+
                 case CharacterInfo.Race.Dragonborn:
-                    player.info.proficiencyPoints = 0;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Strenght, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 1);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                    }
                     break;
+
                 case CharacterInfo.Race.Hill_Dwarf:
-                    player.info.proficiencyPoints = 0;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Wisdom, 2);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                    }
                     break;
+
                 case CharacterInfo.Race.Mountain_Dwarf:
-                    player.info.proficiencyPoints = 0;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Strenght, 2);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                    }
                     break;
+
                 case CharacterInfo.Race.High_Elf:
-                    player.info.proficiencyPoints = 1;
-                    SetSkills(player, Skills.Skill.Perception, true);
+                    player.info.raceProficiencyPoints += 1;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Intelligence, 1);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                        if (player.raceSkills[i].skill == Skills.Skill.Perception) player.raceSkills[i].proficient = true;
+                    }
                     break;
+
                 case CharacterInfo.Race.Wood_Elf:
-                    player.info.proficiencyPoints = 1;
+                    player.info.proficiencyPoints += 1;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Wisdom, 1);
-                    SetSkills(player, Skills.Skill.Perception, true);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                        if (player.raceSkills[i].skill == Skills.Skill.Perception) player.raceSkills[i].proficient = true;
+                    }
                     break;
+
                 case CharacterInfo.Race.Shadow_Elf:
-                    player.info.proficiencyPoints = 1;
+                    player.info.raceProficiencyPoints += 1;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 1);
-                    SetSkills(player, Skills.Skill.Perception, true);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                        if (player.raceSkills[i].skill == Skills.Skill.Perception) player.raceSkills[i].proficient = true;
+                    }
                     break;
+
                 case CharacterInfo.Race.Forest_Gnome:
-                    player.info.proficiencyPoints = 0;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Intelligence, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 1);
-                    SetSkills(player, Skills.Skill.Perception, true);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                    }
                     break;
+
                 case CharacterInfo.Race.Rock_Gnome:
-                    player.info.proficiencyPoints = 0;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Intelligence, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 1);
-                    SetSkills(player, Skills.Skill.Perception, true);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                    }
                     break;
+
                 case CharacterInfo.Race.Half_Elf:
-                    player.info.proficiencyPoints = 2;
+                    player.info.raceProficiencyPoints += 2;
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 1);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Race.Half_Orc:
-                    player.info.proficiencyPoints = 1;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Strenght, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 1);
-                    SetSkills(player, Skills.Skill.Intimidation, true);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                        if (player.raceSkills[i].skill == Skills.Skill.Intimidation) player.raceSkills[i].proficient = true;
+                    }
                     break;
+
                 case CharacterInfo.Race.Lightfoot_Halfling:
-                    player.info.proficiencyPoints = 0;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 1);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                    }
                     break;
+
                 case CharacterInfo.Race.Stout_Halfling:
-                    player.info.proficiencyPoints = 0;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 1);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                    }
                     break;
+
                 case CharacterInfo.Race.Human:
-                    player.info.proficiencyPoints = 1;
+                    player.info.raceProficiencyPoints += 1;
                     SetAbilityScore(player, AbilityScore.Ability.Strenght, 1);
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 1);
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 1);
                     SetAbilityScore(player, AbilityScore.Ability.Intelligence, 1);
                     SetAbilityScore(player, AbilityScore.Ability.Wisdom, 1);
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 1);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Race.Tiefling:
-                    player.info.proficiencyPoints = 0;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Intelligence, 1);
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 2);
+                    for (int i = 0; i < player.raceSkills.Count; i++)
+                    {
+                        player.raceSkills[i].isChangable = false;
+                    }
                     break;
             }
         }
@@ -299,72 +378,210 @@ namespace CustomRPGSystem
             switch (player.info.classes)
             {
                 case CharacterInfo.Class.None:
-                    player.info.proficiencyPoints = 0;
+                    player.info.classProficiencyPoints += 0;
                     break;
+
                 case CharacterInfo.Class.Barbarian:
-                    player.info.proficiencyPoints = 2;
+                    player.info.classProficiencyPoints += 2;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Strenght, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Constitution, true);
+
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.Animal_Handling) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Athletics) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Intimidation) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Nature) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Perception) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Survival) player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Bard:
-                    player.info.proficiencyPoints = 3;
+                    player.info.classProficiencyPoints += 3;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Dexterity, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Charisma, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Cleric:
-                    player.info.proficiencyPoints = 2;
+                    player.info.classProficiencyPoints += 2;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Wisdom, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Charisma, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.History)  player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Insight) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Medicine) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Persuasion) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Religion) player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Druid:
-                    player.info.proficiencyPoints = 2;
+                    player.info.classProficiencyPoints += 2;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Intelligence, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Wisdom, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.Arcana) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Animal_Handling) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Insight) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Medicine) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Nature) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Perception) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Religion) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Survival) player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Fighter:
-                    player.info.proficiencyPoints = 2;
+                    player.info.classProficiencyPoints += 2;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Strenght, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Constitution, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.Acrobatics) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Animal_Handling) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Athletics) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.History) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Insight) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Intimidation) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Perception) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Survival) player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Monk:
-                    player.info.proficiencyPoints = 2;
+                    player.info.classProficiencyPoints += 2;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Strenght, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Dexterity, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.Acrobatics) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Athletics) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Stealth) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.History) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Insight) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Religion) player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Paladin:
-                    player.info.proficiencyPoints = 2;
+                    player.info.classProficiencyPoints += 2;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Wisdom, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Charisma, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.Athletics) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Insight) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Intimidation) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Medicine) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Persuasion) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Religion) player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Ranger:
-                    player.info.proficiencyPoints = 3;
+                    player.info.classProficiencyPoints += 3;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Strenght, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Dexterity, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.Animal_Handling) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Athletics) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Stealth) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Insight) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Investigation) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Nature) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Perception) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Survival) player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Rogue:
-                    player.info.proficiencyPoints = 4;
+                    player.info.classProficiencyPoints += 4;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Dexterity, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Intelligence, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.Acrobatics) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Athletics) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Performance) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Deception) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Stealth) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Intimidation) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Insight) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Investigation) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Perception) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Persuasion) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Sleight_Of_Hand) player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Sorcerer:
-                    player.info.proficiencyPoints = 2;
+                    player.info.classProficiencyPoints += 2;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Constitution, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Charisma, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.Arcana) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Deception) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Insight) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Intimidation) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Perception) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Religion) player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Warlock:
-                    player.info.proficiencyPoints = 2;
+                    player.info.classProficiencyPoints += 2;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Wisdom, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Charisma, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.Arcana) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Deception) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.History) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Intimidation) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Investigation) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Nature) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Religion) player.classSkills[i].isChangable = true;
+                    }
                     break;
+
                 case CharacterInfo.Class.Wizard:
-                    player.info.proficiencyPoints = 2;
+                    player.info.classProficiencyPoints += 2;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Intelligence, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Wisdom, true);
+                    for (int i = 0; i < player.classSkills.Count; i++)
+                    {
+                        player.classSkills[i].isChangable = false;
+                        if (player.classSkills[i].skill == Skills.Skill.Arcana) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.History) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Insight) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Investigation) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Medicine) player.classSkills[i].isChangable = true;
+                        if (player.classSkills[i].skill == Skills.Skill.Religion) player.classSkills[i].isChangable = true;
+                    }
                     break;
             }
         }
 
-        public void SetSkills(PlayerCharacterData player,Skills.Skill skill, bool p_proficient)
+        public void SetRaceSkills(PlayerCharacterData player,Skills.Skill skill, bool p_proficient = false, bool p_isChangable = false)
         {
             List<Skills> s = new List<Skills>();
 
@@ -375,8 +592,40 @@ namespace CustomRPGSystem
 
             Skills sk = s.Find(x => x.skill == skill);
 
-            sk.proficient = p_proficient;
-            player.info.proficiencyPoints--;
+            sk.isChangable = p_isChangable;
+
+            if (p_proficient)
+            {
+                sk.proficient = p_proficient;
+                player.info.proficiencyPoints--;
+            }
+
+            for (int i = 0; i < player.skills.Length; i++)
+            {
+                if (player.skills[i] == sk)
+                {
+                    player.skills[i] = sk;
+                }
+            }
+        }
+        public void SetClassSkills(PlayerCharacterData player, Skills.Skill skill, bool p_proficient = false, bool p_isAvailable = false)
+        {
+            List<Skills> s = new List<Skills>();
+
+            foreach (Skills skl in player.skills)
+            {
+                s.Add(skl);
+            }
+
+            Skills sk = s.Find(x => x.skill == skill);
+
+            sk.isChangable = p_isAvailable;
+
+            if (p_proficient)
+            {
+                sk.proficient = p_proficient;
+                player.info.proficiencyPoints--;
+            }
 
             for (int i = 0; i < player.skills.Length; i++)
             {
