@@ -912,10 +912,10 @@ RectTransform:
   m_Father: {fileID: 1435626587}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -2252.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &94594148
 CanvasRenderer:
@@ -939,6 +939,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 1863986197}
   m_skillDescription: {fileID: 1413881454}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1050257522}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &111686264
 GameObject:
   m_ObjectHideFlags: 0
@@ -1249,10 +1255,10 @@ RectTransform:
   m_Father: {fileID: 1435626587}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -662.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &151137265
 CanvasRenderer:
@@ -1276,6 +1282,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 266347260}
   m_skillDescription: {fileID: 1349851727}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1787269143}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &174592254
 GameObject:
   m_ObjectHideFlags: 0
@@ -1860,10 +1872,10 @@ RectTransform:
   m_Father: {fileID: 871914127}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -927.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &211632491
 CanvasRenderer:
@@ -1887,6 +1899,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 541392996}
   m_skillDescription: {fileID: 1878764897}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1167785589}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &233272102
 GameObject:
   m_ObjectHideFlags: 0
@@ -2854,10 +2872,10 @@ RectTransform:
   m_Father: {fileID: 871914127}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -1987.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &316762057
 CanvasRenderer:
@@ -2881,6 +2899,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 1653264392}
   m_skillDescription: {fileID: 192126753}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1938584998}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &319895867
 GameObject:
   m_ObjectHideFlags: 0
@@ -3916,10 +3940,10 @@ RectTransform:
   m_Father: {fileID: 871914127}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -2252.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &387040059
 CanvasRenderer:
@@ -3943,6 +3967,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 234523861}
   m_skillDescription: {fileID: 1877766237}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 680195445}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &389555414
 GameObject:
   m_ObjectHideFlags: 0
@@ -5019,10 +5049,10 @@ RectTransform:
   m_Father: {fileID: 1435626587}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -132.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &576925056
 CanvasRenderer:
@@ -5046,6 +5076,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 1902387884}
   m_skillDescription: {fileID: 1408281813}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1427757651}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &584905619
 GameObject:
   m_ObjectHideFlags: 0
@@ -5628,10 +5664,10 @@ RectTransform:
   m_Father: {fileID: 1435626587}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -1722.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &626909200
 CanvasRenderer:
@@ -5655,6 +5691,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 2070869710}
   m_skillDescription: {fileID: 1617531240}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 298723963}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &630582426
 GameObject:
   m_ObjectHideFlags: 0
@@ -5764,10 +5806,10 @@ RectTransform:
   m_Father: {fileID: 871914127}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -1457.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &632131288
 CanvasRenderer:
@@ -5791,6 +5833,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 921027243}
   m_skillDescription: {fileID: 2030004701}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1768230730}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &635623891
 GameObject:
   m_ObjectHideFlags: 0
@@ -6186,10 +6234,10 @@ RectTransform:
   m_Father: {fileID: 871914127}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -132.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &719798121
 MonoBehaviour:
@@ -6205,6 +6253,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 1041465666}
   m_skillDescription: {fileID: 1261369671}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1745901070}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!222 &719798122
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6835,10 +6889,10 @@ RectTransform:
   m_Father: {fileID: 1809376726}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 490, y: -1192.5}
-  m_SizeDelta: {x: 930, y: 2385}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &871914128
 MonoBehaviour:
@@ -6938,10 +6992,10 @@ RectTransform:
   m_Father: {fileID: 1435626587}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -1192.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &878409480
 CanvasRenderer:
@@ -6965,6 +7019,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 802282667}
   m_skillDescription: {fileID: 616824218}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 730607720}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &882694617
 GameObject:
   m_ObjectHideFlags: 0
@@ -8647,10 +8707,10 @@ RectTransform:
   m_Father: {fileID: 1435626587}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -1987.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1102728409
 CanvasRenderer:
@@ -8674,6 +8734,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 1020941352}
   m_skillDescription: {fileID: 1909009188}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1440635756}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1109606809
 GameObject:
   m_ObjectHideFlags: 0
@@ -8708,10 +8774,10 @@ RectTransform:
   m_Father: {fileID: 871914127}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -1192.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1109606811
 CanvasRenderer:
@@ -8735,6 +8801,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 2139283283}
   m_skillDescription: {fileID: 1239985220}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 559028115}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1131695585
 GameObject:
   m_ObjectHideFlags: 0
@@ -9716,10 +9788,10 @@ RectTransform:
   m_Father: {fileID: 871914127}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -662.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1259251144
 CanvasRenderer:
@@ -9743,6 +9815,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 174592256}
   m_skillDescription: {fileID: 1484072526}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1752511034}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1261369669
 GameObject:
   m_ObjectHideFlags: 0
@@ -10053,7 +10131,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1294490832
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10919,10 +10997,10 @@ RectTransform:
   m_Father: {fileID: 871914127}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -397.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1368378941
 CanvasRenderer:
@@ -10946,6 +11024,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 121751919}
   m_skillDescription: {fileID: 1198313595}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1286521500}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1380913168
 GameObject:
   m_ObjectHideFlags: 0
@@ -11055,10 +11139,10 @@ RectTransform:
   m_Father: {fileID: 1435626587}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -397.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1407647907
 CanvasRenderer:
@@ -11082,6 +11166,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 605100012}
   m_skillDescription: {fileID: 233272104}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 349897023}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1408281811
 GameObject:
   m_ObjectHideFlags: 0
@@ -11589,10 +11679,10 @@ RectTransform:
   m_Father: {fileID: 1809376726}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1430, y: -1192.5}
-  m_SizeDelta: {x: 930, y: 2385}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1435626588
 MonoBehaviour:
@@ -13657,10 +13747,10 @@ RectTransform:
   m_Father: {fileID: 1435626587}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -1457.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1689355925
 CanvasRenderer:
@@ -13684,6 +13774,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 1137160299}
   m_skillDescription: {fileID: 306332890}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 924526474}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1729429760
 GameObject:
   m_ObjectHideFlags: 0
@@ -13718,10 +13814,10 @@ RectTransform:
   m_Father: {fileID: 871914127}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -1722.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1729429762
 CanvasRenderer:
@@ -13745,6 +13841,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 1185498536}
   m_skillDescription: {fileID: 861211953}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 1803022939}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1745901068
 GameObject:
   m_ObjectHideFlags: 0
@@ -16360,10 +16462,10 @@ RectTransform:
   m_Father: {fileID: 1435626587}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 465, y: -927.5}
-  m_SizeDelta: {x: 880, y: 165}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 165}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2093207601
 CanvasRenderer:
@@ -16387,6 +16489,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_skillToggle: {fileID: 1998819666}
   m_skillDescription: {fileID: 319895869}
+  m_toggleChangable: {fileID: 21300000, guid: 7788578edcc370145ae5156b7d9370f9, type: 3}
+  m_toggleUnchangable: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
+  m_background: {fileID: 2107189887}
+  OnProficiencySet:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2093616783
 GameObject:
   m_ObjectHideFlags: 0

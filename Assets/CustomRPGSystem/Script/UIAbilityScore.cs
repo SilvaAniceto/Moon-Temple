@@ -37,6 +37,9 @@ namespace CustomRPGSystem
 
         public void SetUIAbilityScore(PlayerCharacterData.AbilityScore.Ability ability, int value, bool hasPoint)
         {
+            m_minusButton.onClick.RemoveAllListeners();
+            m_plusButton.onClick.RemoveAllListeners();
+
             m_ability = ability;
             m_abilityDescription.text = ability.ToString();
 
@@ -79,7 +82,7 @@ namespace CustomRPGSystem
                     m_abilityModifier.text = CharacterCreator.CharacterData.SetAbilityModifier(m_currentScore).ToString();
                 }
             }
-            OnPointsChanged?.Invoke(+1);
+            OnPointsChanged?.Invoke(-1);
             //CharacterCreator.CharacterData.info.abilityPoints--;
         }
 
@@ -95,7 +98,7 @@ namespace CustomRPGSystem
                     m_abilityModifier.text = CharacterCreator.CharacterData.SetAbilityModifier(m_currentScore).ToString();
                 }
             }
-            OnPointsChanged?.Invoke(+1);
+            OnPointsChanged?.Invoke(1);
             //CharacterCreator.CharacterData.info.abilityPoints++;
         }
     }

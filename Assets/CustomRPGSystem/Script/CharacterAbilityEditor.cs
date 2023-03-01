@@ -23,7 +23,7 @@ namespace CustomRPGSystem
         {
             get
             {
-                return CharacterCreator.CharacterData.info.abilityPoints;
+                return m_currentAvailablePoints;
             }
         }
         public bool HasAvailablePoints
@@ -56,9 +56,10 @@ namespace CustomRPGSystem
 
             for (int i = 0; i < CharacterCreator.CharacterData.abilityScore.Length; i++)
             {
-                m_UIAbility[i].SetUIAbilityScore(CharacterCreator.CharacterData.abilityScore[i].ability,
-                                                 CharacterCreator.CharacterData.abilityScore[i].score,
-                                                 HasAvailablePoints);
+                m_UIAbility[i].OnPointsChanged.RemoveAllListeners();
+
+                m_UIAbility[i].SetUIAbilityScore(CharacterCreator.CharacterData.abilityScore[i].ability, CharacterCreator.CharacterData.abilityScore[i].score, HasAvailablePoints);
+
                 m_UIAbility[i].OnPointsChanged.AddListener(UpdateCurrentPoints);
             }
 
