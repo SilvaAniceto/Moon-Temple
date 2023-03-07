@@ -46,19 +46,20 @@ namespace CustomRPGSystem
             {
                 return m_currentAvailablePoints;
             }
+            set
+            {
+                m_currentAvailablePoints = value;
+            }
         }
         #endregion
 
         private void OnEnable()
         {
-            m_currentAvailablePoints = CharacterCreator.CharacterData.info.abilityPoints;
             m_availablePointsText.text = m_currentAvailablePoints.ToString();
 
-            for (int i = 0; i < CharacterCreator.CharacterData.abilityScore.Length; i++)
+            for (int i = 0; i < m_UIAbility.Count; i++)
             {
                 m_UIAbility[i].OnPointsChanged.RemoveAllListeners();
-
-                m_UIAbility[i].SetUIAbilityScore(CharacterCreator.CharacterData.abilityScore[i].ability, CharacterCreator.CharacterData.abilityScore[i].score, HasAvailablePoints);
 
                 m_UIAbility[i].OnPointsChanged.AddListener(UpdateCurrentPoints);
             }

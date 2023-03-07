@@ -50,11 +50,13 @@ namespace CustomRPGSystem
             };
             public Class classes = Class.None;
 
-            public int proficiencyPoints = 0;
+            public int armorClass = 0;
+            public int lifePoints = 0;
+            public int speed = 0;
             public int proficiencyBonus = 0;
             [Range(0, 18)] public int raceProficiencyPoints;
             [Range(0, 18)] public int classProficiencyPoints;
-            public int abilityPoints = 0;
+            public int abilityPoints = 72;
             [Range(1, 20)] public int level = 1;
         }
 
@@ -107,7 +109,6 @@ namespace CustomRPGSystem
             public Skill skill;
 
             public bool proficient = false;
-            //public int bonus = 0;
             public bool isChangable = false;
         }
 
@@ -128,9 +129,8 @@ namespace CustomRPGSystem
             m_info.level = p_level + 1;
             m_info.race = p_race;
             m_info.classes = p_class;
-            m_info.abilityPoints = 72;
+            m_info.abilityPoints += SetLevelAbilityPoints(m_info.level);
             m_info.proficiencyBonus = SetProficiencyBonus(m_info.level);
-            m_info.proficiencyPoints = 0;
             this.info = m_info;
 
             for (int i = 1; i < 7; i++)
@@ -156,57 +156,93 @@ namespace CustomRPGSystem
                 {
                     case Skills.Skill.Acrobatics:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Dexterity;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Dexterity;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Dexterity;
                         break;
                     case Skills.Skill.Animal_Handling:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Wisdom;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Wisdom;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Wisdom;
                         break;
                     case Skills.Skill.Arcana:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Intelligence;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Intelligence;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Intelligence;
                         break;
                     case Skills.Skill.Athletics:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Strenght;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Strenght;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Strenght;
                         break;
                     case Skills.Skill.Deception:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Charisma;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Charisma;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Charisma;
                         break;
                     case Skills.Skill.History:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Intelligence;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Intelligence;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Intelligence;
                         break;
                     case Skills.Skill.Insight:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Wisdom;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Wisdom;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Wisdom;
                         break;
                     case Skills.Skill.Intimidation:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Charisma;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Charisma;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Charisma;
                         break;
                     case Skills.Skill.Investigation:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Intelligence;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Intelligence;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Intelligence;
                         break;
                     case Skills.Skill.Medicine:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Wisdom;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Wisdom;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Wisdom;
                         break;
                     case Skills.Skill.Nature:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Intelligence;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Intelligence;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Intelligence;
                         break;
                     case Skills.Skill.Perception:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Wisdom;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Wisdom;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Wisdom;
                         break;
                     case Skills.Skill.Performance:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Charisma;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Charisma;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Charisma;
                         break;
                     case Skills.Skill.Persuasion:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Charisma;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Charisma;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Charisma;
                         break;
                     case Skills.Skill.Religion:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Intelligence;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Intelligence;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Intelligence;
                         break;
                     case Skills.Skill.Sleight_Of_Hand:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Dexterity;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Dexterity;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Dexterity;
                         break;
                     case Skills.Skill.Stealth:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Dexterity;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Dexterity;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Dexterity;
                         break;
                     case Skills.Skill.Survival:
                         m_skills[i].abilityModifier = AbilityScore.Ability.Wisdom;
+                        raceSkills[i].abilityModifier = AbilityScore.Ability.Wisdom;
+                        classSkills[i].abilityModifier = AbilityScore.Ability.Wisdom;
                         break;
                 }
             }
@@ -256,7 +292,7 @@ namespace CustomRPGSystem
                     break;
 
                 case CharacterInfo.Race.High_Elf:
-                    player.info.raceProficiencyPoints += 1;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Intelligence, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -267,7 +303,7 @@ namespace CustomRPGSystem
                     break;
 
                 case CharacterInfo.Race.Wood_Elf:
-                    player.info.proficiencyPoints += 1;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Wisdom, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -278,7 +314,7 @@ namespace CustomRPGSystem
                     break;
 
                 case CharacterInfo.Race.Shadow_Elf:
-                    player.info.raceProficiencyPoints += 1;
+                    player.info.raceProficiencyPoints += 0;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -597,7 +633,7 @@ namespace CustomRPGSystem
             if (p_proficient)
             {
                 sk.proficient = p_proficient;
-                player.info.proficiencyPoints--;
+                //player.info.proficiencyPoints--;
             }
 
             for (int i = 0; i < player.skills.Length; i++)
@@ -624,7 +660,7 @@ namespace CustomRPGSystem
             if (p_proficient)
             {
                 sk.proficient = p_proficient;
-                player.info.proficiencyPoints--;
+                //player.info.proficiencyPoints--;
             }
 
             for (int i = 0; i < player.skills.Length; i++)
@@ -779,6 +815,33 @@ namespace CustomRPGSystem
             if (value > 30) modifierValue = 10;
 
             return modifierValue;
+        }
+        private int SetLevelAbilityPoints(int value)
+        {
+            int availablePoints = 0;
+
+            if (value >= 4 && value < 8)
+            {
+                availablePoints = 2;
+            }
+            else if (value >= 8 && value < 12)
+            {
+                availablePoints = 4;
+            }
+            else if (value >= 12 && value < 16)
+            {
+                availablePoints = 6;
+            }
+            else if (value >= 16 && value < 19)
+            {
+                availablePoints = 8;
+            }
+            else if (value >= 19)
+            {
+                availablePoints = 10;
+            }
+
+            return availablePoints;
         }
         private int SetProficiencyBonus(int value)
         {

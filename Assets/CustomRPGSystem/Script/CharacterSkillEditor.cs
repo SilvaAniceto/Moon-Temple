@@ -11,13 +11,14 @@ namespace CustomRPGSystem
         [SerializeField] private TMP_Text m_proficiencyPoints;
         [SerializeField] private TMP_Text m_race;
         [SerializeField] private TMP_Text m_class;
+        public Button m_reviewButton;
 
         public Button m_raceButton;
         public Button m_classButton;
 
         [SerializeField] private List<UISkill> m_UISkill = new List<UISkill>();
-        private List<PlayerCharacterData.Skills> m_raceSkills = new List<PlayerCharacterData.Skills>();
-        private List<PlayerCharacterData.Skills> m_classSkills = new List<PlayerCharacterData.Skills>();
+        public List<PlayerCharacterData.Skills> m_raceSkills = new List<PlayerCharacterData.Skills>();
+        public List<PlayerCharacterData.Skills> m_classSkills = new List<PlayerCharacterData.Skills>();
 
         private int m_currentRacePoints;
         private int m_currentClassPoints;
@@ -29,12 +30,20 @@ namespace CustomRPGSystem
             {
                 return m_currentRacePoints;
             }
+            set
+            {
+                m_currentRacePoints = value;
+            }
         }
         public int CurrentClassPoints
         {
             get
             {
                 return m_currentClassPoints;
+            }
+            set
+            {
+                m_currentClassPoints = value;
             }
         }
         public bool HasAvailableRacePoints
@@ -55,72 +64,81 @@ namespace CustomRPGSystem
 
         void OnEnable()
         {
-            m_currentRacePoints = CharacterCreator.CharacterData.info.raceProficiencyPoints;
-            m_currentClassPoints = CharacterCreator.CharacterData.info.classProficiencyPoints;
-
-            m_raceSkills.Clear();
-            m_classSkills.Clear();
-
-            foreach (PlayerCharacterData.Skills raceSkill in CharacterCreator.CharacterData.raceSkills)
-            {
-                m_raceSkills.Add(raceSkill);
-            }
-
-            foreach (PlayerCharacterData.Skills classSkill in CharacterCreator.CharacterData.classSkills)
-            {
-                m_classSkills.Add(classSkill);
-            }
+            m_raceButton.onClick.RemoveAllListeners();
+            m_classButton.onClick.RemoveAllListeners();
 
             m_raceButton.onClick.AddListener(delegate
             {
-                ShowRaceSkill(m_raceSkills);
+                ShowRaceSkill();
             });
 
             m_classButton.onClick.AddListener(delegate
             {
-                ShowClassSkill(m_classSkills);
+                ShowClassSkill();
             });
 
             UpdateUIText();
-            ShowRaceSkill(m_raceSkills);
+            ShowRaceSkill();
         }
 
-        void ShowRaceSkill(List<PlayerCharacterData.Skills> skills)
+        void ShowRaceSkill()
         {
             m_proficiencyPoints.text = m_currentRacePoints.ToString();
-            for (int i = 0; i < skills.Count; i++)
+            for (int i = 0; i < m_raceSkills.Count; i++)
             {
-                m_UISkill[i].SetUISkill(skills[i], skills[i].proficient, skills[i].isChangable, HasAvailableRacePoints);
+                m_UISkill[i].SetUISkill(m_raceSkills[i], m_raceSkills[i].proficient, m_raceSkills[i].isChangable, HasAvailableRacePoints);
                 m_UISkill[i].OnProficiencySet.RemoveAllListeners();
                 m_UISkill[i].OnProficiencySet.AddListener(UpdateRacePoints);
+
+                for (int j = 0; j < m_classSkills.Count; j++)
+                {
+                    if (m_raceSkills[i].skill == m_classSkills[j].skill)
+                    {
+                        if (m_classSkills[j].proficient)
+                        {
+                            m_UISkill[i].SetProficiencyToggle(m_classSkills[j].proficient);
+                        }
+                    }
+                }
             }
         }
 
-        void ShowClassSkill(List<PlayerCharacterData.Skills> skills)
+        void ShowClassSkill()
         {
             m_proficiencyPoints.text = m_currentClassPoints.ToString();
-            for (int i = 0; i < skills.Count; i++)
+            for (int i = 0; i < m_classSkills.Count; i++)
             {
-                m_UISkill[i].SetUISkill(skills[i], skills[i].proficient, skills[i].isChangable, HasAvailableClassPoints);
+                m_UISkill[i].SetUISkill(m_classSkills[i], m_classSkills[i].proficient, m_classSkills[i].isChangable, HasAvailableClassPoints);
                 m_UISkill[i].OnProficiencySet.RemoveAllListeners();
                 m_UISkill[i].OnProficiencySet.AddListener(UpdateClassPoints);
+
+                for (int j = 0; j < m_raceSkills.Count; j++)
+                {
+                    if (m_classSkills[i].skill == m_raceSkills[j].skill)
+                    {
+                        if (m_raceSkills[j].proficient)
+                        {
+                            m_UISkill[i].SetProficiencyToggle(m_raceSkills[j].proficient);
+                        }
+                    }
+                }
             }
         }
 
-        void UpdateRacePoints(bool p_proficiency)
+        void UpdateRacePoints(PlayerCharacterData.Skills p_skill, bool p_proficiency)
         {
             if (p_proficiency) m_currentRacePoints--;
             else m_currentRacePoints++;
 
-            ShowRaceSkill(m_raceSkills);
+            ShowRaceSkill();
         }
 
-        void UpdateClassPoints(bool p_proficiency)
+        void UpdateClassPoints(PlayerCharacterData.Skills p_skill, bool p_proficiency)
         {
             if (p_proficiency) m_currentClassPoints--;
             else m_currentClassPoints++;
 
-            ShowClassSkill(m_classSkills);
+            ShowClassSkill();
         }
 
         private void UpdateUIText()

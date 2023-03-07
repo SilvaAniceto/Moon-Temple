@@ -31,7 +31,7 @@ namespace CustomRPGSystem
         public static int m_raceValue;
         public static int m_classValue;
 
-        public static List<PlayerCharacterData> CharacterList = new List<PlayerCharacterData>();
+        private List<PlayerCharacterData> CharacterList = new List<PlayerCharacterData>();
         public static PlayerCharacterData CharacterData;
 
         public PlayerCharacterData c;
@@ -64,11 +64,11 @@ namespace CustomRPGSystem
             UIPages.Add(m_characterAbilityEditor.gameObject);
             UIPages.Add(m_characterSkillEditor.gameObject);
 
-            m_characterEditor.editAbilities.onClick.AddListener(Create);
+            m_characterEditor.editAbilities.onClick.AddListener(SetRaceAndClass);
 
-            m_characterAbilityEditor.editSkills.onClick.AddListener(SetAbilities);
+            m_characterAbilityEditor.editSkills.onClick.AddListener(NextPage);
 
-            m_backButton.onClick.AddListener(OnBackButton);
+            m_backButton.onClick.AddListener(PreviousPage);
 
             if (!Directory.Exists(PlayerDirectory))
             {
@@ -107,7 +107,7 @@ namespace CustomRPGSystem
         
         }
 
-        void Create()
+        void SetRaceAndClass()
         {
             if (string.IsNullOrEmpty(m_characterName)) return;
 
@@ -117,11 +117,43 @@ namespace CustomRPGSystem
 
             c = CharacterData;
 
+            SetAbilityEditor();
+            SetSkillEditor();
+
             //CharacterList.Add(CharacterData);
 
             //FileHandler.SaveToJSON<PlayerCharacterData>(CharacterList, MainCharacterDirectory + "/" + m_playerName);
 
             NextPage();
+        }
+
+        void SetAbilityEditor()
+        {
+            m_characterAbilityEditor.CurrentAvailablePoints = CharacterData.info.abilityPoints;
+
+            for (int i = 0; i < CharacterData.abilityScore.Length; i++)
+            {
+                m_characterAbilityEditor.Ability[i].SetUIAbilityScore(CharacterData.abilityScore[i].ability, CharacterData.abilityScore[i].score, m_characterAbilityEditor.HasAvailablePoints);
+            }
+        }
+
+        void SetSkillEditor()
+        {
+            m_characterSkillEditor.CurrentRacePoints = CharacterData.info.raceProficiencyPoints;
+            m_characterSkillEditor.CurrentClassPoints = CharacterData.info.classProficiencyPoints;
+
+            m_characterSkillEditor.m_raceSkills.Clear();
+            m_characterSkillEditor.m_classSkills.Clear();
+
+            foreach (PlayerCharacterData.Skills raceSkill in CharacterData.raceSkills)
+            {
+                m_characterSkillEditor.m_raceSkills.Add(raceSkill);
+            }
+
+            foreach (PlayerCharacterData.Skills classSkill in CharacterData.classSkills)
+            {
+                m_characterSkillEditor.m_classSkills.Add(classSkill);
+            }
         }
 
         void SetAbilities()
@@ -155,7 +187,7 @@ namespace CustomRPGSystem
             UIPages[p_pageIndex].SetActive(true);
         }
 
-        void OnBackButton()
+        void PreviousPage()
         {
             int index = 0;
 

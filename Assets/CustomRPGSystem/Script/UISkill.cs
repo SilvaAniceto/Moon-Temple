@@ -16,7 +16,7 @@ namespace CustomRPGSystem
         [SerializeField] private Sprite m_toggleUnchangable;
         [SerializeField] private Image m_background;
 
-        [HideInInspector] public UnityEvent<bool> OnProficiencySet = new UnityEvent<bool>();
+        [HideInInspector] public UnityEvent<PlayerCharacterData.Skills, bool> OnProficiencySet = new UnityEvent<PlayerCharacterData.Skills, bool>();
 
         public void SetUISkill(PlayerCharacterData.Skills skill, bool isProficient, bool isChangable, bool hasAvailablePoints)
         {
@@ -26,7 +26,7 @@ namespace CustomRPGSystem
 
             if (!hasAvailablePoints)
             {
-                if (isProficient)
+                if (isProficient && isChangable)
                 {
                     m_skillToggle.interactable = true;
                     m_background.sprite = m_toggleChangable;
@@ -68,8 +68,17 @@ namespace CustomRPGSystem
         private void SetProficientSkill(PlayerCharacterData.Skills skill, bool isProficient)
         {
             skill.proficient = isProficient;
-            OnProficiencySet?.Invoke(skill.proficient);
+            OnProficiencySet?.Invoke(skill, skill.proficient);
         }
 
+        public void SetProficiencyToggle(bool isProficient)
+        {
+            m_skillToggle.onValueChanged.RemoveAllListeners();
+
+            m_skillToggle.interactable = false;
+            m_background.sprite = m_toggleUnchangable;
+
+            m_skillToggle.isOn = isProficient;
+        }
     }
 }
