@@ -53,6 +53,7 @@ namespace CustomRPGSystem
             public int armorClass = 0;
             public int lifePoints = 0;
             public int speed = 0;
+            public int initiative = 0;
             public int proficiencyBonus = 0;
             [Range(0, 18)] public int raceProficiencyPoints;
             [Range(0, 18)] public int classProficiencyPoints;
