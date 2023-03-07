@@ -17,8 +17,8 @@ namespace CustomRPGSystem
         public Button m_classButton;
 
         [SerializeField] private List<UISkill> m_UISkill = new List<UISkill>();
-        public List<PlayerCharacterData.Skills> m_raceSkills = new List<PlayerCharacterData.Skills>();
-        public List<PlayerCharacterData.Skills> m_classSkills = new List<PlayerCharacterData.Skills>();
+        [HideInInspector] public List<PlayerCharacterData.Skills> m_raceSkills = new List<PlayerCharacterData.Skills>();
+        [HideInInspector] public List<PlayerCharacterData.Skills> m_classSkills = new List<PlayerCharacterData.Skills>();
 
         private int m_currentRacePoints;
         private int m_currentClassPoints;
@@ -143,8 +143,8 @@ namespace CustomRPGSystem
 
         private void UpdateUIText()
         {
-            m_race.text = CharacterCreator.CharacterData.info.race.ToString();
-            m_class.text = CharacterCreator.CharacterData.info.classes.ToString();
+            m_race.text = CharacterCreator.Instance.EditingCharacter.info.race.ToString();
+            m_class.text = CharacterCreator.Instance.EditingCharacter.info.classes.ToString();
         }
     }
 }

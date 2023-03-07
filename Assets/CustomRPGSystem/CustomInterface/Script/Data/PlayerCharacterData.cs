@@ -116,8 +116,8 @@ namespace CustomRPGSystem
         /*[HideInInspector]*/ public CharacterInfo info = new CharacterInfo();
         /*[HideInInspector]*/ public AbilityScore[] abilityScore;
         /*[HideInInspector]*/ public Skills[] skills;
-        public List<Skills> raceSkills = new List<Skills>();
-        public List<Skills> classSkills = new List<Skills>();
+        /*[HideInInspector]*/ public List<Skills> raceSkills = new List<Skills>();
+        /*[HideInInspector]*/ public List<Skills> classSkills = new List<Skills>();
 
         public PlayerCharacterData(string p_characterName, int p_level, CharacterInfo.Race p_race,CharacterInfo.Class p_class)
         {

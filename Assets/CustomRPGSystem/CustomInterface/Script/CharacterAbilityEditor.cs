@@ -106,10 +106,10 @@ namespace CustomRPGSystem
 
         private void UpdateUIText()
         {
-            m_name.text = CharacterCreator.CharacterData.info.name;
-            m_level.text = CharacterCreator.CharacterData.info.level.ToString();
-            m_race.text = CharacterCreator.CharacterData.info.race.ToString();
-            m_class.text = CharacterCreator.CharacterData.info.classes.ToString();
+            m_name.text = CharacterCreator.Instance.EditingCharacter.info.name;
+            m_level.text = CharacterCreator.Instance.EditingCharacter.info.level.ToString();
+            m_race.text = CharacterCreator.Instance.EditingCharacter.info.race.ToString();
+            m_class.text = CharacterCreator.Instance.EditingCharacter.info.classes.ToString();
         }
     }
 }

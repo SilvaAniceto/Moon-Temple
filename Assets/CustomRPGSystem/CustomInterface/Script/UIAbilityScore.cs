@@ -47,7 +47,7 @@ namespace CustomRPGSystem
             m_abilityValue.text = m_standardScore.ToString();
             m_currentScore = m_standardScore;
 
-            m_abilityModifier.text = CharacterCreator.CharacterData.SetAbilityModifier(m_standardScore).ToString();
+            m_abilityModifier.text = CharacterCreator.Instance.EditingCharacter.SetAbilityModifier(m_standardScore).ToString();
 
             m_minusButton.onClick.AddListener(delegate 
             {
@@ -72,34 +72,34 @@ namespace CustomRPGSystem
 
         public void AddPoints(PlayerCharacterData.AbilityScore.Ability ability)
         {
-            for (int i = 0; i < CharacterCreator.CharacterData.abilityScore.Length; i++)
+            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.abilityScore.Length; i++)
             {
-                if (CharacterCreator.CharacterData.abilityScore[i].ability == ability)
+                if (CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability == ability)
                 {
                     m_currentScore++;
 
-                    m_abilityValue.text = m_currentScore.ToString();
-                    m_abilityModifier.text = CharacterCreator.CharacterData.SetAbilityModifier(m_currentScore).ToString();
+                    CharacterCreator.Instance.EditingCharacter.SetAbilityScore(CharacterCreator.Instance.EditingCharacter, CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability, m_currentScore);
+                    m_abilityValue.text = CharacterCreator.Instance.EditingCharacter.abilityScore[i].score.ToString();
+                    m_abilityModifier.text = CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier.ToString();
                 }
             }
             OnPointsChanged?.Invoke(-1);
-            //CharacterCreator.CharacterData.info.abilityPoints--;
         }
 
         public void SubtractPoints(PlayerCharacterData.AbilityScore.Ability ability)
         {
-            for (int i = 0; i < CharacterCreator.CharacterData.abilityScore.Length; i++)
+            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.abilityScore.Length; i++)
             {
-                if (CharacterCreator.CharacterData.abilityScore[i].ability == ability)
+                if (CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability == ability)
                 {
                     m_currentScore--;
 
-                    m_abilityValue.text = m_currentScore.ToString();
-                    m_abilityModifier.text = CharacterCreator.CharacterData.SetAbilityModifier(m_currentScore).ToString();
+                    CharacterCreator.Instance.EditingCharacter.SetAbilityScore(CharacterCreator.Instance.EditingCharacter, CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability, m_currentScore);
+                    m_abilityValue.text = CharacterCreator.Instance.EditingCharacter.abilityScore[i].score.ToString();
+                    m_abilityModifier.text = CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier.ToString();
                 }
             }
             OnPointsChanged?.Invoke(1);
-            //CharacterCreator.CharacterData.info.abilityPoints++;
         }
     }
 }

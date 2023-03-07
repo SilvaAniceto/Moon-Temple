@@ -34,7 +34,7 @@ namespace CustomRPGSystem
         private List<PlayerCharacterData> CharacterList = new List<PlayerCharacterData>();
         public static PlayerCharacterData CharacterData;
 
-        public PlayerCharacterData c;
+        public PlayerCharacterData EditingCharacter;
 
         private List<GameObject> UIPages = new List<GameObject>();
 
@@ -95,18 +95,6 @@ namespace CustomRPGSystem
             ManagerCreatorPages(0);
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
-
         void SetRaceAndClass()
         {
             if (string.IsNullOrEmpty(m_characterName)) return;
@@ -115,7 +103,7 @@ namespace CustomRPGSystem
 
             CharacterData = new PlayerCharacterData(m_characterName, m_levelValue, (PlayerCharacterData.CharacterInfo.Race)m_raceValue, (PlayerCharacterData.CharacterInfo.Class)m_classValue);
 
-            c = CharacterData;
+            EditingCharacter = CharacterData;
 
             SetAbilityEditor();
             SetSkillEditor();
@@ -129,49 +117,31 @@ namespace CustomRPGSystem
 
         void SetAbilityEditor()
         {
-            m_characterAbilityEditor.CurrentAvailablePoints = CharacterData.info.abilityPoints;
+            m_characterAbilityEditor.CurrentAvailablePoints = EditingCharacter.info.abilityPoints;
 
-            for (int i = 0; i < CharacterData.abilityScore.Length; i++)
+            for (int i = 0; i < EditingCharacter.abilityScore.Length; i++)
             {
-                m_characterAbilityEditor.Ability[i].SetUIAbilityScore(CharacterData.abilityScore[i].ability, CharacterData.abilityScore[i].score, m_characterAbilityEditor.HasAvailablePoints);
+                m_characterAbilityEditor.Ability[i].SetUIAbilityScore(EditingCharacter.abilityScore[i].ability, EditingCharacter.abilityScore[i].score, m_characterAbilityEditor.HasAvailablePoints);
             }
         }
 
         void SetSkillEditor()
         {
-            m_characterSkillEditor.CurrentRacePoints = CharacterData.info.raceProficiencyPoints;
-            m_characterSkillEditor.CurrentClassPoints = CharacterData.info.classProficiencyPoints;
+            m_characterSkillEditor.CurrentRacePoints = EditingCharacter.info.raceProficiencyPoints;
+            m_characterSkillEditor.CurrentClassPoints = EditingCharacter.info.classProficiencyPoints;
 
             m_characterSkillEditor.m_raceSkills.Clear();
             m_characterSkillEditor.m_classSkills.Clear();
 
-            foreach (PlayerCharacterData.Skills raceSkill in CharacterData.raceSkills)
+            foreach (PlayerCharacterData.Skills raceSkill in EditingCharacter.raceSkills)
             {
                 m_characterSkillEditor.m_raceSkills.Add(raceSkill);
             }
 
-            foreach (PlayerCharacterData.Skills classSkill in CharacterData.classSkills)
+            foreach (PlayerCharacterData.Skills classSkill in EditingCharacter.classSkills)
             {
                 m_characterSkillEditor.m_classSkills.Add(classSkill);
             }
-        }
-
-        void SetAbilities()
-        {
-            for (int i = 0; i < CharacterData.abilityScore.Length; i++)
-            {
-                for (int j = 0; j < m_characterAbilityEditor.Ability.Count; j++)
-                {
-                    if (CharacterData.abilityScore[i].ability == m_characterAbilityEditor.Ability[j].m_ability)
-                    {
-                        CharacterData.SetAbilityScore(CharacterData, m_characterAbilityEditor.Ability[j].m_ability, m_characterAbilityEditor.Ability[j].CurrentScore);
-                    }
-                }
-            }
-
-            CharacterData.info.abilityPoints = m_characterAbilityEditor.CurrentAvailablePoints;
-
-            NextPage();
         }
 
         void ManagerCreatorPages(int p_pageIndex)
