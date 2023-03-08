@@ -50,7 +50,7 @@ namespace CustomRPGSystem
             };
             public Class classes = Class.None;
 
-            public int armorClass = 0;
+            public int armorClass = 10;
             public int lifePoints = 0;
             public int speed = 0;
             public int initiative = 0;

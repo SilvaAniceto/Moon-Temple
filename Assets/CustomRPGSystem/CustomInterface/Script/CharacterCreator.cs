@@ -25,6 +25,9 @@ namespace CustomRPGSystem
         [Header("Character Skill Editor")]
         [SerializeField] private CharacterSkillEditor m_characterSkillEditor;
 
+        [Header("Character Sheet")]
+        [SerializeField] private CharacterSheet m_characterSheet;
+
         public static string m_playerName = "";
         public static string m_characterName = "";
         public static int m_levelValue;
@@ -63,10 +66,13 @@ namespace CustomRPGSystem
             UIPages.Add(m_characterEditor.gameObject);
             UIPages.Add(m_characterAbilityEditor.gameObject);
             UIPages.Add(m_characterSkillEditor.gameObject);
+            UIPages.Add(m_characterSheet.gameObject);
 
             m_characterEditor.editAbilities.onClick.AddListener(SetRaceAndClass);
 
             m_characterAbilityEditor.editSkills.onClick.AddListener(NextPage);
+            m_characterSkillEditor.m_reviewButton.onClick.AddListener(NextPage);
+            m_characterSkillEditor.m_reviewButton.onClick.AddListener(m_characterSkillEditor.SetCharacterSkills);
 
             m_backButton.onClick.AddListener(PreviousPage);
 

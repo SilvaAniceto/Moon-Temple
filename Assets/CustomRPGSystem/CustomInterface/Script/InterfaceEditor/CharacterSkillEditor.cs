@@ -19,6 +19,7 @@ namespace CustomRPGSystem
         [SerializeField] private List<UISkill> m_UISkill = new List<UISkill>();
         [HideInInspector] public List<PlayerCharacterData.Skills> m_raceSkills = new List<PlayerCharacterData.Skills>();
         [HideInInspector] public List<PlayerCharacterData.Skills> m_classSkills = new List<PlayerCharacterData.Skills>();
+        [HideInInspector] public List<PlayerCharacterData.Skills> m_skills = new List<PlayerCharacterData.Skills>();
 
         private int m_currentRacePoints;
         private int m_currentClassPoints;
@@ -81,6 +82,44 @@ namespace CustomRPGSystem
             ShowRaceSkill();
         }
 
+        public void SetCharacterSkills()
+        {
+            m_skills.Clear();
+
+            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.skills.Length; i++)
+            {
+                m_skills.Add(CharacterCreator.Instance.EditingCharacter.skills[i]);
+            }
+
+            for (int i = 0; i < m_raceSkills.Count; i++)
+            {
+                if (m_raceSkills[i].proficient)
+                {
+                    for (int j = 0; j < m_skills.Count; j++)
+                    {
+                        if (m_raceSkills[i].skill == m_skills[j].skill)
+                        {
+                            m_skills[j] = m_raceSkills[i];
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < m_classSkills.Count; i++)
+            {
+                if (m_classSkills[i].proficient)
+                {
+                    for (int j = 0; j < m_skills.Count; j++)
+                    {
+                        if (m_classSkills[i].skill == m_skills[j].skill)
+                        {
+                            m_skills[j] = m_classSkills[i];
+                        }
+                    }
+                }
+            }
+        }
+
         void ShowRaceSkill()
         {
             m_proficiencyPoints.text = m_currentRacePoints.ToString();
@@ -141,7 +180,7 @@ namespace CustomRPGSystem
             ShowClassSkill();
         }
 
-        private void UpdateUIText()
+        void UpdateUIText()
         {
             m_race.text = CharacterCreator.Instance.EditingCharacter.info.race.ToString();
             m_class.text = CharacterCreator.Instance.EditingCharacter.info.classes.ToString();
