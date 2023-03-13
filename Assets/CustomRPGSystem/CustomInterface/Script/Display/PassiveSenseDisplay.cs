@@ -9,16 +9,9 @@ namespace CustomRPGSystem
     {
         [SerializeField] private TMP_Text m_value;
         
-        public void SetPassiveSenseDisplay(int modifier, int bonus, bool proficient)
+        public void SetPassiveSenseDisplay(int modifier, int bonus)
         {
-            if (proficient)
-            {
-                m_value.text = (10 + modifier + bonus).ToString();
-            }
-            else
-            {
-                m_value.text = (10 + modifier).ToString();
-            }
+            m_value.text = (10 + modifier + bonus).ToString();
         }
     }
 }

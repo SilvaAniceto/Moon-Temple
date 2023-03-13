@@ -50,8 +50,11 @@ namespace CustomRPGSystem
             };
             public Class classes = Class.None;
 
+            public int hitDie = 0;
+            public int dice = 0;
             public int armorClass = 10;
-            public int lifePoints = 0;
+            public int maxHitPoints = 0;
+            public int currentHitPoints = 0;
             public int speed = 0;
             public int initiative = 0;
             public int proficiencyBonus = 0;
@@ -132,6 +135,7 @@ namespace CustomRPGSystem
             m_info.classes = p_class;
             m_info.abilityPoints += SetLevelAbilityPoints(m_info.level);
             m_info.proficiencyBonus = SetProficiencyBonus(m_info.level);
+            m_info.dice = m_info.level;
             this.info = m_info;
 
             for (int i = 1; i < 7; i++)
@@ -252,6 +256,7 @@ namespace CustomRPGSystem
 
             SetRace(this);
             SetClass(this);
+            SetHitPoints(this);
         }
 
         public void SetRace(PlayerCharacterData player)
@@ -264,6 +269,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Dragonborn:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 30;
                     SetAbilityScore(player, AbilityScore.Ability.Strenght, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -274,8 +280,9 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Hill_Dwarf:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 25;
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 2);
-                    SetAbilityScore(player, AbilityScore.Ability.Wisdom, 2);
+                    SetAbilityScore(player, AbilityScore.Ability.Wisdom, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
                     {
                         player.raceSkills[i].isChangable = false;
@@ -284,6 +291,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Mountain_Dwarf:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 25;
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Strenght, 2);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -294,6 +302,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.High_Elf:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 30;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Intelligence, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -305,6 +314,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Wood_Elf:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 30;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Wisdom, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -316,6 +326,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Shadow_Elf:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 30;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -327,6 +338,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Forest_Gnome:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 25;
                     SetAbilityScore(player, AbilityScore.Ability.Intelligence, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -337,6 +349,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Rock_Gnome:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 25;
                     SetAbilityScore(player, AbilityScore.Ability.Intelligence, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -347,7 +360,9 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Half_Elf:
                     player.info.raceProficiencyPoints += 2;
-                    SetAbilityScore(player, AbilityScore.Ability.Charisma, 1);
+                    player.info.speed = 30;
+                    SetAbilityScore(player, AbilityScore.Ability.Charisma, 2);
+                    player.info.abilityPoints += 2;
                     for (int i = 0; i < player.raceSkills.Count; i++)
                     {
                         player.raceSkills[i].isChangable = true;
@@ -356,6 +371,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Half_Orc:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 30;
                     SetAbilityScore(player, AbilityScore.Ability.Strenght, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -367,6 +383,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Lightfoot_Halfling:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 25;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -377,6 +394,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Stout_Halfling:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 25;
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 2);
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 1);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -387,6 +405,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Human:
                     player.info.raceProficiencyPoints += 1;
+                    player.info.speed = 30;
                     SetAbilityScore(player, AbilityScore.Ability.Strenght, 1);
                     SetAbilityScore(player, AbilityScore.Ability.Dexterity, 1);
                     SetAbilityScore(player, AbilityScore.Ability.Constitution, 1);
@@ -401,6 +420,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Race.Tiefling:
                     player.info.raceProficiencyPoints += 0;
+                    player.info.speed = 30;
                     SetAbilityScore(player, AbilityScore.Ability.Intelligence, 1);
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 2);
                     for (int i = 0; i < player.raceSkills.Count; i++)
@@ -420,6 +440,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Barbarian:
                     player.info.classProficiencyPoints += 2;
+                    player.info.hitDie = 12;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Strenght, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Constitution, true);
 
@@ -437,6 +458,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Bard:
                     player.info.classProficiencyPoints += 3;
+                    player.info.hitDie = 8;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Dexterity, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Charisma, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -447,6 +469,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Cleric:
                     player.info.classProficiencyPoints += 2;
+                    player.info.hitDie = 8;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Wisdom, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Charisma, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -462,6 +485,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Druid:
                     player.info.classProficiencyPoints += 2;
+                    player.info.hitDie = 8;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Intelligence, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Wisdom, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -480,6 +504,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Fighter:
                     player.info.classProficiencyPoints += 2;
+                    player.info.hitDie = 10;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Strenght, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Constitution, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -498,6 +523,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Monk:
                     player.info.classProficiencyPoints += 2;
+                    player.info.hitDie = 8;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Strenght, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Dexterity, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -514,6 +540,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Paladin:
                     player.info.classProficiencyPoints += 2;
+                    player.info.hitDie = 10;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Wisdom, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Charisma, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -530,6 +557,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Ranger:
                     player.info.classProficiencyPoints += 3;
+                    player.info.hitDie = 10;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Strenght, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Dexterity, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -548,6 +576,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Rogue:
                     player.info.classProficiencyPoints += 4;
+                    player.info.hitDie = 8;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Dexterity, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Intelligence, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -569,6 +598,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Sorcerer:
                     player.info.classProficiencyPoints += 2;
+                    player.info.hitDie = 6;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Constitution, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Charisma, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -585,6 +615,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Warlock:
                     player.info.classProficiencyPoints += 2;
+                    player.info.hitDie = 8;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Wisdom, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Charisma, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -602,6 +633,7 @@ namespace CustomRPGSystem
 
                 case CharacterInfo.Class.Wizard:
                     player.info.classProficiencyPoints += 2;
+                    player.info.hitDie = 6;
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Intelligence, true);
                     SetAbilitySavingThrow(player, AbilityScore.Ability.Wisdom, true);
                     for (int i = 0; i < player.classSkills.Count; i++)
@@ -616,6 +648,24 @@ namespace CustomRPGSystem
                     }
                     break;
             }
+        }
+        public void SetHitPoints(PlayerCharacterData player)
+        {
+            if (player.info.level == 1)
+            {
+                player.info.maxHitPoints = player.info.hitDie;
+            }
+            else if(player.info.level > 1)
+            {
+                player.info.maxHitPoints = player.info.hitDie;
+
+                for (int i = 1; i < player.info.dice; i++)
+                {
+                    player.info.maxHitPoints += UnityEngine.Random.Range(1, player.info.hitDie);
+                }
+            }
+
+            player.info.currentHitPoints = player.info.maxHitPoints;
         }
 
         public void SetRaceSkills(PlayerCharacterData player,Skills.Skill skill, bool p_proficient = false, bool p_isChangable = false)

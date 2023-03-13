@@ -30,7 +30,7 @@ namespace CustomRPGSystem
                 m_abilitySave.fontStyle = FontStyles.Normal;
                 m_savingBonus.fontStyle = FontStyles.Normal;
 
-                m_savingBonus.text = (bonus).ToString();
+                m_savingBonus.text = (score).ToString();
 
                 m_image.color = m_defaultColor;
             }
