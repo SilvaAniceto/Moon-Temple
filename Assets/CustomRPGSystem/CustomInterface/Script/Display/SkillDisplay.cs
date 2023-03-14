@@ -18,22 +18,32 @@ namespace CustomRPGSystem
 
         private int m_skillTotalBonus;
 
-        public void SetSkillDisplay(PlayerCharacterData.Skills skill, int modifier, int bonus)
+        public void SetSkillDisplay(PlayerCharacterData.Skills skill, PlayerCharacterData.AbilityScore[] ability, int bonus)
         {
+            int modifier = 0;
+
             m_skillDescription.text = skill.skill.ToString();
+
+            for (int i = 0; i < ability.Length; i++)
+            {
+                if (ability[i].ability == skill.abilityModifier)
+                {
+                    modifier = ability[i].modifier;
+                }
+            }
 
             if (skill.proficient)
             {
                 m_proficientImage.sprite = m_proficientSkill;
                 m_skillTotalBonus = bonus + modifier;
             }
-            else 
+            else
             {
                 m_proficientImage.sprite = m_nonProficientSkill;
                 m_skillTotalBonus = modifier;
             }
 
-            m_skillBonus.text = m_skillTotalBonus.ToString();   
+            m_skillBonus.text = m_skillTotalBonus.ToString();
         }
 
     }

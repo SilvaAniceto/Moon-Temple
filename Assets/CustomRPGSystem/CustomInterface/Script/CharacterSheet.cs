@@ -32,23 +32,27 @@ namespace CustomRPGSystem
         [Header("Skills")]
         [SerializeField] private List<SkillDisplay> m_skillDisplay = new List<SkillDisplay>();
 
+
+        [SerializeField] private List<PlayerCharacterData.Skills> m_editingSkills = new List<PlayerCharacterData.Skills>();
         #region PROPERTIES
 
         #endregion
 
         void Start()
         {
-        
+
         }
 
         void Update()
         {
-        
+
         }
 
         private void OnEnable()
         {
+            PrepareSkills();
             SetInfoSheet();
+            SetSkillSheet();
         }
 
         public void SetInfoSheet()
@@ -113,11 +117,34 @@ namespace CustomRPGSystem
                         }
                     }
                 }
-            } 
+            }
         }
         public void SetSkillSheet()
         {
-            
+            for (int i = 0; i < m_skillDisplay.Count; i++)
+            {
+                m_skillDisplay[i].SetSkillDisplay(m_editingSkills[i], CharacterCreator.Instance.EditingCharacter.abilityScore, CharacterCreator.Instance.EditingCharacter.info.proficiencyBonus);
+            }
+        }
+
+        void PrepareSkills()
+        {
+            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.raceSkills.Count; i++)
+            {
+                m_editingSkills.Add(CharacterCreator.Instance.EditingCharacter.raceSkills[i]);
+            }
+
+            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.classSkills.Count; i++)
+            {
+                if (CharacterCreator.Instance.EditingCharacter.classSkills[i].proficient)
+                {
+                    PlayerCharacterData.Skills s = m_editingSkills.Find(x => x.skill == CharacterCreator.Instance.EditingCharacter.classSkills[i].skill);
+
+                    int index = m_editingSkills.IndexOf(s);
+
+                    m_editingSkills[i] = CharacterCreator.Instance.EditingCharacter.classSkills[i];
+                }
+            }
         }
     }
 }

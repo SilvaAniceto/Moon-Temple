@@ -524,7 +524,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 340084299}
   m_skillBonus: {fileID: 21815874}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 574106260}
 --- !u!222 &20204688
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5538,6 +5538,7 @@ MonoBehaviour:
   - {fileID: 806143985}
   - {fileID: 720868280}
   - {fileID: 1475694129}
+  m_editingSkills: []
 --- !u!1 &266347258
 GameObject:
   m_ObjectHideFlags: 0
@@ -11630,7 +11631,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 1398291244}
   m_skillBonus: {fileID: 254590414}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 156273639}
 --- !u!222 &596841779
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -14224,7 +14225,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 653967213}
   m_skillBonus: {fileID: 2012382551}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 371110650}
 --- !u!222 &720868281
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15060,7 +15061,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 52052393}
   m_skillBonus: {fileID: 1398002156}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 2013230489}
 --- !u!222 &806143986
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15946,7 +15947,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 465159305}
   m_skillBonus: {fileID: 1540779570}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 555517242}
 --- !u!222 &863774893
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -19438,7 +19439,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 1808960116}
   m_skillBonus: {fileID: 1754822063}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 1678463348}
 --- !u!222 &1053435527
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -21290,7 +21291,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 1959923141}
   m_skillBonus: {fileID: 1240290987}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 1029469605}
 --- !u!222 &1144828701
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -22096,7 +22097,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 38190643}
   m_skillBonus: {fileID: 1389878785}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 180165381}
 --- !u!222 &1185218747
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -23283,7 +23284,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 85958968}
   m_skillBonus: {fileID: 1874213181}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 410868968}
 --- !u!222 &1252243683
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -23873,7 +23874,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 478963143}
   m_skillBonus: {fileID: 980715565}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 211459339}
 --- !u!222 &1297973755
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -26688,7 +26689,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 1813804972}
   m_skillBonus: {fileID: 1866998270}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 917012197}
 --- !u!222 &1422946223
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -27728,7 +27729,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 1900852614}
   m_skillBonus: {fileID: 1788108448}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 1503331531}
 --- !u!222 &1475694130
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -27793,7 +27794,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 2111944001}
   m_skillBonus: {fileID: 1877744424}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 122144706}
 --- !u!222 &1478543968
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -28486,7 +28487,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 2122773197}
   m_skillBonus: {fileID: 370782557}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 1177090874}
 --- !u!222 &1518889789
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -31294,7 +31295,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 1071982504}
   m_skillBonus: {fileID: 1032115195}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 844971163}
 --- !u!1 &1745901068
 GameObject:
   m_ObjectHideFlags: 0
@@ -37357,7 +37358,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 359587472}
   m_skillBonus: {fileID: 1376937819}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 1978478980}
 --- !u!222 &2019721994
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -37976,7 +37977,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 247165887}
   m_skillBonus: {fileID: 334108434}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 936306403}
 --- !u!222 &2054408585
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -39236,7 +39237,7 @@ MonoBehaviour:
   m_nonProficientSkill: {fileID: 21300000, guid: 0b3d25bb30efc5847954849ba0b1453d, type: 3}
   m_skillDescription: {fileID: 1912740714}
   m_skillBonus: {fileID: 2126693928}
-  m_proficientImage: {fileID: 0}
+  m_proficientImage: {fileID: 1308748146}
 --- !u!222 &2124333740
 CanvasRenderer:
   m_ObjectHideFlags: 0
