@@ -1,12 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 namespace CustomRPGSystem
 {
     public class CharacterSheet : MonoBehaviour
     {
+        [Header("Panels")]
+        [SerializeField] private GameObject m_attributePanel;
+        [SerializeField] private GameObject m_skillPanel;
+
+        [Header("Panel Buttons")]
+        [SerializeField] private Button m_skillButton;
+        [SerializeField] private Button m_attributeButton;
+
         [Header("Character Identification")]
         [SerializeField] private TMP_Text m_nameText;
         [SerializeField] private TMP_Text m_raceText, m_classText;
@@ -32,117 +41,123 @@ namespace CustomRPGSystem
         [Header("Skills")]
         [SerializeField] private List<SkillDisplay> m_skillDisplay = new List<SkillDisplay>();
 
+        private List<PlayerCharacterData.Skills> m_editingSkills = new List<PlayerCharacterData.Skills>();
 
-        [SerializeField] private List<PlayerCharacterData.Skills> m_editingSkills = new List<PlayerCharacterData.Skills>();
         #region PROPERTIES
 
         #endregion
 
-        void Start()
+        void Awake()
         {
+            m_skillButton.onClick.AddListener(delegate
+            {
+                m_attributePanel.SetActive(false);
+                m_skillPanel.SetActive(true);
+            });
 
+            m_attributeButton.onClick.AddListener(delegate
+            {
+                m_attributePanel.SetActive(true);
+                m_skillPanel.SetActive(false);
+            });
         }
 
-        void Update()
-        {
-
-        }
 
         private void OnEnable()
         {
-            PrepareSkills();
-            SetInfoSheet();
-            SetSkillSheet();
+            PrepareSkills(CharacterCreator.Instance.EditingCharacter);
+            SetInfoSheet(CharacterCreator.Instance.EditingCharacter, m_editingSkills);
         }
 
-        public void SetInfoSheet()
+        public void SetInfoSheet(PlayerCharacterData player, List<PlayerCharacterData.Skills> skills)
         {
-            m_nameText.text = CharacterCreator.Instance.EditingCharacter.info.name;
-            m_raceText.text = CharacterCreator.Instance.EditingCharacter.info.race.ToString();
-            m_classText.text = CharacterCreator.Instance.EditingCharacter.info.classes.ToString();
+            m_nameText.text = player.info.name;
+            m_raceText.text = player.info.race.ToString();
+            m_classText.text = player.info.classes.ToString();
 
-            m_hitPointDisplay.SetHitPointsDisplay(CharacterCreator.Instance.EditingCharacter);
+            m_hitPointDisplay.SetHitPointsDisplay(player);
 
-            m_levelText.text = CharacterCreator.Instance.EditingCharacter.info.level.ToString();
-            m_proficiencyBonusText.text = CharacterCreator.Instance.EditingCharacter.info.proficiencyBonus.ToString();
-            m_speedText.text = CharacterCreator.Instance.EditingCharacter.info.speed.ToString();
+            m_levelText.text = player.info.level.ToString();
+            m_proficiencyBonusText.text = player.info.proficiencyBonus.ToString();
+            m_speedText.text = player.info.speed.ToString();
 
-            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.abilityScore.Length; i++)
+            for (int i = 0; i < player.abilityScore.Length; i++)
             {
-                m_abilityScoreDisplays[i].SetAbilityDisplay(CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability.ToString(),
-                                                            CharacterCreator.Instance.EditingCharacter.abilityScore[i].score,
-                                                            CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier);
+                m_abilityScoreDisplays[i].SetAbilityDisplay(player.abilityScore[i].ability.ToString(),
+                                                            player.abilityScore[i].score,
+                                                            player.abilityScore[i].modifier);
 
-                m_savingThrowDisplays[i].SetSavingThrowDisplay(CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability.ToString(),
-                                                               CharacterCreator.Instance.EditingCharacter.info.proficiencyBonus,
-                                                               CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier,
-                                                               CharacterCreator.Instance.EditingCharacter.abilityScore[i].savingThrows);
+                m_savingThrowDisplays[i].SetSavingThrowDisplay(player.abilityScore[i].ability.ToString(),
+                                                               player.info.proficiencyBonus,
+                                                               player.abilityScore[i].modifier,
+                                                               player.abilityScore[i].savingThrows);
 
 
-                if (CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability == PlayerCharacterData.AbilityScore.Ability.Dexterity)
+                if (player.abilityScore[i].ability == PlayerCharacterData.AbilityScore.Ability.Dexterity)
                 {
-                    CharacterCreator.Instance.EditingCharacter.info.initiative = CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier;
+                    player.info.initiative = player.abilityScore[i].modifier;
 
-                    m_initiativeText.text = CharacterCreator.Instance.EditingCharacter.info.initiative.ToString();
+                    m_initiativeText.text = player.info.initiative.ToString();
 
-                    m_armorClassText.text = (CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier + CharacterCreator.Instance.EditingCharacter.info.armorClass).ToString();
+                    m_armorClassText.text = (player.abilityScore[i].modifier + player.info.armorClass).ToString();
                 }
 
-                if (CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability == PlayerCharacterData.AbilityScore.Ability.Wisdom)
+                if (player.abilityScore[i].ability == PlayerCharacterData.AbilityScore.Ability.Intelligence)
                 {
-                    for (int j = 0; j < CharacterCreator.Instance.EditingCharacter.skills.Length; j++)
+                    for (int j = 0; j < skills.Count; j++)
                     {
-                        if (CharacterCreator.Instance.EditingCharacter.skills[j].skill == PlayerCharacterData.Skills.Skill.Perception)
+                        if (skills[j].skill == PlayerCharacterData.Skills.Skill.Investigation)
                         {
-                            m_perception.SetPassiveSenseDisplay(CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier,
-                                                                CharacterCreator.Instance.EditingCharacter.info.proficiencyBonus);
-                        }
-
-                        if (CharacterCreator.Instance.EditingCharacter.skills[j].skill == PlayerCharacterData.Skills.Skill.Insight)
-                        {
-                            m_insight.SetPassiveSenseDisplay(CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier,
-                                                                CharacterCreator.Instance.EditingCharacter.info.proficiencyBonus);
+                            m_investigation.SetPassiveSenseDisplay(player.abilityScore[i].modifier,
+                                                                   player.info.proficiencyBonus,
+                                                                   skills[j].proficient);
                         }
                     }
                 }
 
-                if (CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability == PlayerCharacterData.AbilityScore.Ability.Intelligence)
+                if (player.abilityScore[i].ability == PlayerCharacterData.AbilityScore.Ability.Wisdom)
                 {
-                    for (int j = 0; j < CharacterCreator.Instance.EditingCharacter.skills.Length; j++)
+                    for (int j = 0; j < skills.Count; j++)
                     {
-                        if (CharacterCreator.Instance.EditingCharacter.skills[j].skill == PlayerCharacterData.Skills.Skill.Investigation)
+                        if (skills[j].skill == PlayerCharacterData.Skills.Skill.Perception)
                         {
-                            m_investigation.SetPassiveSenseDisplay(CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier,
-                                                                CharacterCreator.Instance.EditingCharacter.info.proficiencyBonus);
+                            m_perception.SetPassiveSenseDisplay(player.abilityScore[i].modifier,
+                                                                player.info.proficiencyBonus,
+                                                                skills[j].proficient) ;
+                        }
+
+                        if (player.skills[j].skill == PlayerCharacterData.Skills.Skill.Insight)
+                        {
+                            m_insight.SetPassiveSenseDisplay(player.abilityScore[i].modifier,
+                                                             player.info.proficiencyBonus,
+                                                             skills[j].proficient);
                         }
                     }
                 }
             }
-        }
-        public void SetSkillSheet()
-        {
+
             for (int i = 0; i < m_skillDisplay.Count; i++)
             {
-                m_skillDisplay[i].SetSkillDisplay(m_editingSkills[i], CharacterCreator.Instance.EditingCharacter.abilityScore, CharacterCreator.Instance.EditingCharacter.info.proficiencyBonus);
+                m_skillDisplay[i].SetSkillDisplay(m_editingSkills[i], player.abilityScore, player.info.proficiencyBonus);
             }
         }
-
-        void PrepareSkills()
+        
+        void PrepareSkills(PlayerCharacterData player)
         {
-            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.raceSkills.Count; i++)
+            for (int i = 0; i < player.raceSkills.Count; i++)
             {
-                m_editingSkills.Add(CharacterCreator.Instance.EditingCharacter.raceSkills[i]);
+                m_editingSkills.Add(player.raceSkills[i]);
             }
 
-            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.classSkills.Count; i++)
+            for (int i = 0; i < player.classSkills.Count; i++)
             {
-                if (CharacterCreator.Instance.EditingCharacter.classSkills[i].proficient)
+                if (player.classSkills[i].proficient)
                 {
-                    PlayerCharacterData.Skills s = m_editingSkills.Find(x => x.skill == CharacterCreator.Instance.EditingCharacter.classSkills[i].skill);
+                    PlayerCharacterData.Skills s = m_editingSkills.Find(x => x.skill == player.classSkills[i].skill);
 
                     int index = m_editingSkills.IndexOf(s);
 
-                    m_editingSkills[i] = CharacterCreator.Instance.EditingCharacter.classSkills[i];
+                    m_editingSkills[i] = player.classSkills[i];
                 }
             }
         }
