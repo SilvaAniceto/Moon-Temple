@@ -20,7 +20,7 @@ namespace CustomRPGSystem
         [SerializeField] private CharacterEditor m_characterEditor;
 
         [Header("Character Ability Editor")]
-        [SerializeField] private CharacterAbilityEditor m_characterAbilityEditor;
+        [SerializeField] private CharacterAttributeEditor m_characterAbilityEditor;
 
         [Header("Character Skill Editor")]
         [SerializeField] private CharacterSkillEditor m_characterSkillEditor;
@@ -123,7 +123,7 @@ namespace CustomRPGSystem
 
         void SetAbilityEditor()
         {
-            m_characterAbilityEditor.CurrentAvailablePoints = EditingCharacter.info.abilityPoints;
+            m_characterAbilityEditor.CurrentExtraPoints = EditingCharacter.info.extraPoints;
 
             for (int i = 0; i < EditingCharacter.abilityScore.Length; i++)
             {

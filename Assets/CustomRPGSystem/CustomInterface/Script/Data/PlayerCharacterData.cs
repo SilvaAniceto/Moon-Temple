@@ -60,7 +60,8 @@ namespace CustomRPGSystem
             public int proficiencyBonus = 0;
             [Range(0, 18)] public int raceProficiencyPoints;
             [Range(0, 18)] public int classProficiencyPoints;
-            public int abilityPoints = 72;
+            public int availablePoints = 27;
+            public int extraPoints = 0;
             [Range(1, 20)] public int level = 1;
         }
 
@@ -133,7 +134,7 @@ namespace CustomRPGSystem
             m_info.level = p_level + 1;
             m_info.race = p_race;
             m_info.classes = p_class;
-            m_info.abilityPoints += SetLevelAbilityPoints(m_info.level);
+            m_info.extraPoints += SetLevelAbilityPoints(m_info.level);
             m_info.proficiencyBonus = SetProficiencyBonus(m_info.level);
             m_info.dice = m_info.level;
             this.info = m_info;
@@ -362,7 +363,7 @@ namespace CustomRPGSystem
                     player.info.raceProficiencyPoints += 2;
                     player.info.speed = 30;
                     SetAbilityScore(player, AbilityScore.Ability.Charisma, 2);
-                    player.info.abilityPoints += 2;
+                    player.info.extraPoints += 2;
                     for (int i = 0; i < player.raceSkills.Count; i++)
                     {
                         player.raceSkills[i].isChangable = true;
