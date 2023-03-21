@@ -20,7 +20,7 @@ namespace CustomRPGSystem
         [SerializeField] private CharacterEditor m_characterEditor;
 
         [Header("Character Ability Editor")]
-        [SerializeField] private CharacterAttributeEditor m_characterAbilityEditor;
+        [SerializeField] private CharacterAttributeEditor m_characterAttributeEditor;
 
         [Header("Character Skill Editor")]
         [SerializeField] private CharacterSkillEditor m_characterSkillEditor;
@@ -64,13 +64,13 @@ namespace CustomRPGSystem
 
             UIPages.Add(m_UIButtonLayout);
             UIPages.Add(m_characterEditor.gameObject);
-            UIPages.Add(m_characterAbilityEditor.gameObject);
+            UIPages.Add(m_characterAttributeEditor.gameObject);
             UIPages.Add(m_characterSkillEditor.gameObject);
             UIPages.Add(m_characterSheet.gameObject);
 
             m_characterEditor.editAbilities.onClick.AddListener(SetRaceAndClass);
 
-            m_characterAbilityEditor.editSkills.onClick.AddListener(NextPage);
+            m_characterAttributeEditor.editSkills.onClick.AddListener(NextPage);
             m_characterSkillEditor.m_reviewButton.onClick.AddListener(NextPage);
             m_characterSkillEditor.m_reviewButton.onClick.AddListener(m_characterSkillEditor.SetCharacterSkills);
 
@@ -111,7 +111,7 @@ namespace CustomRPGSystem
 
             EditingCharacter = CharacterData;
 
-            SetAbilityEditor();
+            SetAttributeEditor();
             SetSkillEditor();
 
             //CharacterList.Add(CharacterData);
@@ -121,13 +121,14 @@ namespace CustomRPGSystem
             NextPage();
         }
 
-        void SetAbilityEditor()
+        void SetAttributeEditor()
         {
-            m_characterAbilityEditor.CurrentExtraPoints = EditingCharacter.info.extraPoints;
+            m_characterAttributeEditor.CurrentAvailablePoints = EditingCharacter.info.availablePoints;
+            m_characterAttributeEditor.CurrentExtraPoints = EditingCharacter.info.extraPoints;
 
             for (int i = 0; i < EditingCharacter.abilityScore.Length; i++)
             {
-                m_characterAbilityEditor.Ability[i].SetUIAbilityScore(EditingCharacter.abilityScore[i].ability, EditingCharacter.abilityScore[i].score, m_characterAbilityEditor.HasAvailablePoints);
+                m_characterAttributeEditor.Ability[i].SetUIExtraAttributeScore(EditingCharacter.abilityScore[i].ability, EditingCharacter.abilityScore[i].score, m_characterAttributeEditor.HasAvailablePoints);
             }
         }
 

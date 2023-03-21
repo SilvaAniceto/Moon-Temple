@@ -5,7 +5,7 @@ using TMPro;
 
 namespace CustomRPGSystem
 {
-    public class UIAbilityScore : MonoBehaviour
+    public class UIExtraAttributeScore : MonoBehaviour
     {
         public PlayerCharacterData.AbilityScore.Ability m_ability = PlayerCharacterData.AbilityScore.Ability.Strenght;
         public TMP_Text m_abilityDescription;
@@ -37,7 +37,7 @@ namespace CustomRPGSystem
         }
         #endregion
 
-        public void SetUIAbilityScore(PlayerCharacterData.AbilityScore.Ability ability, int value, bool hasPoint)
+        public void SetUIExtraAttributeScore(PlayerCharacterData.AbilityScore.Ability ability, int value, bool hasPoint)
         {
             m_minusButton.onClick.RemoveAllListeners();
             m_plusButton.onClick.RemoveAllListeners();

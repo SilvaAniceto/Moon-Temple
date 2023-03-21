@@ -13,14 +13,47 @@ namespace CustomRPGSystem
         [SerializeField] private TMP_Text m_race;
         [SerializeField] private TMP_Text m_class;
 
+        [Header("Available Points Editor")]
+        [SerializeField] private TMP_Text m_currentAvailablePointsText;
+
+
         [Header("Extra Points Editor")]
         [SerializeField] private TMP_Text m_extraPointsText;
-        [SerializeField] private List<UIAbilityScore> m_UIAbility = new List<UIAbilityScore>();
+        [SerializeField] private List<UIExtraAttributeScore> m_UIAbility = new List<UIExtraAttributeScore>();
 
         public Button editSkills;
+        private int m_currentAvailablePoints;
         private int m_currentExtraPoints;
 
         #region PROPERTIES
+        public List<UIExtraAttributeScore> Ability
+        {
+            get
+            {
+                return m_UIAbility;
+            }
+        }
+        public int AvailablePoints
+        {
+            get
+            {
+                return m_currentAvailablePoints;
+            }
+        }
+        public int CurrentAvailablePoints
+        {
+            set
+            {
+                m_currentAvailablePoints = value;
+            }
+        }
+        public bool HasAvailablePoints
+        {
+            get
+            {
+                return AvailablePoints > 0 ? true : false;
+            }
+        }
         public int ExtraPoints
         {
             get
@@ -28,26 +61,8 @@ namespace CustomRPGSystem
                 return m_currentExtraPoints;
             }
         }
-        public bool HasAvailablePoints
-        {
-            get
-            {
-                return ExtraPoints > 0 ? true : false;
-            }
-        }
-        public List<UIAbilityScore> Ability
-        {
-            get
-            {
-                return m_UIAbility;
-            }
-        }
         public int CurrentExtraPoints
         {
-            get
-            {
-                return m_currentExtraPoints;
-            }
             set
             {
                 m_currentExtraPoints = value;
@@ -63,7 +78,7 @@ namespace CustomRPGSystem
             {
                 m_UIAbility[i].OnPointsChanged.RemoveAllListeners();
 
-                m_UIAbility[i].OnPointsChanged.AddListener(UpdateCurrentPoints);
+                m_UIAbility[i].OnPointsChanged.AddListener(UpdateCurrentExtraPoints);
             }
 
             UpdateUIPoints();
@@ -72,7 +87,7 @@ namespace CustomRPGSystem
 
         private void UpdateUIPoints()
         {
-            foreach (UIAbilityScore uIAbility in m_UIAbility)
+            foreach (UIExtraAttributeScore uIAbility in m_UIAbility)
             {
                 if (!HasAvailablePoints && uIAbility.CurrentScore > uIAbility.StandardScore)
                 {
@@ -99,7 +114,7 @@ namespace CustomRPGSystem
             m_extraPointsText.text = m_currentExtraPoints.ToString();
         }
 
-        private void UpdateCurrentPoints(int p_value)
+        private void UpdateCurrentExtraPoints(int p_value)
         {
             m_currentExtraPoints = m_currentExtraPoints + p_value;
 
