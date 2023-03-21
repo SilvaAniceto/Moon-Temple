@@ -23,17 +23,42 @@ namespace CustomRPGSystem
         public TMP_Dropdown m_attributeDrop;
         public List<AttributesValue> m_attributesValue = new List<AttributesValue>();
 
+        private int m_standardScore;
+        private int m_currentScore;
+
+        #region Properties
+        public int StandardScore
+        {
+            get
+            {
+                return m_standardScore;
+            }
+        }
+        public int CurrentScore
+        {
+            get
+            {
+                return m_currentScore;
+            }
+        }
+        #endregion
+
         private void Awake()
         {
-            SetUIAttributeDropdown();
+            UpdateUIAttributeDropdown();
         }
 
-        public void SetUIExtraAttributeScore(PlayerCharacterData.AbilityScore.Ability ability, int value, bool hasPoint)
+        public void SetUIAttributeScore(PlayerCharacterData.AbilityScore.Ability ability, int value)
         {
-            
+            m_ability = ability;
+            m_abilityDescription.text = ability.ToString();
+
+            m_standardScore = value;
+            m_abilityValue.text = m_standardScore.ToString();
+            m_currentScore = m_standardScore;
         }
 
-        void SetUIAttributeDropdown()
+        void UpdateUIAttributeDropdown()
         {
             m_attributeDrop.ClearOptions();
 

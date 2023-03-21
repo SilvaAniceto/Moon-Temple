@@ -15,24 +15,25 @@ namespace CustomRPGSystem
 
         [Header("Available Points Editor")]
         [SerializeField] private TMP_Text m_currentAvailablePointsText;
+        [SerializeField] private List<UIAttributeScore> m_UIAttributes = new List<UIAttributeScore>();
 
 
         [Header("Extra Points Editor")]
         [SerializeField] private TMP_Text m_extraPointsText;
-        [SerializeField] private List<UIExtraAttributeScore> m_UIAbility = new List<UIExtraAttributeScore>();
+        [SerializeField] private List<UIExtraAttributeScore> m_UIExtraAttributes = new List<UIExtraAttributeScore>();
 
         public Button editSkills;
         private int m_currentAvailablePoints;
         private int m_currentExtraPoints;
 
         #region PROPERTIES
-        public List<UIExtraAttributeScore> Ability
+        public List<UIAttributeScore> AttributePoints
         {
-            get
-            {
-                return m_UIAbility;
+            get 
+            { 
+                return m_UIAttributes;
             }
-        }
+        }  
         public int AvailablePoints
         {
             get
@@ -52,6 +53,13 @@ namespace CustomRPGSystem
             get
             {
                 return AvailablePoints > 0 ? true : false;
+            }
+        }
+        public List<UIExtraAttributeScore> ExtraAttributePoints
+        {
+            get
+            {
+                return m_UIExtraAttributes;
             }
         }
         public int ExtraPoints
@@ -74,11 +82,11 @@ namespace CustomRPGSystem
         {
             m_extraPointsText.text = m_currentExtraPoints.ToString();
 
-            for (int i = 0; i < m_UIAbility.Count; i++)
+            for (int i = 0; i < m_UIExtraAttributes.Count; i++)
             {
-                m_UIAbility[i].OnPointsChanged.RemoveAllListeners();
+                m_UIExtraAttributes[i].OnPointsChanged.RemoveAllListeners();
 
-                m_UIAbility[i].OnPointsChanged.AddListener(UpdateCurrentExtraPoints);
+                m_UIExtraAttributes[i].OnPointsChanged.AddListener(UpdateCurrentExtraPoints);
             }
 
             UpdateUIPoints();
@@ -87,7 +95,7 @@ namespace CustomRPGSystem
 
         private void UpdateUIPoints()
         {
-            foreach (UIExtraAttributeScore uIAbility in m_UIAbility)
+            foreach (UIExtraAttributeScore uIAbility in m_UIExtraAttributes)
             {
                 if (!HasAvailablePoints && uIAbility.CurrentScore > uIAbility.StandardScore)
                 {

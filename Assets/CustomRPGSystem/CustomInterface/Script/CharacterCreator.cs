@@ -128,7 +128,12 @@ namespace CustomRPGSystem
 
             for (int i = 0; i < EditingCharacter.abilityScore.Length; i++)
             {
-                m_characterAttributeEditor.Ability[i].SetUIExtraAttributeScore(EditingCharacter.abilityScore[i].ability, EditingCharacter.abilityScore[i].score, m_characterAttributeEditor.HasAvailablePoints);
+                m_characterAttributeEditor.AttributePoints[i].SetUIAttributeScore(EditingCharacter.abilityScore[i].ability, EditingCharacter.abilityScore[i].score);
+            }
+
+            for (int i = 0; i < EditingCharacter.abilityScore.Length; i++)
+            {
+                m_characterAttributeEditor.ExtraAttributePoints[i].SetUIExtraAttributeScore(EditingCharacter.abilityScore[i].ability, EditingCharacter.abilityScore[i].score, m_characterAttributeEditor.HasAvailablePoints);
             }
         }
 
