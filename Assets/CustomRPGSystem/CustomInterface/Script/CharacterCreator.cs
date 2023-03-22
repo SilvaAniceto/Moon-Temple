@@ -123,6 +123,8 @@ namespace CustomRPGSystem
 
         void SetAttributeEditor()
         {
+            if (CharacterAttributeEditor.Instance == null) CharacterAttributeEditor.Instance = m_characterAttributeEditor;
+
             m_characterAttributeEditor.CurrentAvailablePoints = EditingCharacter.info.availablePoints;
             m_characterAttributeEditor.CurrentExtraPoints = EditingCharacter.info.extraPoints;
 

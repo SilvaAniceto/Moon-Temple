@@ -8,19 +8,30 @@ namespace CustomRPGSystem
 {
     public class CharacterAttributeEditor : MonoBehaviour
     {
+        public static CharacterAttributeEditor Instance;
+
+        [System.Serializable]
+        public class AttributesValue
+        {
+            public bool inUse;
+            public int attributeValue;
+            public int cost;
+        }
+
         [SerializeField] private TMP_Text m_name;
         [SerializeField] private TMP_Text m_level;
         [SerializeField] private TMP_Text m_race;
         [SerializeField] private TMP_Text m_class;
 
         [Header("Available Points Editor")]
-        [SerializeField] private TMP_Text m_currentAvailablePointsText;
+        public List<AttributesValue> m_attributesValue = new List<AttributesValue>();
         [SerializeField] private List<UIAttributeScore> m_UIAttributes = new List<UIAttributeScore>();
+        [SerializeField] private TMP_Text m_currentAvailablePointsText;
 
 
         [Header("Extra Points Editor")]
-        [SerializeField] private TMP_Text m_extraPointsText;
         [SerializeField] private List<UIExtraAttributeScore> m_UIExtraAttributes = new List<UIExtraAttributeScore>();
+        [SerializeField] private TMP_Text m_extraPointsText;
 
         public Button editSkills;
         private int m_currentAvailablePoints;
@@ -81,6 +92,7 @@ namespace CustomRPGSystem
         private void OnEnable()
         {
             m_extraPointsText.text = m_currentExtraPoints.ToString();
+            m_currentAvailablePointsText.text = m_currentAvailablePoints.ToString();
 
             for (int i = 0; i < m_UIExtraAttributes.Count; i++)
             {
@@ -89,7 +101,15 @@ namespace CustomRPGSystem
                 m_UIExtraAttributes[i].OnPointsChanged.AddListener(UpdateCurrentExtraPoints);
             }
 
+            for (int i = 0; i < m_UIAttributes.Count; i++)
+            {
+                m_UIAttributes[i].OnPointsChanged.RemoveAllListeners();
+
+                m_UIAttributes[i].OnPointsChanged.AddListener(UpdateUIDropdown);
+            }
+
             UpdateUIPoints();
+            UpdateUIDropdown();
             UpdateUIText();
         }
 
@@ -120,6 +140,14 @@ namespace CustomRPGSystem
             }
 
             m_extraPointsText.text = m_currentExtraPoints.ToString();
+        }
+
+        private void UpdateUIDropdown()
+        {
+            foreach (UIAttributeScore uIAttributeScore in m_UIAttributes)
+            {
+                uIAttributeScore.UpdateUIAttributeDropdown();
+            }
         }
 
         private void UpdateCurrentExtraPoints(int p_value)

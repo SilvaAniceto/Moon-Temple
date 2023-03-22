@@ -11822,9 +11822,8 @@ MonoBehaviour:
   m_ability: 1
   m_abilityDescription: {fileID: 1202573780}
   m_abilityValue: {fileID: 1828638289}
-  m_attributeDrop: {fileID: 443776410}
-  m_attributesValue:
-  - inUse: 0
+  m_values:
+  - inUse: 1
     attributeValue: 0
     cost: 0
   - inUse: 0
@@ -11851,6 +11850,11 @@ MonoBehaviour:
   - inUse: 0
     attributeValue: 15
     cost: 9
+  m_attributeDrop: {fileID: 443776410}
+  OnPointsChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_score: 
 --- !u!1 &478963141
 GameObject:
   m_ObjectHideFlags: 0
@@ -17784,9 +17788,8 @@ MonoBehaviour:
   m_ability: 1
   m_abilityDescription: {fileID: 2046382546}
   m_abilityValue: {fileID: 1432920081}
-  m_attributeDrop: {fileID: 954102385}
-  m_attributesValue:
-  - inUse: 0
+  m_values:
+  - inUse: 1
     attributeValue: 0
     cost: 0
   - inUse: 0
@@ -17813,6 +17816,11 @@ MonoBehaviour:
   - inUse: 0
     attributeValue: 15
     cost: 9
+  m_attributeDrop: {fileID: 954102385}
+  OnPointsChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_score: 
 --- !u!1 &746075434
 GameObject:
   m_ObjectHideFlags: 0
@@ -18796,7 +18804,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5.809326, y: 327.4524}
+  m_AnchoredPosition: {x: 5.809387, y: 327.4524}
   m_SizeDelta: {x: -167.903, y: -688.3941}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &822085488
@@ -23148,9 +23156,8 @@ MonoBehaviour:
   m_ability: 1
   m_abilityDescription: {fileID: 130556597}
   m_abilityValue: {fileID: 1430421992}
-  m_attributeDrop: {fileID: 1421387465}
-  m_attributesValue:
-  - inUse: 0
+  m_values:
+  - inUse: 1
     attributeValue: 0
     cost: 0
   - inUse: 0
@@ -23177,6 +23184,11 @@ MonoBehaviour:
   - inUse: 0
     attributeValue: 15
     cost: 9
+  m_attributeDrop: {fileID: 1421387465}
+  OnPointsChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_score: 
 --- !u!1 &1020941350
 GameObject:
   m_ObjectHideFlags: 0
@@ -31343,7 +31355,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5.809326, y: 327.4524}
+  m_AnchoredPosition: {x: 5.809387, y: 327.4524}
   m_SizeDelta: {x: -167.903, y: -688.3941}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1364378489
@@ -36441,9 +36453,8 @@ MonoBehaviour:
   m_ability: 1
   m_abilityDescription: {fileID: 1190495539}
   m_abilityValue: {fileID: 1749732051}
-  m_attributeDrop: {fileID: 1683124661}
-  m_attributesValue:
-  - inUse: 0
+  m_values:
+  - inUse: 1
     attributeValue: 0
     cost: 0
   - inUse: 0
@@ -36470,6 +36481,11 @@ MonoBehaviour:
   - inUse: 0
     attributeValue: 15
     cost: 9
+  m_attributeDrop: {fileID: 1683124661}
+  OnPointsChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_score: 
 --- !u!1 &1598115344
 GameObject:
   m_ObjectHideFlags: 0
@@ -39475,9 +39491,8 @@ MonoBehaviour:
   m_ability: 1
   m_abilityDescription: {fileID: 487866028}
   m_abilityValue: {fileID: 2120895668}
-  m_attributeDrop: {fileID: 1163097777}
-  m_attributesValue:
-  - inUse: 0
+  m_values:
+  - inUse: 1
     attributeValue: 0
     cost: 0
   - inUse: 0
@@ -39504,6 +39519,11 @@ MonoBehaviour:
   - inUse: 0
     attributeValue: 15
     cost: 9
+  m_attributeDrop: {fileID: 1163097777}
+  OnPointsChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_score: 
 --- !u!1 &1745901068
 GameObject:
   m_ObjectHideFlags: 0
@@ -41892,9 +41912,8 @@ MonoBehaviour:
   m_ability: 1
   m_abilityDescription: {fileID: 656004534}
   m_abilityValue: {fileID: 2046197736}
-  m_attributeDrop: {fileID: 1554230865}
-  m_attributesValue:
-  - inUse: 0
+  m_values:
+  - inUse: 1
     attributeValue: 0
     cost: 0
   - inUse: 0
@@ -41921,6 +41940,11 @@ MonoBehaviour:
   - inUse: 0
     attributeValue: 15
     cost: 9
+  m_attributeDrop: {fileID: 1554230865}
+  OnPointsChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_score: 
 --- !u!1 &1809376725
 GameObject:
   m_ObjectHideFlags: 0
@@ -51087,7 +51111,34 @@ MonoBehaviour:
   m_level: {fileID: 2086583965736376664}
   m_race: {fileID: 2086583964644412371}
   m_class: {fileID: 2086583965039714208}
-  m_currentAvailablePointsText: {fileID: 1821423464}
+  m_attributesValue:
+  - inUse: 1
+    attributeValue: 0
+    cost: 0
+  - inUse: 0
+    attributeValue: 8
+    cost: 0
+  - inUse: 0
+    attributeValue: 9
+    cost: 1
+  - inUse: 0
+    attributeValue: 10
+    cost: 2
+  - inUse: 0
+    attributeValue: 11
+    cost: 3
+  - inUse: 0
+    attributeValue: 12
+    cost: 4
+  - inUse: 0
+    attributeValue: 13
+    cost: 5
+  - inUse: 0
+    attributeValue: 14
+    cost: 7
+  - inUse: 0
+    attributeValue: 15
+    cost: 9
   m_UIAttributes:
   - {fileID: 1809096309}
   - {fileID: 1014220596}
@@ -51095,7 +51146,7 @@ MonoBehaviour:
   - {fileID: 478025195}
   - {fileID: 1739487100}
   - {fileID: 745534183}
-  m_extraPointsText: {fileID: 1629830608}
+  m_currentAvailablePointsText: {fileID: 1821423464}
   m_UIExtraAttributes:
   - {fileID: 1776893078}
   - {fileID: 1917031786}
@@ -51103,6 +51154,7 @@ MonoBehaviour:
   - {fileID: 322308726}
   - {fileID: 520397606}
   - {fileID: 1131695589}
+  m_extraPointsText: {fileID: 1629830608}
   editSkills: {fileID: 2086583966245818113}
 --- !u!1 &2086583965854616828
 GameObject:
