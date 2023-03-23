@@ -79,10 +79,10 @@ namespace CustomRPGSystem
                     if (m_values[i].attributeValue != attValue.attributeValue)
                     {
                         m_currentScore -= m_values[i].attributeValue;
-                        CharacterAttributeEditor.Instance.CurrentAvailablePoints = CharacterAttributeEditor.Instance.AvailablePoints + m_values[i].attributeValue;
+                        CharacterAttributeEditor.Instance.CurrentAvailablePoints = CharacterAttributeEditor.Instance.AvailablePoints + m_values[i].cost;
 
                         m_currentScore += attValue.attributeValue;
-                        CharacterAttributeEditor.Instance.CurrentAvailablePoints = CharacterAttributeEditor.Instance.AvailablePoints - m_values[i].attributeValue;
+                        CharacterAttributeEditor.Instance.CurrentAvailablePoints = CharacterAttributeEditor.Instance.AvailablePoints - attValue.cost;
 
                         int indexOf = m_values.IndexOf(attValue);
 
@@ -130,7 +130,7 @@ namespace CustomRPGSystem
                         new TMP_Dropdown.OptionData() {text = " " + CharacterAttributeEditor.Instance.m_attributesValue[i].attributeValue.ToString() + " ("+ "Cost: " + CharacterAttributeEditor.Instance.m_attributesValue[i].cost + ") "},
                     });
                 }
-                if (!CharacterAttributeEditor.Instance.m_attributesValue[i].inUse && CharacterAttributeEditor.Instance.m_attributesValue[i].attributeValue != 0)
+                if (!CharacterAttributeEditor.Instance.m_attributesValue[i].inUse && CharacterAttributeEditor.Instance.m_attributesValue[i].attributeValue != 0 && CharacterAttributeEditor.Instance.AvailablePoints - CharacterAttributeEditor.Instance.m_attributesValue[i].cost >= 0)
                 {
                     m_score.Add(CharacterAttributeEditor.Instance.m_attributesValue[i].attributeValue);
                     m_attributeDrop.AddOptions(new List<TMP_Dropdown.OptionData> 

@@ -117,10 +117,10 @@ namespace CustomRPGSystem
 
                 CharacterCreator.Instance.NextPage();
 
-                CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+                //CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
 
                 CharacterAttributeEditor.Instance.SetAttributeEditor();
-                CharacterExtraPointEditor.Instance.SetExtraPointEditor();
+                //CharacterExtraPointEditor.Instance.SetExtraPointEditor();
             });
         }
     }

@@ -62,6 +62,11 @@ namespace CustomRPGSystem
 
         private void OnEnable()
         {
+            CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+            CharacterCreator.Instance.m_nextButton.onClick.AddListener(CharacterCreator.Instance.NextPage);
+            CharacterCreator.Instance.m_nextButton.onClick.AddListener(CharacterExtraPointEditor.Instance.SetExtraPointEditor);
+            
+
             m_currentAvailablePointsText.text = m_currentAvailablePoints.ToString();
 
             for (int i = 0; i < m_UIAttributes.Count; i++)
@@ -77,8 +82,6 @@ namespace CustomRPGSystem
 
         public void SetAttributeEditor()
         {
-            CharacterCreator.Instance.m_nextButton.onClick.AddListener(CharacterCreator.Instance.NextPage);
-
             for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.abilityScore.Length; i++)
             {
                 AttributePoints[i].SetUIAttributeScore(CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability, CharacterCreator.Instance.EditingCharacter.abilityScore[i].score);

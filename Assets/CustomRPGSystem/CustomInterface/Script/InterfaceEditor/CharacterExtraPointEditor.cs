@@ -52,6 +52,7 @@ namespace CustomRPGSystem
 
         private void OnEnable()
         {
+
             m_extraPointsText.text = m_currentExtraPoints.ToString();
 
             for (int i = 0; i < m_UIExtraAttributes.Count; i++)
