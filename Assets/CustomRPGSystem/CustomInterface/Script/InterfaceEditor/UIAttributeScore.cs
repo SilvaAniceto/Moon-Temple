@@ -7,9 +7,10 @@ namespace CustomRPGSystem
 {
     public class UIAttributeScore : MonoBehaviour
     {
-        public PlayerCharacterData.AbilityScore.Ability m_ability = PlayerCharacterData.AbilityScore.Ability.Strenght;
-        public TMP_Text m_abilityDescription;
-        public TMP_Text m_abilityValue;
+        [SerializeField] private PlayerCharacterData.AbilityScore.Ability m_ability = PlayerCharacterData.AbilityScore.Ability.Strenght;
+        [SerializeField] private TMP_Text m_abilityDescription;
+        [SerializeField] private TMP_Text m_abilityValue;
+        [SerializeField] private TMP_Text m_modifierValue;
 
         [Header("Attributes Points UI")]
         [SerializeField] private List<CharacterAttributeEditor.AttributesValue> m_values = new List<CharacterAttributeEditor.AttributesValue>();
@@ -47,6 +48,14 @@ namespace CustomRPGSystem
             m_abilityValue.text = m_standardScore.ToString();
             m_currentScore = m_standardScore;
 
+            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.abilityScore.Length; i++)
+            {
+                if (CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability == ability)
+                {
+                    m_modifierValue.text = CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier.ToString();
+                }
+            }
+
             m_attributeDrop.value = 0;
 
             CharacterAttributeEditor.Instance.m_attributesValue[0].inUse = true;
@@ -70,7 +79,10 @@ namespace CustomRPGSystem
                     if (m_values[i].attributeValue != attValue.attributeValue)
                     {
                         m_currentScore -= m_values[i].attributeValue;
+                        CharacterAttributeEditor.Instance.CurrentAvailablePoints = CharacterAttributeEditor.Instance.AvailablePoints + m_values[i].attributeValue;
+
                         m_currentScore += attValue.attributeValue;
+                        CharacterAttributeEditor.Instance.CurrentAvailablePoints = CharacterAttributeEditor.Instance.AvailablePoints - m_values[i].attributeValue;
 
                         int indexOf = m_values.IndexOf(attValue);
 
@@ -88,6 +100,8 @@ namespace CustomRPGSystem
                 {
                     CharacterCreator.Instance.EditingCharacter.SetAbilityScore(CharacterCreator.Instance.EditingCharacter, CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability, m_currentScore);
                     m_abilityValue.text = CharacterCreator.Instance.EditingCharacter.abilityScore[i].score.ToString();
+
+                    m_modifierValue.text = CharacterCreator.Instance.EditingCharacter.abilityScore[i].modifier.ToString();
                 }
             }
 

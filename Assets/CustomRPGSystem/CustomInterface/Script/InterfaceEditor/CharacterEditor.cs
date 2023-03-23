@@ -13,7 +13,6 @@ namespace CustomRPGSystem
         [SerializeField] private TMP_Dropdown level;
         [SerializeField] private TMP_Dropdown race;
         [SerializeField] private TMP_Dropdown classes;
-        public Button editAbilities;
 
         private void Awake()
         {
@@ -100,6 +99,28 @@ namespace CustomRPGSystem
 
             classes.onValueChanged.AddListener(delegate {
                 CharacterCreator.m_classValue = classes.value;
+            });
+
+            CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+            CharacterCreator.Instance.m_nextButton.onClick.AddListener(delegate
+            {
+                if (string.IsNullOrEmpty(CharacterCreator.m_characterName)) return;
+
+                CharacterCreator.CharacterData = null;
+
+                CharacterCreator.CharacterData = new PlayerCharacterData(CharacterCreator.m_characterName, CharacterCreator.m_levelValue, (PlayerCharacterData.CharacterInfo.Race)CharacterCreator.m_raceValue, (PlayerCharacterData.CharacterInfo.Class)CharacterCreator.m_classValue);
+
+                CharacterCreator.Instance.EditingCharacter = CharacterCreator.CharacterData;
+
+                CharacterAttributeEditor.Instance.CurrentAvailablePoints = CharacterCreator.Instance.EditingCharacter.info.availablePoints;
+                CharacterExtraPointEditor.Instance.CurrentExtraPoints = CharacterCreator.Instance.EditingCharacter.info.extraPoints;
+
+                CharacterCreator.Instance.NextPage();
+
+                CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+
+                CharacterAttributeEditor.Instance.SetAttributeEditor();
+                CharacterExtraPointEditor.Instance.SetExtraPointEditor();
             });
         }
     }

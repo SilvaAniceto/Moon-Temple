@@ -8,10 +8,12 @@ namespace CustomRPGSystem
 {
     public class CharacterSkillEditor : MonoBehaviour
     {
+        public static CharacterSkillEditor Instance;
+
         [SerializeField] private TMP_Text m_proficiencyPoints;
         [SerializeField] private TMP_Text m_race;
         [SerializeField] private TMP_Text m_class;
-        public Button m_reviewButton;
+        //public Button m_reviewButton;
 
         public Button m_raceButton;
         public Button m_classButton;
@@ -65,6 +67,8 @@ namespace CustomRPGSystem
 
         void OnEnable()
         {
+            SetSkillEditor();
+
             m_raceButton.onClick.RemoveAllListeners();
             m_classButton.onClick.RemoveAllListeners();
 
@@ -80,6 +84,31 @@ namespace CustomRPGSystem
 
             UpdateUIText();
             ShowRaceSkill();
+        }
+
+        void SetSkillEditor()
+        {
+            if (Instance == null)
+            {
+                Instance = this;
+                CurrentRacePoints = CharacterCreator.Instance.EditingCharacter.info.raceProficiencyPoints;
+                CurrentClassPoints = CharacterCreator.Instance.EditingCharacter.info.classProficiencyPoints;
+
+                m_raceSkills.Clear();
+                m_classSkills.Clear();
+
+                foreach (PlayerCharacterData.Skills raceSkill in CharacterCreator.Instance.EditingCharacter.raceSkills)
+                {
+                    m_raceSkills.Add(raceSkill);
+                }
+
+                foreach (PlayerCharacterData.Skills classSkill in CharacterCreator.Instance.EditingCharacter.classSkills)
+                {
+                    m_classSkills.Add(classSkill);
+                }
+
+                SetCharacterSkills();
+            }
         }
 
         public void SetCharacterSkills()
