@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
-using static CustomRPGSystem.CharacterAttributeEditor;
 
 namespace CustomRPGSystem
 {
@@ -49,17 +48,17 @@ namespace CustomRPGSystem
             m_abilityValue.text = m_standardScore.ToString();
             m_currentScore = m_standardScore;
 
-            m_values = new List<AttributesValue>
+            m_values = new List<CharacterAttributeEditor.AttributesValue>
             {
-                new AttributesValue() {inUse = true, attributeValue = 0, cost = 0},
-                new AttributesValue() {inUse = false, attributeValue = 8, cost = 0},
-                new AttributesValue() {inUse = false, attributeValue = 9, cost = 1},
-                new AttributesValue() {inUse = false, attributeValue = 10, cost = 2},
-                new AttributesValue() {inUse = false, attributeValue = 11, cost = 3},
-                new AttributesValue() {inUse = false, attributeValue = 12, cost = 4},
-                new AttributesValue() {inUse = false, attributeValue = 13, cost = 5},
-                new AttributesValue() {inUse = false, attributeValue = 14, cost = 7},
-                new AttributesValue() {inUse = false, attributeValue = 15, cost = 9}
+                new CharacterAttributeEditor.AttributesValue() {inUse = true, attributeValue = 0, cost = 0},
+                new CharacterAttributeEditor.AttributesValue() {inUse = false, attributeValue = 8, cost = 0},
+                new CharacterAttributeEditor.AttributesValue() {inUse = false, attributeValue = 9, cost = 1},
+                new CharacterAttributeEditor.AttributesValue() {inUse = false, attributeValue = 10, cost = 2},
+                new CharacterAttributeEditor.AttributesValue() {inUse = false, attributeValue = 11, cost = 3},
+                new CharacterAttributeEditor.AttributesValue() {inUse = false, attributeValue = 12, cost = 4},
+                new CharacterAttributeEditor.AttributesValue() {inUse = false, attributeValue = 13, cost = 5},
+                new CharacterAttributeEditor.AttributesValue() {inUse = false, attributeValue = 14, cost = 7},
+                new CharacterAttributeEditor.AttributesValue() {inUse = false, attributeValue = 15, cost = 9}
             };
 
             for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.abilityScore.Length; i++)

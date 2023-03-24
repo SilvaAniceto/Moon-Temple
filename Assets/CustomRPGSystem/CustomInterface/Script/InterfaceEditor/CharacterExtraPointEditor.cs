@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace CustomRPGSystem
 {
@@ -75,7 +76,7 @@ namespace CustomRPGSystem
             }
 
             UpdateUIPoints();
-            UpdateUIText();
+            UpdateUIText(CharacterCreator.Instance.EditingCharacter);
         }
 
         public void SetExtraPointEditor(PlayerCharacterData player)
@@ -124,12 +125,12 @@ namespace CustomRPGSystem
             UpdateUIPoints();
         }
 
-        private void UpdateUIText()
+        private void UpdateUIText(PlayerCharacterData player)
         {
-            m_name.text = CharacterCreator.Instance.EditingCharacter.info.name;
-            m_level.text = CharacterCreator.Instance.EditingCharacter.info.level.ToString();
-            m_race.text = CharacterCreator.Instance.EditingCharacter.info.race.ToString();
-            m_class.text = CharacterCreator.Instance.EditingCharacter.info.classes.ToString();
+            m_name.text = player.info.name;
+            m_level.text =player.info.level.ToString();
+            m_race.text = player.info.race.ToString();
+            m_class.text = player.info.classes.ToString();
         }
     }
 }

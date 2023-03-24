@@ -25,6 +25,7 @@ namespace CustomRPGSystem
 
         private int m_currentRacePoints;
         private int m_currentClassPoints;
+        private bool isSet = false;
 
         #region PROPERTIES
         public int CurrentRacePoints
@@ -63,11 +64,18 @@ namespace CustomRPGSystem
                 return m_currentClassPoints == 0 ? false : true;
             }
         }
+        public bool IsSet
+        {
+            set
+            {
+                isSet = value;
+            }
+        }
         #endregion
 
         void OnEnable()
         {
-            SetSkillEditor();
+            if (!isSet) SetSkillEditor(CharacterCreator.Instance.EditingCharacter);
 
             m_raceButton.onClick.RemoveAllListeners();
             m_classButton.onClick.RemoveAllListeners();
@@ -82,33 +90,35 @@ namespace CustomRPGSystem
                 ShowClassSkill();
             });
 
-            UpdateUIText();
+            UpdateUIText(CharacterCreator.Instance.EditingCharacter);
             ShowRaceSkill();
         }
 
-        void SetSkillEditor()
+        void SetSkillEditor(PlayerCharacterData player)
         {
             if (Instance == null)
             {
                 Instance = this;
-                CurrentRacePoints = CharacterCreator.Instance.EditingCharacter.info.raceProficiencyPoints;
-                CurrentClassPoints = CharacterCreator.Instance.EditingCharacter.info.classProficiencyPoints;
+                CurrentRacePoints = player.info.raceProficiencyPoints;
+                CurrentClassPoints = player.info.classProficiencyPoints;
 
                 m_raceSkills.Clear();
                 m_classSkills.Clear();
 
-                foreach (PlayerCharacterData.Skills raceSkill in CharacterCreator.Instance.EditingCharacter.raceSkills)
+                foreach (PlayerCharacterData.Skills raceSkill in player.raceSkills)
                 {
                     m_raceSkills.Add(raceSkill);
                 }
 
-                foreach (PlayerCharacterData.Skills classSkill in CharacterCreator.Instance.EditingCharacter.classSkills)
+                foreach (PlayerCharacterData.Skills classSkill in player.classSkills)
                 {
                     m_classSkills.Add(classSkill);
                 }
 
                 SetCharacterSkills();
             }
+
+            isSet = true;
         }
 
         public void SetCharacterSkills()
@@ -209,10 +219,10 @@ namespace CustomRPGSystem
             ShowClassSkill();
         }
 
-        void UpdateUIText()
+        void UpdateUIText(PlayerCharacterData player)
         {
-            m_race.text = CharacterCreator.Instance.EditingCharacter.info.race.ToString();
-            m_class.text = CharacterCreator.Instance.EditingCharacter.info.classes.ToString();
+            m_race.text = player.info.race.ToString();
+            m_class.text = player.info.classes.ToString();
         }
     }
 }
