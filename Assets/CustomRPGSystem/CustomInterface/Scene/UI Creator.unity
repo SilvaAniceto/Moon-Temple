@@ -5432,6 +5432,8 @@ MonoBehaviour:
   OnPointsChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_standardScore: 0
+  m_currentScore: 0
   m_score: 
 --- !u!1 &221604816
 GameObject:
@@ -8543,6 +8545,8 @@ MonoBehaviour:
   OnPointsChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_standardScore: 0
+  m_currentScore: 0
   m_score: 
 --- !u!1 &328356860
 GameObject:
@@ -18451,7 +18455,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &712980108
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20293,7 +20297,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5.809387, y: 327.4524}
+  m_AnchoredPosition: {x: 5.8094482, y: 327.4524}
   m_SizeDelta: {x: -167.903, y: -688.3941}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &822085488
@@ -26565,6 +26569,8 @@ MonoBehaviour:
   OnPointsChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_standardScore: 0
+  m_currentScore: 0
   m_score: 
 --- !u!1 &1109606809
 GameObject:
@@ -32194,7 +32200,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 5.809387, y: 327.4524}
+  m_AnchoredPosition: {x: 5.8094482, y: 327.4524}
   m_SizeDelta: {x: -167.903, y: -688.3941}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1364378489
@@ -34639,6 +34645,8 @@ MonoBehaviour:
   OnPointsChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_standardScore: 0
+  m_currentScore: 0
   m_score: 
 --- !u!1 &1453435351
 GameObject:
@@ -43139,6 +43147,8 @@ MonoBehaviour:
   OnPointsChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_standardScore: 0
+  m_currentScore: 0
   m_score: 
 --- !u!1 &1809376725
 GameObject:
@@ -50717,6 +50727,8 @@ MonoBehaviour:
   OnPointsChanged:
     m_PersistentCalls:
       m_Calls: []
+  m_standardScore: 0
+  m_currentScore: 0
   m_score: 
 --- !u!1 &2108785826
 GameObject:

@@ -104,63 +104,6 @@ namespace CustomRPGSystem
             ManagerCreatorPages(0);
         }
 
-        //void SetRaceAndClass()
-        //{
-        //    if (string.IsNullOrEmpty(m_characterName)) return;
-
-        //    CharacterData = null;
-
-        //    CharacterData = new PlayerCharacterData(m_characterName, m_levelValue, (PlayerCharacterData.CharacterInfo.Race)m_raceValue, (PlayerCharacterData.CharacterInfo.Class)m_classValue);
-
-        //    EditingCharacter = CharacterData;
-
-        //    //SetAttributeEditor();
-        //   // SetSkillEditor();
-
-        //    //CharacterList.Add(CharacterData);
-
-        //    //FileHandler.SaveToJSON<PlayerCharacterData>(CharacterList, MainCharacterDirectory + "/" + m_playerName);
-
-        //    NextPage();
-        //}
-
-        //void SetAttributeEditor()
-        //{
-        //    if (CharacterAttributeEditor.Instance == null) CharacterAttributeEditor.Instance = m_characterAttributeEditor;
-
-        //    m_characterAttributeEditor.CurrentAvailablePoints = EditingCharacter.info.availablePoints;
-        //    m_characterAttributeEditor.CurrentExtraPoints = EditingCharacter.info.extraPoints;
-
-        //    for (int i = 0; i < EditingCharacter.abilityScore.Length; i++)
-        //    {
-        //        m_characterAttributeEditor.AttributePoints[i].SetUIAttributeScore(EditingCharacter.abilityScore[i].ability, EditingCharacter.abilityScore[i].score);
-        //    }
-
-        //    for (int i = 0; i < EditingCharacter.abilityScore.Length; i++)
-        //    {
-        //        m_characterAttributeEditor.ExtraAttributePoints[i].SetUIExtraAttributeScore(EditingCharacter.abilityScore[i].ability, EditingCharacter.abilityScore[i].score, m_characterAttributeEditor.HasAvailablePoints);
-        //    }
-        //}
-
-        //void SetSkillEditor()
-        //{
-        //    m_characterSkillEditor.CurrentRacePoints = EditingCharacter.info.raceProficiencyPoints;
-        //    m_characterSkillEditor.CurrentClassPoints = EditingCharacter.info.classProficiencyPoints;
-
-        //    m_characterSkillEditor.m_raceSkills.Clear();
-        //    m_characterSkillEditor.m_classSkills.Clear();
-
-        //    foreach (PlayerCharacterData.Skills raceSkill in EditingCharacter.raceSkills)
-        //    {
-        //        m_characterSkillEditor.m_raceSkills.Add(raceSkill);
-        //    }
-
-        //    foreach (PlayerCharacterData.Skills classSkill in EditingCharacter.classSkills)
-        //    {
-        //        m_characterSkillEditor.m_classSkills.Add(classSkill);
-        //    }
-        //}
-
         void ManagerCreatorPages(int p_pageIndex)
         {
             if (p_pageIndex == 0) m_backButton.gameObject.SetActive(false);
