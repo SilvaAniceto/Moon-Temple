@@ -28,6 +28,7 @@ namespace CustomRPGSystem
         [SerializeField] private TMP_Text m_currentAvailablePointsText;
 
         private int m_currentAvailablePoints;
+        private bool isSet = false;
         
         #region PROPERTIES
         public List<UIAttributeScore> AttributePoints
@@ -51,21 +52,21 @@ namespace CustomRPGSystem
                 m_currentAvailablePoints = value;
             }
         }
-        public bool HasAvailablePoints
+        public bool IsSet
         {
-            get
+            set
             {
-                return AvailablePoints > 0 ? true : false;
+                isSet = value;
             }
         }
         #endregion
-
+           
         private void OnEnable()
         {
             CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_nextButton.onClick.AddListener(CharacterCreator.Instance.NextPage);
-            CharacterCreator.Instance.m_nextButton.onClick.AddListener(CharacterExtraPointEditor.Instance.SetExtraPointEditor);
-            
+
+            if (!isSet) SetAttributeEditor(CharacterCreator.Instance.EditingCharacter);
 
             m_currentAvailablePointsText.text = m_currentAvailablePoints.ToString();
 
@@ -76,16 +77,32 @@ namespace CustomRPGSystem
                 m_UIAttributes[i].OnPointsChanged.AddListener(UpdateUIDropdown);
             }
 
-            UpdateUIDropdown();
             UpdateUIText();
         }
 
-        public void SetAttributeEditor()
+        public void SetAttributeEditor(PlayerCharacterData player)
         {
-            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.abilityScore.Length; i++)
+            m_attributesValue = new List<AttributesValue>
             {
-                AttributePoints[i].SetUIAttributeScore(CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability, CharacterCreator.Instance.EditingCharacter.abilityScore[i].score);
+                new AttributesValue() {inUse = true, attributeValue = 0, cost = 0},
+                new AttributesValue() {inUse = false, attributeValue = 8, cost = 0},
+                new AttributesValue() {inUse = false, attributeValue = 9, cost = 1},
+                new AttributesValue() {inUse = false, attributeValue = 10, cost = 2},
+                new AttributesValue() {inUse = false, attributeValue = 11, cost = 3},
+                new AttributesValue() {inUse = false, attributeValue = 12, cost = 4},
+                new AttributesValue() {inUse = false, attributeValue = 13, cost = 5},
+                new AttributesValue() {inUse = false, attributeValue = 14, cost = 7},
+                new AttributesValue() {inUse = false, attributeValue = 15, cost = 9}
+            };
+
+            for (int i = 0; i < player.abilityScore.Length; i++)
+            {
+                AttributePoints[i].SetUIAttributeScore(player.abilityScore[i].ability, player.abilityScore[i].score);
             }
+
+            UpdateUIDropdown();
+
+            isSet = true;
         }
 
         private void UpdateUIDropdown()

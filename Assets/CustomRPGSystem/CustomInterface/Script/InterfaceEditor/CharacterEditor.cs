@@ -107,6 +107,7 @@ namespace CustomRPGSystem
                 if (string.IsNullOrEmpty(CharacterCreator.m_characterName)) return;
 
                 CharacterCreator.CharacterData = null;
+                CharacterCreator.Instance.EditingCharacter = null;
 
                 CharacterCreator.CharacterData = new PlayerCharacterData(CharacterCreator.m_characterName, CharacterCreator.m_levelValue, (PlayerCharacterData.CharacterInfo.Race)CharacterCreator.m_raceValue, (PlayerCharacterData.CharacterInfo.Class)CharacterCreator.m_classValue);
 
@@ -115,12 +116,10 @@ namespace CustomRPGSystem
                 CharacterAttributeEditor.Instance.CurrentAvailablePoints = CharacterCreator.Instance.EditingCharacter.info.availablePoints;
                 CharacterExtraPointEditor.Instance.CurrentExtraPoints = CharacterCreator.Instance.EditingCharacter.info.extraPoints;
 
+                CharacterAttributeEditor.Instance.IsSet = false;
+                CharacterExtraPointEditor.Instance.IsSet = false;
+
                 CharacterCreator.Instance.NextPage();
-
-                //CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
-
-                CharacterAttributeEditor.Instance.SetAttributeEditor();
-                //CharacterExtraPointEditor.Instance.SetExtraPointEditor();
             });
         }
     }

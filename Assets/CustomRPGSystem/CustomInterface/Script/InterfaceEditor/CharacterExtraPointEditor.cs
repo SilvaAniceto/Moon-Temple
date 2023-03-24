@@ -18,6 +18,7 @@ namespace CustomRPGSystem
         [SerializeField] private TMP_Text m_extraPointsText;
 
         private int m_currentExtraPoints;
+        private bool isSet = false;
 
         #region PROPERTIES
         public List<UIExtraAttributeScore> ExtraAttributePoints
@@ -48,10 +49,21 @@ namespace CustomRPGSystem
                 return ExtraPoints > 0 ? true : false;
             }
         }
+        public bool IsSet
+        {
+            set
+            {
+                isSet = value;
+            }
+        }
         #endregion
 
         private void OnEnable()
         {
+            CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+            CharacterCreator.Instance.m_nextButton.onClick.AddListener(CharacterCreator.Instance.NextPage);
+
+            if (!isSet) SetExtraPointEditor(CharacterCreator.Instance.EditingCharacter);
 
             m_extraPointsText.text = m_currentExtraPoints.ToString();
 
@@ -66,12 +78,14 @@ namespace CustomRPGSystem
             UpdateUIText();
         }
 
-        public void SetExtraPointEditor()
+        public void SetExtraPointEditor(PlayerCharacterData player)
         {
-            for (int i = 0; i < CharacterCreator.Instance.EditingCharacter.abilityScore.Length; i++)
+            for (int i = 0; i < player.abilityScore.Length; i++)
             {
-                ExtraAttributePoints[i].SetUIExtraAttributeScore(CharacterCreator.Instance.EditingCharacter.abilityScore[i].ability, CharacterCreator.Instance.EditingCharacter.abilityScore[i].score, HasExtraPoints);
+                ExtraAttributePoints[i].SetUIExtraAttributeScore(player.abilityScore[i].ability, player.abilityScore[i].score, HasExtraPoints);
             }
+
+            isSet = true;
         }
 
         private void UpdateUIPoints()

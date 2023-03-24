@@ -58,14 +58,11 @@ namespace CustomRPGSystem
 
             m_attributeDrop.value = 0;
 
-            CharacterAttributeEditor.Instance.m_attributesValue[0].inUse = true;
-
+            m_attributeDrop.onValueChanged.RemoveAllListeners();
             m_attributeDrop.onValueChanged.AddListener(delegate
             {
                 DistributeAttribute(m_ability, m_attributeDrop.value);
             });
-
-            UpdateUIAttributeDropdown();
         }
 
         void DistributeAttribute(PlayerCharacterData.AbilityScore.Ability ability, int index)
@@ -140,7 +137,13 @@ namespace CustomRPGSystem
                 }
             }
 
-            m_attributeDrop.captionText.text = m_values.Find(x => x.inUse).attributeValue.ToString();
+            for (int i = 0; i < m_values.Count; i++)
+            {
+                if (m_values[i].inUse)
+                {
+                    m_attributeDrop.captionText.text = m_values[i].attributeValue.ToString();
+                }
+            }
         }
     }
 }
