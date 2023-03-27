@@ -96,27 +96,24 @@ namespace CustomRPGSystem
 
         void SetSkillEditor(PlayerCharacterData player)
         {
-            if (Instance == null)
+            Instance = this;
+            CurrentRacePoints = player.info.raceProficiencyPoints;
+            CurrentClassPoints = player.info.classProficiencyPoints;
+
+            m_raceSkills.Clear();
+            m_classSkills.Clear();
+
+            foreach (PlayerCharacterData.Skills raceSkill in player.raceSkills)
             {
-                Instance = this;
-                CurrentRacePoints = player.info.raceProficiencyPoints;
-                CurrentClassPoints = player.info.classProficiencyPoints;
-
-                m_raceSkills.Clear();
-                m_classSkills.Clear();
-
-                foreach (PlayerCharacterData.Skills raceSkill in player.raceSkills)
-                {
-                    m_raceSkills.Add(raceSkill);
-                }
-
-                foreach (PlayerCharacterData.Skills classSkill in player.classSkills)
-                {
-                    m_classSkills.Add(classSkill);
-                }
-
-                SetCharacterSkills();
+                m_raceSkills.Add(raceSkill);
             }
+
+            foreach (PlayerCharacterData.Skills classSkill in player.classSkills)
+            {
+                m_classSkills.Add(classSkill);
+            }
+
+            SetCharacterSkills();
 
             isSet = true;
         }

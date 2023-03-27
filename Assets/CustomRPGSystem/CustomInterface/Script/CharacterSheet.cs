@@ -11,10 +11,12 @@ namespace CustomRPGSystem
         [Header("Panels")]
         [SerializeField] private GameObject m_attributePanel;
         [SerializeField] private GameObject m_skillPanel;
+        [SerializeField] private GameObject m_spellcastPanel;
 
         [Header("Panel Buttons")]
         [SerializeField] private Button m_skillButton;
         [SerializeField] private Button m_attributeButton;
+        [SerializeField] private Button m_spellcastButton;
 
         [Header("Character Identification")]
         [SerializeField] private TMP_Text m_nameText;
@@ -53,20 +55,36 @@ namespace CustomRPGSystem
             {
                 m_attributePanel.SetActive(false);
                 m_skillPanel.SetActive(true);
+                m_spellcastPanel.SetActive(false);
+
+                PanelButtonHandler();
             });
 
             m_attributeButton.onClick.AddListener(delegate
             {
                 m_attributePanel.SetActive(true);
                 m_skillPanel.SetActive(false);
+                m_spellcastPanel.SetActive(false);
+
+                PanelButtonHandler();
+            });
+
+            m_spellcastButton.onClick.AddListener(delegate
+            {
+                m_attributePanel.SetActive(false);
+                m_skillPanel.SetActive(false);
+                m_spellcastPanel.SetActive(true);
+
+                PanelButtonHandler();
             });
         }
-
 
         private void OnEnable()
         {
             PrepareSkills(CharacterCreator.Instance.EditingCharacter);
             SetInfoSheet(CharacterCreator.Instance.EditingCharacter, m_editingSkills);
+
+            PanelButtonHandler();
         }
 
         public void SetInfoSheet(PlayerCharacterData player, List<PlayerCharacterData.Skills> skills)
@@ -141,9 +159,23 @@ namespace CustomRPGSystem
                 m_skillDisplay[i].SetSkillDisplay(m_editingSkills[i], player.abilityScore, player.info.proficiencyBonus);
             }
         }
+
+        void PanelButtonHandler()
+        {
+            if (m_attributePanel.activeInHierarchy) m_attributeButton.gameObject.SetActive(false);
+            else m_attributeButton.gameObject.SetActive(true);
+
+            if (m_skillPanel.activeInHierarchy) m_skillButton.gameObject.SetActive(false);
+            else m_skillButton.gameObject.SetActive(true);
+
+            if (m_spellcastPanel.activeInHierarchy) m_spellcastButton.gameObject.SetActive(false);
+            else m_spellcastButton.gameObject.SetActive(true);
+        }
         
         void PrepareSkills(PlayerCharacterData player)
         {
+            m_editingSkills.Clear();
+
             for (int i = 0; i < player.raceSkills.Count; i++)
             {
                 m_editingSkills.Add(player.raceSkills[i]);

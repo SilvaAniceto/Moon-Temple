@@ -67,6 +67,7 @@ namespace CustomRPGSystem
             if (Instance == null) Instance = this;
             if (CharacterAttributeEditor.Instance == null) CharacterAttributeEditor.Instance = m_characterAttributeEditor;
             if (CharacterExtraPointEditor.Instance == null) CharacterExtraPointEditor.Instance = m_characterExtraPointEditor;
+            if (CharacterSkillEditor.Instance == null) CharacterSkillEditor.Instance = m_characterSkillEditor;
 
             UIPages.Add(m_mainTitle);
             UIPages.Add(m_characterEditor.gameObject);

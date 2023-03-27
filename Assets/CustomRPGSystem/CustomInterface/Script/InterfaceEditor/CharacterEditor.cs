@@ -118,6 +118,7 @@ namespace CustomRPGSystem
 
                 CharacterAttributeEditor.Instance.IsSet = false;
                 CharacterExtraPointEditor.Instance.IsSet = false;
+                CharacterSkillEditor.Instance.IsSet = false;
 
                 CharacterCreator.Instance.NextPage();
             });
