@@ -58,6 +58,7 @@ namespace CustomRPGSystem
             public int speed = 0;
             public int initiative = 0;
             public int proficiencyBonus = 0;
+            public int inspirationPoints = 0;
             [Range(0, 18)] public int raceProficiencyPoints;
             [Range(0, 18)] public int classProficiencyPoints;
             public int availablePoints = 27;

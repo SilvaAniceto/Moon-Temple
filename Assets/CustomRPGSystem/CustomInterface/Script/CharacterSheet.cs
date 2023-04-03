@@ -27,7 +27,7 @@ namespace CustomRPGSystem
 
         [Header("Character Info Values")]
         [SerializeField] private TMP_Text m_levelText;
-        [SerializeField] private TMP_Text m_proficiencyBonusText, m_initiativeText, m_armorClassText, m_speedText;
+        [SerializeField] private TMP_Text m_inspirationText, m_proficiencyBonusText, m_initiativeText, m_armorClassText, m_speedText;
 
         [Header("Abilities Score")]
         [SerializeField] private List<AbilityScoreDisplay> m_abilityScoreDisplays = new List<AbilityScoreDisplay>();
@@ -96,6 +96,7 @@ namespace CustomRPGSystem
             m_hitPointDisplay.SetHitPointsDisplay(player);
 
             m_levelText.text = player.info.level.ToString();
+            m_inspirationText.text = player.info.inspirationPoints.ToString();
             m_proficiencyBonusText.text = player.info.proficiencyBonus.ToString();
             m_speedText.text = player.info.speed.ToString();
 
