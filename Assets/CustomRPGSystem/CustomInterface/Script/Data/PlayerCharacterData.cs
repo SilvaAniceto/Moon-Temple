@@ -118,6 +118,40 @@ namespace CustomRPGSystem
             public bool isChangable = false;
         }
 
+        [Serializable]
+        public class SpellCasting
+        {
+            public int magicMana = 0;
+            public int magicLevel = 0;
+            public int magicTier = 1;
+
+            public enum SpellSchool
+            {
+                None,
+                Abjuration,
+                Conjuration,
+                Divination,
+                Enchantment,
+                Evocation,
+                Illusion,
+                Necromancy,
+                Transmutation
+            }
+            public SpellSchool spellSchool = SpellSchool.None;
+
+            public enum MagicSourcing
+            {
+                None,
+                Enhancer,
+                Transformation,
+                Materialization,
+                Emission,
+                Manipulation,
+                Especialization
+            }
+            public MagicSourcing magicSourcing = MagicSourcing.None;
+        }
+
         /*[HideInInspector]*/ public CharacterInfo info = new CharacterInfo();
         /*[HideInInspector]*/ public AbilityScore[] abilityScore;
         /*[HideInInspector]*/ public Skills[] skills;
