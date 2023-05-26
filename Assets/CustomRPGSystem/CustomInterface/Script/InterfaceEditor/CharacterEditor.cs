@@ -104,7 +104,22 @@ namespace CustomRPGSystem
             CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_nextButton.onClick.AddListener(delegate
             {
-                if (string.IsNullOrEmpty(CharacterCreator.m_characterName)) return;
+                if (string.IsNullOrEmpty(CharacterCreator.m_characterName)) 
+                {
+                    Button bt = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
+                    bt.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
+                    bt.gameObject.SetActive(true);
+                    bt.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+
+                    CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt.GetComponentInChildren<TMP_Text>();
+                    CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Ok";
+
+                    bt.onClick.AddListener(CharacterCreator.Instance.m_popUpHelper.HidePopUp);
+
+                    CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt);
+                    CharacterCreator.Instance.m_popUpHelper.ShowPopUp("Insert a character name.");
+                    return;
+                } 
 
                 CharacterCreator.CharacterData = null;
                 CharacterCreator.Instance.EditingCharacter = null;

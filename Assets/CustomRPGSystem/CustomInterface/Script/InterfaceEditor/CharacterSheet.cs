@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 namespace CustomRPGSystem
 {
@@ -43,6 +44,9 @@ namespace CustomRPGSystem
         [Header("Skills")]
         [SerializeField] private List<SkillDisplay> m_skillDisplay = new List<SkillDisplay>();
 
+        [Header("SpellCasting")]
+        [SerializeField] private SpellCastingDisplay m_spellCastingDisplay;
+
         private List<PlayerCharacterData.Skills> m_editingSkills = new List<PlayerCharacterData.Skills>();
 
         #region PROPERTIES
@@ -81,8 +85,43 @@ namespace CustomRPGSystem
 
         private void OnEnable()
         {
+            CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+            CharacterCreator.Instance.m_nextButton.onClick.AddListener(delegate
+            {
+                Button bt1 = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
+                bt1.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
+                bt1.gameObject.SetActive(true);
+                bt1.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+
+                CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt1.GetComponentInChildren<TMP_Text>();
+                CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Continue Editing";
+
+                bt1.onClick.AddListener(CharacterCreator.Instance.m_popUpHelper.HidePopUp);
+
+                CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt1);
+
+                Button bt2 = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
+                bt2.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
+                bt2.gameObject.SetActive(true);
+                bt2.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+
+                CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt2.GetComponentInChildren<TMP_Text>();
+                CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Finish & Save";
+
+                bt2.onClick.AddListener(delegate {
+                    CharacterCreator.Instance.SaveCharacter(CharacterCreator.Instance.EditingCharacter);
+                    CharacterCreator.Instance.m_popUpHelper.HidePopUp();
+                    CharacterCreator.Instance.NextPage();
+                });
+
+                CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt2);
+
+                CharacterCreator.Instance.m_popUpHelper.ShowPopUp("Finish creating your character and save?");
+            });
+
             PrepareSkills(CharacterCreator.Instance.EditingCharacter);
             SetInfoSheet(CharacterCreator.Instance.EditingCharacter, m_editingSkills);
+            SetSpellCastingSheet(CharacterCreator.Instance.EditingCharacter);
 
             PanelButtonHandler();
         }
@@ -159,6 +198,12 @@ namespace CustomRPGSystem
             {
                 m_skillDisplay[i].SetSkillDisplay(m_editingSkills[i], player.abilityScore, player.info.proficiencyBonus);
             }
+        }
+
+        public void SetSpellCastingSheet(PlayerCharacterData player)
+        {
+            player.SetSpellCasting(player, player.info.level);
+            m_spellCastingDisplay.SetSpellCastingDisplay(player.spellCasting);
         }
 
         void PanelButtonHandler()

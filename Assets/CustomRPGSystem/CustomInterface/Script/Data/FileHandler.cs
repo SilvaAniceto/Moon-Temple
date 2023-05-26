@@ -7,14 +7,13 @@ using UnityEngine;
 public static class FileHandler
 {
     public static void SaveToJSON<T> (List<T> toSave, string path) {
-        Debug.Log (path);
         string content = JsonHelper.ToJson<T> (toSave.ToArray ());
-        WriteFile (path, content);
+        WriteFile (GetPath(path), content);
     }
 
-    public static void SaveToJSON<T> (T toSave, string filename, string path) {
+    public static void SaveToJSON<T> (T toSave, string path) {
         string content = JsonUtility.ToJson (toSave);
-        WriteFile (path, content);
+        WriteFile (GetPath(path), content);
     }
 
     public static List<T> ReadListFromJSON<T> (string filename) {

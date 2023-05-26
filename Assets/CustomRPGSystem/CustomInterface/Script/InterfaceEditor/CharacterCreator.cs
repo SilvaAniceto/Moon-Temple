@@ -32,6 +32,12 @@ namespace CustomRPGSystem
         [Header("Character Sheet")]
         [SerializeField] private CharacterSheet m_characterSheet;
 
+        [Header("Character Lists")]
+        [SerializeField] private CharacterListing m_characterListing;
+
+        [Header("PopUp Helper")]
+        public PopUpHelper m_popUpHelper;
+
         public static string m_playerName = "";
         public static string m_characterName = "";
         public static int m_levelValue;
@@ -57,7 +63,14 @@ namespace CustomRPGSystem
         {
             get
             {
-                return PlayerDirectory + "/MainCharacter";
+                return PlayerDirectory + "/Characters";
+            }
+        }
+        public List<PlayerCharacterData> SavedCharacters
+        {
+            get
+            {
+                return CharacterList;
             }
         }
         #endregion
@@ -68,6 +81,7 @@ namespace CustomRPGSystem
             if (CharacterAttributeEditor.Instance == null) CharacterAttributeEditor.Instance = m_characterAttributeEditor;
             if (CharacterExtraPointEditor.Instance == null) CharacterExtraPointEditor.Instance = m_characterExtraPointEditor;
             if (CharacterSkillEditor.Instance == null) CharacterSkillEditor.Instance = m_characterSkillEditor;
+            if (CharacterListing.Instance == null) CharacterListing.Instance = m_characterListing;
 
             UIPages.Add(m_mainTitle);
             UIPages.Add(m_characterEditor.gameObject);
@@ -75,6 +89,7 @@ namespace CustomRPGSystem
             UIPages.Add(m_characterExtraPointEditor.gameObject);
             UIPages.Add(m_characterSkillEditor.gameObject);
             UIPages.Add(m_characterSheet.gameObject);
+            UIPages.Add(m_characterListing.gameObject);
 
             m_backButton.onClick.AddListener(PreviousPage);
             m_nextButton.gameObject.SetActive(false);
@@ -101,8 +116,46 @@ namespace CustomRPGSystem
                     m_nextButton.gameObject.SetActive(true);
                 });
             }
+            else
+            {
+                m_LoadCharacterButton.gameObject.SetActive(true);
+                m_NewCharacterButton.onClick.AddListener(delegate
+                {
+                    NextPage();
+                    m_nextButton.gameObject.SetActive(true);
+                });
+            }
 
             ManagerCreatorPages(0);
+        }
+
+        public void SaveCharacter(PlayerCharacterData player)
+        {
+            for (int i = 0; i < player.classSkills.Count; i++)
+            {
+                for (int j = 0; j < player.skills.Length; j++)
+                {
+                    if (player.classSkills[i].skill == player.skills[i].skill && player.classSkills[i].proficient)
+                    {
+                        player.skills[i] = player.classSkills[i];
+                    }
+                }
+            }
+
+            for (int i = 0; i < player.raceSkills.Count; i++)
+            {
+                for (int j = 0; j < player.skills.Length; j++)
+                {
+                    if (player.raceSkills[i].skill == player.skills[i].skill && player.raceSkills[i].proficient)
+                    {
+                        player.skills[i] = player.raceSkills[i];
+                    }
+                }
+            }
+
+            CharacterList.Add(player);
+
+            FileHandler.SaveToJSON<PlayerCharacterData>(player, MainCharacterDirectory + "/" + player.info.name + ".json");
         }
 
         void ManagerCreatorPages(int p_pageIndex)

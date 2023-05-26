@@ -13,7 +13,7 @@ namespace CustomRPGSystem
         {
             m_currentPoints.text = player.info.currentHitPoints.ToString();
             m_maxPoints.text = player.info.maxHitPoints.ToString();
-            m_hitDie.text = player.info.dice.ToString() + "d" + player.info.hitDie.ToString();
+            m_hitDie.text = "D" + player.info.hitDie.ToString();
         }
     }
 }
