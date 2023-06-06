@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 namespace CustomRPGSystem
 {
@@ -121,11 +122,22 @@ namespace CustomRPGSystem
         [Serializable]
         public class SpellCasting
         {
-            public int magicMana = 0;
-            public int magicLevel = 0;
-            public int magicTier = 1;
-
-            public int spellSchoolPoints = 3;
+            public int knownMagic = 0;
+            public int knownCantrip = 0;
+            public enum MagicTier
+            {
+                None = 0,
+                First,
+                Second,
+                Third,
+                Fourth,
+                Fifth,
+                Sixth,
+                Seventh,
+                Eighth,
+                Ninth
+            }
+            public Dictionary<MagicTier, int> slots = new Dictionary<MagicTier, int>();
 
             public AbilityScore.Ability conjuringAbility = AbilityScore.Ability.None;
             public int magicAttackModifier = 0;
@@ -144,18 +156,14 @@ namespace CustomRPGSystem
                 Transmutation
             }
             public SpellSchool spellSchool = SpellSchool.None;
+        }
 
-            public enum MagicSourcing
+        public bool HasAvailablePoints
+        {
+            get
             {
-                None,
-                Enhancer,
-                Transformation,
-                Materialization,
-                Emission,
-                Manipulation,
-                Especialization
+                return info.availablePoints > 0 || info.extraPoints > 0 || info.raceProficiencyPoints > 0 || info.classProficiencyPoints > 0 ? true : false;
             }
-            public MagicSourcing magicSourcing = MagicSourcing.None;
         }
 
         /*[HideInInspector]*/ public CharacterInfo info = new CharacterInfo();
@@ -764,62 +772,302 @@ namespace CustomRPGSystem
 
             player.info.currentHitPoints = player.info.maxHitPoints;
         }
-        #region DEPRACATED
-        //public void SetRaceSkills(PlayerCharacterData player,Skills.Skill skill, bool p_proficient = false, bool p_isChangable = false)
-        //{
-        //    List<Skills> s = new List<Skills>();
+        public void SetSpellCasting(PlayerCharacterData player, int p_level)
+        {
+            switch (player.info.classes)
+            {
+                case CharacterInfo.Class.None:
+                    break;
+                case CharacterInfo.Class.Barbarian:
+                    player.spellCasting.magicResistance = 0;
+                    switch (p_level)
+                    {
+                        case 1:
+                            player.spellCasting.magicAttackModifier = 2;
+                            SetSlot(SpellCasting.MagicTier.None, 2);
+                            break;
+                        case 2:
+                            
+                            break;
+                        case 3:
+                            SetSlot(SpellCasting.MagicTier.None, 3);
+                            break;
+                        case 4:
+                            
+                            break;
+                        case 5:
+                            
+                            break;
+                        case 6:
+                            SetSlot(SpellCasting.MagicTier.None, 4);
+                            break;
+                        case 7:
+                            break;
+                        case 8:
+                            break;
+                        case 9:
+                            player.spellCasting.magicAttackModifier = 3;
+                            break;
+                        case 10:
+                            
+                            break;
+                        case 11:
+                            
+                            break;
+                        case 12:
+                            SetSlot(SpellCasting.MagicTier.None, 5);
+                            break;
+                        case 13:
+                            break;
+                        case 14:
+                            break;
+                        case 15:
+                            break;
+                        case 16:
+                            player.spellCasting.magicAttackModifier = 4;
+                            break;
+                        case 17:
+                            SetSlot(SpellCasting.MagicTier.None, 6);
+                            break;
+                        case 18:
+                            break;
+                        case 19:
+                            break;
+                        case 20:
+                            SetSlot(SpellCasting.MagicTier.None, 0);
+                            break;
+                    }
+                    break;
+                case CharacterInfo.Class.Bard:
+                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Charisma;
+                    for (int i = 0; i < player.abilityScore.Length; i++)
+                    {
+                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
+                        {
+                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                        }
+                    }
+                    switch (p_level)
+                    {
+                        case 1:
+                            player.spellCasting.knownMagic = 4;
+                            player.spellCasting.knownCantrip = 2;
+                            SetSlot(SpellCasting.MagicTier.First, 2);
+                            break;
+                        case 2:
+                            player.spellCasting.knownMagic = 5;
+                            player.spellCasting.knownCantrip = 2;
+                            SetSlot(SpellCasting.MagicTier.First, 3);
+                            break;
+                        case 3:
+                            player.spellCasting.knownMagic = 6;
+                            player.spellCasting.knownCantrip = 2;
+                            SetSlot(SpellCasting.MagicTier.First, 4);
+                            SetSlot(SpellCasting.MagicTier.Second, 2);
+                            break;
+                        case 4:
+                            player.spellCasting.knownMagic = 7;
+                            player.spellCasting.knownCantrip = 3;
+                            SetSlot(SpellCasting.MagicTier.Second, 3);
+                            break;
+                        case 5:
+                            player.spellCasting.knownMagic = 8;
+                            player.spellCasting.knownCantrip = 3;
+                            SetSlot(SpellCasting.MagicTier.Third, 2);
+                            break;
+                        case 6:
+                            player.spellCasting.knownMagic = 9;
+                            player.spellCasting.knownCantrip = 3;
+                            SetSlot(SpellCasting.MagicTier.Third, 3);
+                            break;
+                        case 7:
+                            player.spellCasting.knownMagic = 10;
+                            player.spellCasting.knownCantrip = 3;
+                            SetSlot(SpellCasting.MagicTier.Fourth, 1);
+                            break;
+                        case 8:
+                            player.spellCasting.knownMagic = 11;
+                            player.spellCasting.knownCantrip = 3;
+                            SetSlot(SpellCasting.MagicTier.Fourth, 2);
+                            break;
+                        case 9:
+                            player.spellCasting.knownMagic = 12;
+                            player.spellCasting.knownCantrip = 3;
+                            SetSlot(SpellCasting.MagicTier.Fourth, 3);
+                            SetSlot(SpellCasting.MagicTier.Fifth, 1);
+                            break;
+                        case 10:
+                            player.spellCasting.knownMagic = 14;
+                            player.spellCasting.knownCantrip = 4;
+                            SetSlot(SpellCasting.MagicTier.Fifth, 2);
+                            break;
+                        case 11:
+                            player.spellCasting.knownMagic = 15;
+                            player.spellCasting.knownCantrip = 4;
+                            SetSlot(SpellCasting.MagicTier.Sixth, 1);
+                            break;
+                        case 12:
+                            player.spellCasting.knownMagic = 15;
+                            player.spellCasting.knownCantrip = 4;
+                            break;
+                        case 13:
+                            player.spellCasting.knownMagic = 16;
+                            player.spellCasting.knownCantrip = 4;
+                            SetSlot(SpellCasting.MagicTier.Seventh, 1);
+                            break;
+                        case 14:
+                            player.spellCasting.knownMagic = 18;
+                            player.spellCasting.knownCantrip = 4;
+                            break;
+                        case 15:
+                            player.spellCasting.knownMagic = 19;
+                            player.spellCasting.knownCantrip = 4;
+                            SetSlot(SpellCasting.MagicTier.Eighth, 1);
+                            break;
+                        case 16:
+                            player.spellCasting.knownMagic = 19;
+                            player.spellCasting.knownCantrip = 4;
+                            break;
+                        case 17:
+                            player.spellCasting.knownMagic = 20;
+                            player.spellCasting.knownCantrip = 4;
+                            SetSlot(SpellCasting.MagicTier.Ninth, 1);
+                            break;
+                        case 18:
+                            player.spellCasting.knownMagic = 22;
+                            player.spellCasting.knownCantrip = 4;
+                            break;
+                        case 19:
+                            player.spellCasting.knownMagic = 22;
+                            player.spellCasting.knownCantrip = 4;
+                            SetSlot(SpellCasting.MagicTier.Sixth, 2);
+                            break;
+                        case 20:
+                            player.spellCasting.knownMagic = 22;
+                            player.spellCasting.knownCantrip = 4;
+                            SetSlot(SpellCasting.MagicTier.Seventh, 2);
+                            break;
+                    }
+                    break;
+                case CharacterInfo.Class.Cleric:
+                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Wisdom;
+                    for (int i = 0; i < player.abilityScore.Length; i++)
+                    {
+                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
+                        {
+                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                        }
+                    }
+                    break;
+                case CharacterInfo.Class.Druid:
+                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Wisdom;
+                    for (int i = 0; i < player.abilityScore.Length; i++)
+                    {
+                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
+                        {
+                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                        }
+                    }
+                    break;
+                case CharacterInfo.Class.Fighter:
+                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Intelligence;
+                    for (int i = 0; i < player.abilityScore.Length; i++)
+                    {
+                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
+                        {
+                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                        }
+                    }
+                    break;
+                case CharacterInfo.Class.Monk:
+                    player.spellCasting.magicResistance = 0;
+                    player.spellCasting.magicAttackModifier = 0;
+                    break;
+                case CharacterInfo.Class.Paladin:
+                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Charisma;
+                    for (int i = 0; i < player.abilityScore.Length; i++)
+                    {
+                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
+                        {
+                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                        }
+                    }
+                    break;
+                case CharacterInfo.Class.Ranger:
+                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Wisdom;
+                    for (int i = 0; i < player.abilityScore.Length; i++)
+                    {
+                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
+                        {
+                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                        }
+                    }
+                    break;
+                case CharacterInfo.Class.Rogue:
+                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Intelligence;
+                    for (int i = 0; i < player.abilityScore.Length; i++)
+                    {
+                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
+                        {
+                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                        }
+                    }
+                    break;
+                case CharacterInfo.Class.Sorcerer:
+                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Charisma;
+                    for (int i = 0; i < player.abilityScore.Length; i++)
+                    {
+                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
+                        {
+                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                        }
+                    }
+                    break;
+                case CharacterInfo.Class.Warlock:
+                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Charisma;
+                    for (int i = 0; i < player.abilityScore.Length; i++)
+                    {
+                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
+                        {
+                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                        }
+                    }
+                    break;
+                case CharacterInfo.Class.Wizard:
+                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Intelligence;
+                    for (int i = 0; i < player.abilityScore.Length; i++)
+                    {
+                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
+                        {
+                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                        }
+                    }
+                    break;
+            }
 
-        //    foreach (Skills skl in player.skills)
-        //    {
-        //        s.Add(skl);
-        //    }
-
-        //    Skills sk = s.Find(x => x.skill == skill);
-
-        //    sk.isChangable = p_isChangable;
-
-        //    if (p_proficient)
-        //    {
-        //        sk.proficient = p_proficient;
-        //        //player.info.proficiencyPoints--;
-        //    }
-
-        //    for (int i = 0; i < player.skills.Length; i++)
-        //    {
-        //        if (player.skills[i] == sk)
-        //        {
-        //            player.skills[i] = sk;
-        //        }
-        //    }
-        //}
-        //public void SetClassSkills(PlayerCharacterData player, Skills.Skill skill, bool p_proficient = false, bool p_isAvailable = false)
-        //{
-        //    List<Skills> s = new List<Skills>();
-
-        //    foreach (Skills skl in player.skills)
-        //    {
-        //        s.Add(skl);
-        //    }
-
-        //    Skills sk = s.Find(x => x.skill == skill);
-
-        //    sk.isChangable = p_isAvailable;
-
-        //    if (p_proficient)
-        //    {
-        //        sk.proficient = p_proficient;
-        //        //player.info.proficiencyPoints--;
-        //    }
-
-        //    for (int i = 0; i < player.skills.Length; i++)
-        //    {
-        //        if (player.skills[i] == sk)
-        //        {
-        //            player.skills[i] = sk;
-        //        }
-        //    }
-        //}
-        #endregion
+            void SetSlot(SpellCasting.MagicTier tier, int value)
+            {
+                if (!player.spellCasting.slots.ContainsKey(tier))
+                {
+                    player.spellCasting.slots.Add(tier, value);
+                }
+                else
+                {
+                    player.spellCasting.slots[tier] = value;
+                }
+            }
+        }
+        
         public void SetAbilityScore(PlayerCharacterData player, AbilityScore.Ability ability, int p_score)
         {
             List<AbilityScore> a = new List<AbilityScore>();
@@ -1061,198 +1309,6 @@ namespace CustomRPGSystem
             }
 
             return bonus;
-        }
-
-        public void SetSpellCasting(PlayerCharacterData player, int p_level)
-        {
-            switch (player.info.classes)
-            {
-                case CharacterInfo.Class.None:
-                    break;
-                case CharacterInfo.Class.Barbarian:
-                    player.spellCasting.magicResistance = 0;
-                    if (p_level < 9)
-                    {
-                        player.spellCasting.magicAttackModifier = 2;
-                    }
-                    else if (p_level >= 9 && p_level < 16)
-                    {
-                        player.spellCasting.magicMana = 3;
-                    }
-                    else if (p_level >= 16 && p_level <= 20)
-                    {
-                        player.spellCasting.magicMana = 4;
-                    }
-                    break;
-                case CharacterInfo.Class.Bard:
-                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Charisma;
-                    for (int i = 0; i < player.abilityScore.Length; i++)
-                    {
-                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
-                        {
-                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                        }
-                    }
-                    #region NOT IN USE YET
-                    //switch (p_level)
-                    //{
-                    //    case 1:
-                    //        player.spellCasting.magicMana = 2;
-                    //        break;
-                    //    case 2:
-                    //        player.spellCasting.magicMana = 3;
-                    //        break;
-                    //    case 3:
-                    //        player.spellCasting.magicMana = 6;
-                    //        break;
-                    //    case 4:
-                    //        player.spellCasting.magicMana = 7;
-                    //        break;
-                    //    case 5:
-                    //        player.spellCasting.magicMana = 9;
-                    //        break;
-                    //    case 6:
-                    //        player.spellCasting.magicMana = 10;
-                    //        break;
-                    //    case 7:
-                    //        player.spellCasting.magicMana = 2;
-                    //        break;
-                    //    case 8:
-                    //        break;
-                    //    case 9:
-                    //        break;
-                    //    case 10:
-                    //        break;
-                    //    case 11:
-                    //        break;
-                    //    case 12:
-                    //        break;
-                    //    case 13:
-                    //        break;
-                    //    case 14:
-                    //        break;
-                    //    case 15:
-                    //        break;
-                    //    case 16:
-                    //        break;
-                    //    case 17:
-                    //        break;
-                    //    case 18:
-                    //        break;
-                    //    case 19:
-                    //        break;
-                    //    case 20:
-                    //        break;
-                    //    default:
-                    //        break;
-                    //}
-                    #endregion
-                    break;
-                case CharacterInfo.Class.Cleric:
-                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Wisdom;
-                    for (int i = 0; i < player.abilityScore.Length; i++)
-                    {
-                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
-                        {
-                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                        }
-                    }
-                    break;
-                case CharacterInfo.Class.Druid:
-                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Wisdom;
-                    for (int i = 0; i < player.abilityScore.Length; i++)
-                    {
-                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
-                        {
-                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                        }
-                    }
-                    break;
-                case CharacterInfo.Class.Fighter:
-                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Intelligence;
-                    for (int i = 0; i < player.abilityScore.Length; i++)
-                    {
-                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
-                        {
-                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                        }
-                    }
-                    break;
-                case CharacterInfo.Class.Monk:
-                    player.spellCasting.magicResistance = 0;
-                    player.spellCasting.magicAttackModifier = 0;
-                    break;
-                case CharacterInfo.Class.Paladin:
-                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Charisma;
-                    for (int i = 0; i < player.abilityScore.Length; i++)
-                    {
-                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
-                        {
-                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                        }
-                    }
-                    break;
-                case CharacterInfo.Class.Ranger:
-                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Wisdom;
-                    for (int i = 0; i < player.abilityScore.Length; i++)
-                    {
-                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
-                        {
-                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                        }
-                    }
-                    break;
-                case CharacterInfo.Class.Rogue:
-                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Intelligence;
-                    for (int i = 0; i < player.abilityScore.Length; i++)
-                    {
-                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
-                        {
-                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                        }
-                    }
-                    break;
-                case CharacterInfo.Class.Sorcerer:
-                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Charisma;
-                    for (int i = 0; i < player.abilityScore.Length; i++)
-                    {
-                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
-                        {
-                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                        }
-                    }
-                    break;
-                case CharacterInfo.Class.Warlock:
-                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Charisma;
-                    for (int i = 0; i < player.abilityScore.Length; i++)
-                    {
-                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
-                        {
-                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                        }
-                    }
-                    break;
-                case CharacterInfo.Class.Wizard:
-                    player.spellCasting.conjuringAbility = AbilityScore.Ability.Intelligence;
-                    for (int i = 0; i < player.abilityScore.Length; i++)
-                    {
-                        if (player.abilityScore[i].ability == player.spellCasting.conjuringAbility)
-                        {
-                            player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                            player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
-                        }
-                    }
-                    break;
-            }
         }
     }
 }

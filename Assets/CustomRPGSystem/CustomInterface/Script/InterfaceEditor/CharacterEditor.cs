@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using static CustomRPGSystem.PlayerCharacterData.CharacterInfo;
 
 namespace CustomRPGSystem
 {
@@ -101,25 +102,30 @@ namespace CustomRPGSystem
                 CharacterCreator.m_classValue = classes.value;
             });
 
+            CharacterCreator.Instance.m_backButton.GetComponentInChildren<TMP_Text>(true).text = "Back";
+
             CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_nextButton.onClick.AddListener(delegate
             {
                 if (string.IsNullOrEmpty(CharacterCreator.m_characterName)) 
                 {
-                    Button bt = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
-                    bt.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
-                    bt.gameObject.SetActive(true);
-                    bt.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+                    if (!CharacterCreator.Instance.m_popUpHelper.IsOn)
+                    {
+                        Button bt = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
+                        bt.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
+                        bt.gameObject.SetActive(true);
+                        bt.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
 
-                    CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt.GetComponentInChildren<TMP_Text>();
-                    CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Ok";
+                        CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt.GetComponentInChildren<TMP_Text>();
+                        CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Ok";
 
-                    bt.onClick.AddListener(CharacterCreator.Instance.m_popUpHelper.HidePopUp);
+                        bt.onClick.AddListener(CharacterCreator.Instance.m_popUpHelper.HidePopUp);
 
-                    CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt);
-                    CharacterCreator.Instance.m_popUpHelper.ShowPopUp("Insert a character name.");
+                        CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt);
+                        CharacterCreator.Instance.m_popUpHelper.ShowPopUp("Insert a character name.");
+                    }
                     return;
-                } 
+                }
 
                 CharacterCreator.CharacterData = null;
                 CharacterCreator.Instance.EditingCharacter = null;
@@ -135,8 +141,19 @@ namespace CustomRPGSystem
                 CharacterExtraPointEditor.Instance.IsSet = false;
                 CharacterSkillEditor.Instance.IsSet = false;
 
-                CharacterCreator.Instance.NextPage();
+                CharacterCreator.Instance.NextPage(); 
             });
+        }
+
+        private void OnDisable()
+        {
+            CharacterCreator.m_playerName = null;
+            CharacterCreator.m_characterName = null;
+            playerName.text = CharacterCreator.m_playerName;
+            characterName.text = CharacterCreator.m_characterName;
+            level.value= 0;
+            race.value= 0;
+            classes.value= 0;
         }
     }
 }

@@ -77,6 +77,14 @@ namespace CustomRPGSystem
         {
             if (!isSet) SetSkillEditor(CharacterCreator.Instance.EditingCharacter);
 
+            CharacterCreator.Instance.m_nextButton.gameObject.SetActive(true);
+            CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+            CharacterCreator.Instance.m_nextButton.onClick.AddListener(CharacterCreator.Instance.NextPage);
+
+            CharacterCreator.Instance.m_backButton.gameObject.SetActive(true);
+            CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
+            CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
+
             m_raceButton.onClick.RemoveAllListeners();
             m_classButton.onClick.RemoveAllListeners();
 
@@ -205,6 +213,8 @@ namespace CustomRPGSystem
             if (p_proficiency) m_currentRacePoints--;
             else m_currentRacePoints++;
 
+            CharacterCreator.Instance.EditingCharacter.info.raceProficiencyPoints = m_currentRacePoints;
+
             ShowRaceSkill();
         }
 
@@ -212,6 +222,8 @@ namespace CustomRPGSystem
         {
             if (p_proficiency) m_currentClassPoints--;
             else m_currentClassPoints++;
+
+            CharacterCreator.Instance.EditingCharacter.info.classProficiencyPoints = m_currentClassPoints;
 
             ShowClassSkill();
         }

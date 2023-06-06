@@ -94,6 +94,8 @@ namespace CustomRPGSystem
                         m_currentScore += attValue.attributeValue;
                         CharacterAttributeEditor.Instance.CurrentAvailablePoints = CharacterAttributeEditor.Instance.AvailablePoints - attValue.cost;
 
+                        CharacterCreator.Instance.EditingCharacter.info.availablePoints = CharacterAttributeEditor.Instance.AvailablePoints;
+
                         int indexOf = m_values.IndexOf(attValue);
 
                         m_values[i].inUse = false;

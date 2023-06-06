@@ -85,39 +85,52 @@ namespace CustomRPGSystem
 
         private void OnEnable()
         {
+            if (!CharacterCreator.Instance.m_nextButton.gameObject.activeInHierarchy)
+            {
+                CharacterCreator.Instance.m_nextButton.gameObject.SetActive(true);
+            }
+
             CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_nextButton.onClick.AddListener(delegate
             {
-                Button bt1 = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
-                bt1.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
-                bt1.gameObject.SetActive(true);
-                bt1.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+                if (!CharacterCreator.Instance.m_popUpHelper.IsOn)
+                {
+                    Button bt1 = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
+                    bt1.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
+                    bt1.gameObject.SetActive(true);
+                    bt1.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
 
-                CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt1.GetComponentInChildren<TMP_Text>();
-                CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Continue Editing";
+                    CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt1.GetComponentInChildren<TMP_Text>();
+                    CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Continue Editing";
 
-                bt1.onClick.AddListener(CharacterCreator.Instance.m_popUpHelper.HidePopUp);
+                    bt1.onClick.AddListener(CharacterCreator.Instance.m_popUpHelper.HidePopUp);
 
-                CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt1);
+                    CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt1);
 
-                Button bt2 = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
-                bt2.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
-                bt2.gameObject.SetActive(true);
-                bt2.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+                    Button bt2 = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
+                    bt2.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
+                    bt2.gameObject.SetActive(true);
+                    bt2.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
 
-                CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt2.GetComponentInChildren<TMP_Text>();
-                CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Finish & Save";
+                    CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt2.GetComponentInChildren<TMP_Text>();
+                    CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Finish & Save";
 
-                bt2.onClick.AddListener(delegate {
-                    CharacterCreator.Instance.SaveCharacter(CharacterCreator.Instance.EditingCharacter);
-                    CharacterCreator.Instance.m_popUpHelper.HidePopUp();
-                    CharacterCreator.Instance.NextPage();
-                });
+                    bt2.onClick.AddListener(delegate
+                    {
+                        CharacterCreator.Instance.SaveCharacter(CharacterCreator.Instance.EditingCharacter);
+                        CharacterCreator.Instance.m_popUpHelper.HidePopUp();
+                        CharacterCreator.Instance.NextPage();
+                    });
 
-                CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt2);
+                    CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt2);
 
-                CharacterCreator.Instance.m_popUpHelper.ShowPopUp("Finish creating your character and save?");
+                    CharacterCreator.Instance.m_popUpHelper.ShowPopUp("Finish creating your character and save?");
+                }
             });
+
+            CharacterCreator.Instance.m_backButton.gameObject.SetActive(true);
+            CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
+            CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
 
             PrepareSkills(CharacterCreator.Instance.EditingCharacter);
             SetInfoSheet(CharacterCreator.Instance.EditingCharacter, m_editingSkills);

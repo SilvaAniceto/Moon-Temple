@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace CustomRPGSystem
 {
@@ -14,7 +15,7 @@ namespace CustomRPGSystem
         [SerializeField] private GameObject m_mainTitle;
         [SerializeField] private Button m_NewCharacterButton;
         [SerializeField] private Button m_LoadCharacterButton;
-        [SerializeField] private Button m_backButton;
+        public Button m_backButton;
         public Button m_nextButton;
 
         [Header("Character Editor")]
@@ -43,6 +44,8 @@ namespace CustomRPGSystem
         public static int m_levelValue;
         public static int m_raceValue;
         public static int m_classValue;
+        public static bool m_editingNewCharacter = false;
+        public static bool m_editingLoadedCharacter = false;
 
         private List<PlayerCharacterData> CharacterList = new List<PlayerCharacterData>();
         public static PlayerCharacterData CharacterData;
@@ -50,6 +53,8 @@ namespace CustomRPGSystem
         public PlayerCharacterData EditingCharacter;
 
         [SerializeField] private List<GameObject> UIPages = new List<GameObject>();
+
+        public string[] array;
 
         #region PROPERTIES
         public string PlayerDirectory
@@ -73,15 +78,64 @@ namespace CustomRPGSystem
                 return CharacterList;
             }
         }
+        public GameObject CharacterEditorPage
+        {
+            get
+            {
+                return m_characterEditor.gameObject;
+            }
+        }
+        public GameObject CharacterAttributeEditorPage
+        {
+            get
+            {
+                return m_characterAttributeEditor.gameObject;
+            }
+        }
+        public GameObject CharacterExtraPointEditorPage
+        {
+            get
+            {
+                return m_characterExtraPointEditor.gameObject;
+            }
+        }
+        public GameObject CharacterSkillEditorPage
+        {
+            get
+            {
+                return m_characterSkillEditor.gameObject;
+            }
+        }
+        public GameObject CharacterSheetPage
+        {
+            get
+            {
+                return m_characterSheet.gameObject;
+            }
+        }
+        public GameObject CharacterListingPage
+        {
+            get
+            {
+                return m_characterListing.gameObject;
+            }
+        }
         #endregion
 
         private void Awake()
+        {
+            StartCreator();
+        }
+
+        public void StartCreator()
         {
             if (Instance == null) Instance = this;
             if (CharacterAttributeEditor.Instance == null) CharacterAttributeEditor.Instance = m_characterAttributeEditor;
             if (CharacterExtraPointEditor.Instance == null) CharacterExtraPointEditor.Instance = m_characterExtraPointEditor;
             if (CharacterSkillEditor.Instance == null) CharacterSkillEditor.Instance = m_characterSkillEditor;
             if (CharacterListing.Instance == null) CharacterListing.Instance = m_characterListing;
+
+            UIPages.Clear();
 
             UIPages.Add(m_mainTitle);
             UIPages.Add(m_characterEditor.gameObject);
@@ -91,8 +145,13 @@ namespace CustomRPGSystem
             UIPages.Add(m_characterSheet.gameObject);
             UIPages.Add(m_characterListing.gameObject);
 
+            m_backButton.onClick.RemoveAllListeners();
             m_backButton.onClick.AddListener(PreviousPage);
+
             m_nextButton.gameObject.SetActive(false);
+
+            m_NewCharacterButton.onClick.RemoveAllListeners();
+            m_LoadCharacterButton.onClick.RemoveAllListeners();
 
             if (!Directory.Exists(PlayerDirectory))
             {
@@ -112,18 +171,49 @@ namespace CustomRPGSystem
                 m_LoadCharacterButton.gameObject.SetActive(false);
                 m_NewCharacterButton.onClick.AddListener(delegate
                 {
-                    NextPage();
+                    SetPage(m_characterEditor.gameObject);
                     m_nextButton.gameObject.SetActive(true);
+
+                    m_editingNewCharacter = true;
+                    m_editingLoadedCharacter = false;
                 });
             }
             else
             {
+                LoadCharacters(MainCharacterDirectory + "/");
+
                 m_LoadCharacterButton.gameObject.SetActive(true);
-                m_NewCharacterButton.onClick.AddListener(delegate
+                m_LoadCharacterButton.onClick.AddListener(delegate
                 {
-                    NextPage();
-                    m_nextButton.gameObject.SetActive(true);
+                    SetPage(m_characterListing.gameObject);
+
+                    m_backButton.onClick.RemoveAllListeners();
+                    m_backButton.onClick.AddListener(delegate
+                    {
+                        StartCreator();
+                    });
+
+                    m_editingNewCharacter = false;
+                    m_editingLoadedCharacter = true;
                 });
+
+                if (CharacterList.Count > 0 && CharacterList.Count < 4)
+                {
+                    m_NewCharacterButton.gameObject.SetActive(true);
+                    m_NewCharacterButton.onClick.AddListener(delegate
+                    {
+                        SetPage(m_characterEditor.gameObject);
+                        m_nextButton.gameObject.SetActive(true);
+
+                        m_editingNewCharacter = true;
+                        m_editingLoadedCharacter = false;
+                    });
+                }
+                else
+                {
+                    m_NewCharacterButton.gameObject.SetActive(false);
+                    m_NewCharacterButton.onClick.RemoveAllListeners();
+                }
             }
 
             ManagerCreatorPages(0);
@@ -153,14 +243,51 @@ namespace CustomRPGSystem
                 }
             }
 
-            CharacterList.Add(player);
+            PlayerCharacterData characterData = CharacterList.Find(x => x.info.name == player.info.name);
+
+            if (characterData != null)
+            {
+                CharacterList[CharacterList.IndexOf(characterData)] = player;
+            }
+            else
+            {
+                CharacterList.Add(player);
+            }
 
             FileHandler.SaveToJSON<PlayerCharacterData>(player, MainCharacterDirectory + "/" + player.info.name + ".json");
         }
 
+        public void LoadCharacters(string p_path)
+        {
+            array = null;
+            CharacterList.Clear();
+
+            array = Directory.GetFiles(p_path, "*.json");
+
+            for (int i = 0; i < array.Length; i++)
+            {
+                PlayerCharacterData sc = FileHandler.ReadFromJSON<PlayerCharacterData>(array[i]);
+
+                CharacterList.Add(sc);
+            }
+        }
+
+        public void DeleteCharacter(string p_path)
+        {
+            File.Delete(p_path);
+
+#if UNITY_EDITOR
+            UnityEditor.AssetDatabase.Refresh();
+#endif
+        }
+
         void ManagerCreatorPages(int p_pageIndex)
         {
-            if (p_pageIndex == 0) m_backButton.gameObject.SetActive(false);
+            if (p_pageIndex == 0)
+            {
+                m_backButton.gameObject.SetActive(false);
+                m_nextButton.gameObject.SetActive(false);
+            }
             else m_backButton.gameObject.SetActive(true);
 
             for (int i = 0; i < UIPages.Count; i++)
@@ -171,7 +298,7 @@ namespace CustomRPGSystem
             UIPages[p_pageIndex].SetActive(true);
         }
 
-        void PreviousPage()
+        public void PreviousPage()
         {
             int index = 0;
 
@@ -199,6 +326,14 @@ namespace CustomRPGSystem
             }
 
             ManagerCreatorPages(index + 1);
+        }
+
+        public void SetPage(GameObject p_page)
+        {
+            if (UIPages.Contains(p_page))
+            {
+                ManagerCreatorPages(UIPages.IndexOf(p_page));
+            }
         }
     }
 }

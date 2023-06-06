@@ -61,8 +61,14 @@ namespace CustomRPGSystem
 
         private void OnEnable()
         {
+            CharacterCreator.Instance.m_nextButton.gameObject.SetActive(true);
             CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_nextButton.onClick.AddListener(CharacterCreator.Instance.NextPage);
+
+            CharacterCreator.Instance.m_backButton.gameObject.SetActive(true);
+            CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
+            CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
+
 
             if (!isSet) SetExtraPointEditor(CharacterCreator.Instance.EditingCharacter);
 
@@ -121,6 +127,8 @@ namespace CustomRPGSystem
         private void UpdateCurrentExtraPoints(int p_value)
         {
             m_currentExtraPoints = m_currentExtraPoints + p_value;
+
+            CharacterCreator.Instance.EditingCharacter.info.extraPoints = m_currentExtraPoints;
 
             UpdateUIPoints();
         }

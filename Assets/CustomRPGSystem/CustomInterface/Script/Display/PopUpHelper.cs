@@ -15,6 +15,21 @@ namespace CustomRPGSystem
 
         public List<Button> m_buttons = new List<Button>();
 
+        public bool IsOn
+        {
+            get
+            {
+                if (gameObject.activeSelf) 
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         private void Start()
         {
             if (gameObject.activeInHierarchy)

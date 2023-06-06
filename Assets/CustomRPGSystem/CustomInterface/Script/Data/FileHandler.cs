@@ -26,7 +26,6 @@ public static class FileHandler
         List<T> res = JsonHelper.FromJson<T> (content).ToList ();
 
         return res;
-
     }
 
     public static T ReadFromJSON<T> (string filename) {
@@ -39,7 +38,6 @@ public static class FileHandler
         T res = JsonUtility.FromJson<T> (content);
 
         return res;
-
     }
 
     private static string GetPath (string filename) {
