@@ -137,6 +137,7 @@ namespace CustomRPGSystem
                 Eighth,
                 Ninth
             }
+            public MagicTier magicTier;
             public Dictionary<MagicTier, int> slots = new Dictionary<MagicTier, int>();
 
             public AbilityScore.Ability conjuringAbility = AbilityScore.Ability.None;
@@ -958,7 +959,72 @@ namespace CustomRPGSystem
                         {
                             player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
                             player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.knownMagic = player.abilityScore[i].modifier + p_level;
                         }
+                    }
+                    switch (p_level)
+                    {
+                        case 1:
+                            player.spellCasting.knownCantrip = 3;
+                            SetSlot(SpellCasting.MagicTier.First, 2);
+                            break;
+                        case 2:
+                            SetSlot(SpellCasting.MagicTier.First, 3);
+                            break;
+                        case 3:
+                            SetSlot(SpellCasting.MagicTier.First, 4);
+                            SetSlot(SpellCasting.MagicTier.Second, 2);
+                            break;
+                        case 4:
+                            player.spellCasting.knownCantrip = 4;
+                            SetSlot(SpellCasting.MagicTier.Second, 3);
+                            break;
+                        case 5:
+                            SetSlot(SpellCasting.MagicTier.Third, 2);
+                            break;
+                        case 6:
+                            SetSlot(SpellCasting.MagicTier.Third, 3);
+                            break;
+                        case 7:
+                            SetSlot(SpellCasting.MagicTier.Fourth, 1);
+                            break;
+                        case 8:
+                            SetSlot(SpellCasting.MagicTier.Fourth, 2);
+                            break;
+                        case 9:
+                            SetSlot(SpellCasting.MagicTier.Fourth, 3);
+                            SetSlot(SpellCasting.MagicTier.Fifth, 1);
+                            break;
+                        case 10:
+                            player.spellCasting.knownCantrip = 5;
+                            SetSlot(SpellCasting.MagicTier.Fifth, 2);
+                            break;
+                        case 11:
+                            SetSlot(SpellCasting.MagicTier.Sixth, 1);
+                            break;
+                        case 12:
+                            break;
+                        case 13:
+                            SetSlot(SpellCasting.MagicTier.Seventh, 1);
+                            break;
+                        case 14:
+                            break;
+                        case 15:
+                            SetSlot(SpellCasting.MagicTier.Eighth, 1);
+                            break;
+                        case 16:
+                            break;
+                        case 17:
+                            SetSlot(SpellCasting.MagicTier.Ninth, 1);
+                            break;
+                        case 18:
+                            break;
+                        case 19:
+                            SetSlot(SpellCasting.MagicTier.Sixth, 2);
+                            break;
+                        case 20:
+                            SetSlot(SpellCasting.MagicTier.Seventh, 2);
+                            break;
                     }
                     break;
                 case CharacterInfo.Class.Druid:
@@ -969,7 +1035,72 @@ namespace CustomRPGSystem
                         {
                             player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
                             player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
+                            player.spellCasting.knownMagic = player.abilityScore[i].modifier + p_level;
                         }
+                    }
+                    switch (p_level)
+                    {
+                        case 1:
+                            player.spellCasting.knownCantrip = 2;
+                            SetSlot(SpellCasting.MagicTier.First, 2);
+                            break;
+                        case 2:
+                            SetSlot(SpellCasting.MagicTier.First, 3);
+                            break;
+                        case 3:
+                            SetSlot(SpellCasting.MagicTier.First, 4);
+                            SetSlot(SpellCasting.MagicTier.Second, 2);
+                            break;
+                        case 4:
+                            player.spellCasting.knownCantrip = 3;
+                            SetSlot(SpellCasting.MagicTier.Second, 3);
+                            break;
+                        case 5:
+                            SetSlot(SpellCasting.MagicTier.Third, 2);
+                            break;
+                        case 6:
+                            SetSlot(SpellCasting.MagicTier.Third, 3);
+                            break;
+                        case 7:
+                            SetSlot(SpellCasting.MagicTier.Fourth, 1);
+                            break;
+                        case 8:
+                            SetSlot(SpellCasting.MagicTier.Fourth, 2);
+                            break;
+                        case 9:
+                            SetSlot(SpellCasting.MagicTier.Fourth, 3);
+                            SetSlot(SpellCasting.MagicTier.Fifth, 1);
+                            break;
+                        case 10:
+                            player.spellCasting.knownCantrip = 4;
+                            SetSlot(SpellCasting.MagicTier.Fifth, 2);
+                            break;
+                        case 11:
+                            SetSlot(SpellCasting.MagicTier.Sixth, 1);
+                            break;
+                        case 12:
+                            break;
+                        case 13:
+                            SetSlot(SpellCasting.MagicTier.Seventh, 1);
+                            break;
+                        case 14:
+                            break;
+                        case 15:
+                            SetSlot(SpellCasting.MagicTier.Eighth, 1);
+                            break;
+                        case 16:
+                            break;
+                        case 17:
+                            SetSlot(SpellCasting.MagicTier.Ninth, 1);
+                            break;
+                        case 18:
+                            break;
+                        case 19:
+                            SetSlot(SpellCasting.MagicTier.Sixth, 2);
+                            break;
+                        case 20:
+                            SetSlot(SpellCasting.MagicTier.Seventh, 2);
+                            break;
                     }
                     break;
                 case CharacterInfo.Class.Fighter:
@@ -1030,6 +1161,88 @@ namespace CustomRPGSystem
                             player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
                         }
                     }
+                    if (p_level > 1)
+                    {
+                        SetSlot(SpellCasting.MagicTier.None, p_level);
+                    }
+                    switch (p_level)
+                    {
+                        case 1:
+                            player.spellCasting.knownMagic = 2;
+                            player.spellCasting.knownCantrip = 4;
+                            SetSlot(SpellCasting.MagicTier.First, 2);
+                            break;
+                        case 2:
+                            player.spellCasting.knownMagic = 3;
+                            SetSlot(SpellCasting.MagicTier.First, 3);
+                            break;
+                        case 3:
+                            player.spellCasting.knownMagic = 4;
+                            SetSlot(SpellCasting.MagicTier.First, 4);
+                            SetSlot(SpellCasting.MagicTier.Second, 2);
+                            break;
+                        case 4:
+                            player.spellCasting.knownMagic = 5;
+                            player.spellCasting.knownCantrip = 5;
+                            SetSlot(SpellCasting.MagicTier.Second, 3);
+                            break;
+                        case 5:
+                            player.spellCasting.knownMagic = 6;
+                            SetSlot(SpellCasting.MagicTier.Third, 2);
+                            break;
+                        case 6:
+                            player.spellCasting.knownMagic = 7;
+                            SetSlot(SpellCasting.MagicTier.Third, 3);
+                            break;
+                        case 7:
+                            player.spellCasting.knownMagic = 8;
+                            SetSlot(SpellCasting.MagicTier.Fourth, 1);
+                            break;
+                        case 8:
+                            player.spellCasting.knownMagic = 9;
+                            SetSlot(SpellCasting.MagicTier.Fourth, 2);
+                            break;
+                        case 9:
+                            player.spellCasting.knownMagic = 10;
+                            SetSlot(SpellCasting.MagicTier.Fourth, 3);
+                            SetSlot(SpellCasting.MagicTier.Fifth, 1);
+                            break;
+                        case 10:
+                            player.spellCasting.knownMagic = 11;
+                            player.spellCasting.knownCantrip = 6;
+                            SetSlot(SpellCasting.MagicTier.Fifth, 2);
+                            break;
+                        case 11:
+                            player.spellCasting.knownMagic = 12;
+                            SetSlot(SpellCasting.MagicTier.Sixth, 1);
+                            break;
+                        case 12:
+                            break;
+                        case 13:
+                            player.spellCasting.knownMagic = 13;
+                            SetSlot(SpellCasting.MagicTier.Seventh, 1);
+                            break;
+                        case 14:
+                            break;
+                        case 15:
+                            player.spellCasting.knownMagic = 15;
+                            SetSlot(SpellCasting.MagicTier.Eighth, 1);
+                            break;
+                        case 16:;
+                            break;
+                        case 17:
+                            player.spellCasting.knownMagic = 15;
+                            SetSlot(SpellCasting.MagicTier.Ninth, 1);
+                            break;
+                        case 18:
+                            break;
+                        case 19:
+                            SetSlot(SpellCasting.MagicTier.Sixth, 2);
+                            break;
+                        case 20:
+                            SetSlot(SpellCasting.MagicTier.Seventh, 2);
+                            break;
+                    }
                     break;
                 case CharacterInfo.Class.Warlock:
                     player.spellCasting.conjuringAbility = AbilityScore.Ability.Charisma;
@@ -1040,6 +1253,84 @@ namespace CustomRPGSystem
                             player.spellCasting.magicResistance = 8 + player.info.proficiencyBonus + player.abilityScore[i].modifier;
                             player.spellCasting.magicAttackModifier = player.info.proficiencyBonus + player.abilityScore[i].modifier;
                         }
+                    }
+                    switch (p_level)
+                    {
+                        case 1:
+                            player.spellCasting.knownMagic = 2;
+                            player.spellCasting.knownCantrip = 2;
+                            SetSlot(SpellCasting.MagicTier.First, 1);
+                            break;
+                        case 2:
+                            player.spellCasting.knownMagic = 3;
+                            SetSlot(SpellCasting.MagicTier.First, 2);
+                            SetSlot(SpellCasting.MagicTier.None, 2);
+                            break;
+                        case 3:
+                            player.spellCasting.knownMagic = 4;
+                            SetSlot(SpellCasting.MagicTier.Second, 2, true);
+                            SetSlot(SpellCasting.MagicTier.None, 2);
+                            break;
+                        case 4:
+                            player.spellCasting.knownMagic = 5;
+                            player.spellCasting.knownCantrip = 3;
+                            SetSlot(SpellCasting.MagicTier.None, 3);
+                            break;
+                        case 5:
+                            player.spellCasting.knownMagic = 6;
+                            SetSlot(SpellCasting.MagicTier.Third, 2, true);
+                            SetSlot(SpellCasting.MagicTier.None, 3);
+                            break;
+                        case 6:
+                            player.spellCasting.knownMagic = 7;
+                            SetSlot(SpellCasting.MagicTier.None, 4);
+                            break;
+                        case 7:
+                            player.spellCasting.knownMagic = 8;
+                            SetSlot(SpellCasting.MagicTier.Fourth, 2, true);
+                            SetSlot(SpellCasting.MagicTier.None, 4);
+                            break;
+                        case 8:
+                            player.spellCasting.knownMagic = 9;
+                            break;
+                        case 9:
+                            player.spellCasting.knownMagic = 10;
+                            SetSlot(SpellCasting.MagicTier.Fifth, 2, true);
+                            SetSlot(SpellCasting.MagicTier.None, 5);
+                            break;
+                        case 10:
+                            player.spellCasting.knownCantrip = 4;
+                            break;
+                        case 11:
+                            player.spellCasting.knownMagic = 11;
+                            SetSlot(SpellCasting.MagicTier.Fifth, 3);
+                            break;
+                        case 12:
+                            SetSlot(SpellCasting.MagicTier.None, 6);
+                            break;
+                        case 13:
+                            player.spellCasting.knownMagic = 12;
+                            break;
+                        case 14:
+                            break;
+                        case 15:
+                            player.spellCasting.knownMagic = 13;
+                            SetSlot(SpellCasting.MagicTier.None, 7);
+                            break;
+                        case 16:
+                            break;
+                        case 17:
+                            player.spellCasting.knownMagic = 14;
+                            SetSlot(SpellCasting.MagicTier.Fifth, 4);
+                            break;
+                        case 18:
+                            SetSlot(SpellCasting.MagicTier.None, 8);
+                            break;
+                        case 19:
+                            player.spellCasting.knownMagic = 15;
+                            break;
+                        case 20:
+                            break;
                     }
                     break;
                 case CharacterInfo.Class.Wizard:
@@ -1055,8 +1346,11 @@ namespace CustomRPGSystem
                     break;
             }
 
-            void SetSlot(SpellCasting.MagicTier tier, int value)
+            void SetSlot(SpellCasting.MagicTier tier, int value, bool clearSlots = false)
             {
+                if (clearSlots) player.spellCasting.slots.Clear();
+
+                player.spellCasting.magicTier = tier;
                 if (!player.spellCasting.slots.ContainsKey(tier))
                 {
                     player.spellCasting.slots.Add(tier, value);
