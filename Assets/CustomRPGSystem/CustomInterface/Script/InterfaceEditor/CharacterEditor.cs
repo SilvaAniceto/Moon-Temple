@@ -143,6 +143,8 @@ namespace CustomRPGSystem
 
                 CharacterCreator.Instance.NextPage(); 
             });
+
+            CharacterCreator.Instance.EditingCharacter = null;
         }
 
         private void OnDisable()

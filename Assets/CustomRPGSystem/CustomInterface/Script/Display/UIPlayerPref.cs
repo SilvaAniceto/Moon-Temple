@@ -124,7 +124,11 @@ namespace CustomRPGSystem
                     {
                         CharacterCreator.Instance.EditingCharacter = data;
 
-                        CharacterCreator.Instance.SetPage(CharacterCreator.Instance.CharacterAttributeEditorPage);
+                        CharacterAttributeEditor.Instance.IsSet = false;
+                        CharacterExtraPointEditor.Instance.IsSet = false;
+                        CharacterSkillEditor.Instance.IsSet = false;
+
+                        CharacterCreator.Instance.SetPage(CharacterCreator.Instance.CharacterExtraPointEditorPage);
 
                         CharacterCreator.Instance.m_backButton.gameObject.SetActive(false);
                         CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();

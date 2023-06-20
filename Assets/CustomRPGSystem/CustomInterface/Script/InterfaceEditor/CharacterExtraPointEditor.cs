@@ -69,7 +69,6 @@ namespace CustomRPGSystem
             CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
 
-
             if (!isSet) SetExtraPointEditor(CharacterCreator.Instance.EditingCharacter);
 
             m_extraPointsText.text = m_currentExtraPoints.ToString();
@@ -83,6 +82,8 @@ namespace CustomRPGSystem
 
             UpdateUIPoints();
             UpdateUIText(CharacterCreator.Instance.EditingCharacter);
+
+            Debug.Log("editor");
         }
 
         public void SetExtraPointEditor(PlayerCharacterData player)
@@ -91,6 +92,8 @@ namespace CustomRPGSystem
             {
                 ExtraAttributePoints[i].SetUIExtraAttributeScore(player.abilityScore[i].ability, player.abilityScore[i].score, HasExtraPoints);
             }
+
+            m_currentExtraPoints = player.info.extraPoints;
 
             isSet = true;
         }

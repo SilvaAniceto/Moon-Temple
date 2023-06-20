@@ -117,6 +117,8 @@ namespace CustomRPGSystem
 
                     bt2.onClick.AddListener(delegate
                     {
+                        CharacterCreator.Instance.EditingCharacter.SetSpellCasting(CharacterCreator.Instance.EditingCharacter, CharacterCreator.Instance.EditingCharacter.info.level);
+
                         CharacterCreator.Instance.SaveCharacter(CharacterCreator.Instance.EditingCharacter);
                         CharacterCreator.Instance.m_popUpHelper.HidePopUp();
                         CharacterCreator.Instance.NextPage();
@@ -215,7 +217,6 @@ namespace CustomRPGSystem
 
         public void SetSpellCastingSheet(PlayerCharacterData player)
         {
-            player.SetSpellCasting(player, player.info.level);
             m_spellCastingDisplay.SetSpellCastingDisplay(player.spellCasting);
         }
 
