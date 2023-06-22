@@ -65,9 +65,17 @@ namespace CustomRPGSystem
             CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_nextButton.onClick.AddListener(CharacterCreator.Instance.NextPage);
 
-            CharacterCreator.Instance.m_backButton.gameObject.SetActive(true);
-            CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
-            CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
+            if (CharacterCreator.m_editingNewCharacter)
+            {
+                CharacterCreator.Instance.m_backButton.gameObject.SetActive(true);
+                CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
+                CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
+            }
+            else if (CharacterCreator.m_editingLoadedCharacter)
+            {
+                CharacterCreator.Instance.m_backButton.gameObject.SetActive(false);
+                CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
+            }
 
             if (!isSet) SetExtraPointEditor(CharacterCreator.Instance.EditingCharacter);
 
@@ -82,8 +90,6 @@ namespace CustomRPGSystem
 
             UpdateUIPoints();
             UpdateUIText(CharacterCreator.Instance.EditingCharacter);
-
-            Debug.Log("editor");
         }
 
         public void SetExtraPointEditor(PlayerCharacterData player)

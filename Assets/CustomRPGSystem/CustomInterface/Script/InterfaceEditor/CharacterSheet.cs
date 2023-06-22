@@ -117,8 +117,6 @@ namespace CustomRPGSystem
 
                     bt2.onClick.AddListener(delegate
                     {
-                        CharacterCreator.Instance.EditingCharacter.SetSpellCasting(CharacterCreator.Instance.EditingCharacter, CharacterCreator.Instance.EditingCharacter.info.level);
-
                         CharacterCreator.Instance.SaveCharacter(CharacterCreator.Instance.EditingCharacter);
                         CharacterCreator.Instance.m_popUpHelper.HidePopUp();
                         CharacterCreator.Instance.NextPage();
@@ -133,6 +131,9 @@ namespace CustomRPGSystem
             CharacterCreator.Instance.m_backButton.gameObject.SetActive(true);
             CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
+
+            CharacterCreator.Instance.EditingCharacter.SetSpellCasting(CharacterCreator.Instance.EditingCharacter, CharacterCreator.Instance.EditingCharacter.info.level);
+            CharacterCreator.Instance.EditingCharacter.SetHitPoints(CharacterCreator.Instance.EditingCharacter);
 
             PrepareSkills(CharacterCreator.Instance.EditingCharacter);
             SetInfoSheet(CharacterCreator.Instance.EditingCharacter, m_editingSkills);

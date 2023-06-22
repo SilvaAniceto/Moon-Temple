@@ -64,17 +64,9 @@ namespace CustomRPGSystem
            
         private void OnEnable()
         {
-            if (CharacterCreator.m_editingNewCharacter)
-            {
-                CharacterCreator.Instance.m_backButton.gameObject.SetActive(true);
-                CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
-                CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
-            }
-            else if (CharacterCreator.m_editingLoadedCharacter)
-            {
-                CharacterCreator.Instance.m_backButton.gameObject.SetActive(false);
-                CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
-            }
+            CharacterCreator.Instance.m_backButton.gameObject.SetActive(true);
+            CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
+            CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
 
             CharacterCreator.Instance.m_nextButton.gameObject.SetActive(true);
             CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();

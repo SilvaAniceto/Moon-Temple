@@ -130,6 +130,7 @@ namespace CustomRPGSystem
 
                         CharacterCreator.Instance.SetPage(CharacterCreator.Instance.CharacterExtraPointEditorPage);
 
+                        CharacterCreator.Instance.m_backButton.GetComponentInChildren<TMP_Text>(true).text = "Back";
                         CharacterCreator.Instance.m_backButton.gameObject.SetActive(false);
                         CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
 

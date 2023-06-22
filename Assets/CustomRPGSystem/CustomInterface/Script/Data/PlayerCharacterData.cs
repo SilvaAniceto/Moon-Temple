@@ -808,7 +808,7 @@ namespace CustomRPGSystem
                     break;
             }
         }
-        private void SetHitPoints(PlayerCharacterData player)
+        public void SetHitPoints(PlayerCharacterData player)
         {
             int constituition = 0;
 
@@ -826,7 +826,10 @@ namespace CustomRPGSystem
             }
             else if(player.info.level > 1)
             {
-                player.info.maxHitPoints = player.info.hitDie;
+                if (player.info.maxHitPoints == 0)
+                {
+                    player.info.maxHitPoints = player.info.hitDie + constituition;
+                }
 
                 for (int i = 1; i < player.info.dice; i++)
                 {
