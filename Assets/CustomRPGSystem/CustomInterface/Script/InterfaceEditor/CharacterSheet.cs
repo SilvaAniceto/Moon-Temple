@@ -218,7 +218,7 @@ namespace CustomRPGSystem
 
         public void SetSpellCastingSheet(PlayerCharacterData player)
         {
-            m_spellCastingDisplay.SetSpellCastingDisplay(player.spellCasting);
+            m_spellCastingDisplay.SetSpellCastingDisplay(player);
         }
 
         void PanelButtonHandler()
