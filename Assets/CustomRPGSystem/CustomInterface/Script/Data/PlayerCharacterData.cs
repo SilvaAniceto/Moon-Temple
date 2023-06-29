@@ -958,6 +958,14 @@ namespace CustomRPGSystem
                             player.spellCasting.magicAttackModifier = 4;
                             SetSlot(SpellCasting.MagicTier.None, 6, true);
                             break;
+                        case 18:
+                            player.spellCasting.magicAttackModifier = 4;
+                            SetSlot(SpellCasting.MagicTier.None, 6, true);
+                            break;
+                        case 19:
+                            player.spellCasting.magicAttackModifier = 4;
+                            SetSlot(SpellCasting.MagicTier.None, 6, true);
+                            break;
                         case 20:
                             player.spellCasting.magicAttackModifier = 4;
                             SetSlot(SpellCasting.MagicTier.None, 0, true);

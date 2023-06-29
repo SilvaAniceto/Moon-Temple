@@ -104,6 +104,7 @@ namespace CustomRPGSystem
 
             CharacterCreator.Instance.m_backButton.GetComponentInChildren<TMP_Text>(true).text = "Back";
 
+            CharacterCreator.Instance.m_nextButton.GetComponentInChildren<TMP_Text>(true).text = "Next";
             CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_nextButton.onClick.AddListener(delegate
             {
@@ -140,6 +141,8 @@ namespace CustomRPGSystem
                 CharacterAttributeEditor.Instance.IsSet = false;
                 CharacterExtraPointEditor.Instance.IsSet = false;
                 CharacterSkillEditor.Instance.IsSet = false;
+
+                CharacterSheet.Instance.IsEditing = true;
 
                 CharacterCreator.Instance.NextPage(); 
             });

@@ -14,6 +14,7 @@ namespace CustomRPGSystem
         [SerializeField] private Transform m_holder;
 
         private List<UIPlayerPref> m_prefList = new List<UIPlayerPref>();
+        private List<PlayerCharacterData> m_characterList = new List<PlayerCharacterData>();
 
         void Awake()
         {
@@ -25,7 +26,30 @@ namespace CustomRPGSystem
 
         void OnEnable()
         {
-            CharacterCreator.Instance.m_nextButton.gameObject.SetActive(false);
+            SetCharacterListing();
+        }
+
+        public void SetCharacterListing()
+        {
+            m_characterList.Clear();
+            m_characterList = CharacterCreator.Instance.LoadCharacters(CharacterCreator.Instance.MainCharacterDirectory + "/");
+
+            if (m_characterList.Count <= 0)
+            {
+                CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+                CharacterCreator.Instance.m_nextButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                CharacterCreator.Instance.m_nextButton.gameObject.SetActive(true);
+                CharacterCreator.Instance.m_nextButton.GetComponentInChildren<TMP_Text>(true).text = "Select Character";
+                CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+                CharacterCreator.Instance.m_nextButton.onClick.AddListener(delegate
+                {
+                    SelectCharacter();
+                });
+            }
+
             CharacterCreator.Instance.m_backButton.GetComponentInChildren<TMP_Text>(true).text = "Main Title";
             CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_backButton.onClick.AddListener(delegate
@@ -33,7 +57,11 @@ namespace CustomRPGSystem
                 CharacterCreator.Instance.StartCreator();
             });
 
-            CharacterCreator.Instance.LoadCharacters(CharacterCreator.Instance.MainCharacterDirectory + "/");
+            foreach (UIPlayerPref pref in m_prefList)
+            {
+                Destroy(pref.gameObject);
+            }
+            m_prefList.Clear();
 
             for (int i = 0; i < CharacterCreator.Instance.SavedCharacters.Count; i++)
             {
@@ -65,6 +93,17 @@ namespace CustomRPGSystem
             }
 
             m_prefList.Clear();
+        }
+
+        private void SelectCharacter()
+        {
+            UIPlayerPref pref = m_prefList.Find(x => x.IsSelected);
+            PlayerCharacterData character = m_characterList.Find(x => x.info.id == pref.CharacterId);
+
+            CharacterSheet.Instance.IsEditing = false;
+            CharacterSheet.Instance.CurrentCharacter = character;
+
+            CharacterCreator.Instance.SetPage(CharacterCreator.Instance.CharacterSheetPage);
         }
     }
 }

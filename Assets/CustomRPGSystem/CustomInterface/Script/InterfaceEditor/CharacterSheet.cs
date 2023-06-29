@@ -9,6 +9,8 @@ namespace CustomRPGSystem
 {
     public class CharacterSheet : MonoBehaviour
     {
+        public static CharacterSheet Instance;
+
         [Header("Panels")]
         [SerializeField] private GameObject m_attributePanel;
         [SerializeField] private GameObject m_skillPanel;
@@ -47,10 +49,32 @@ namespace CustomRPGSystem
         [Header("SpellCasting")]
         [SerializeField] private SpellCastingDisplay m_spellCastingDisplay;
 
+        private bool m_isEditing = true;
+        private PlayerCharacterData m_currentCharacter;
         private List<PlayerCharacterData.Skills> m_editingSkills = new List<PlayerCharacterData.Skills>();
 
         #region PROPERTIES
+        public bool IsEditing
+        {
+            set 
+            {
+                if (value == m_isEditing) return;
 
+                m_isEditing = value;
+            }
+        }
+        public PlayerCharacterData CurrentCharacter
+        {
+            get
+            {
+                if (m_isEditing) return CharacterCreator.Instance.EditingCharacter;
+                else return m_currentCharacter;
+            }
+            set
+            {
+                m_currentCharacter = value;
+            }
+        }
         #endregion
 
         void Awake()
@@ -85,61 +109,88 @@ namespace CustomRPGSystem
 
         private void OnEnable()
         {
-            if (!CharacterCreator.Instance.m_nextButton.gameObject.activeInHierarchy)
-            {
-                CharacterCreator.Instance.m_nextButton.gameObject.SetActive(true);
-            }
+            ConfigureCharacterSheetPage();
 
-            CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
-            CharacterCreator.Instance.m_nextButton.onClick.AddListener(delegate
-            {
-                if (!CharacterCreator.Instance.m_popUpHelper.IsOn)
-                {
-                    Button bt1 = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
-                    bt1.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
-                    bt1.gameObject.SetActive(true);
-                    bt1.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+            CurrentCharacter.SetSpellCasting(CurrentCharacter, CurrentCharacter.info.level);
+            CurrentCharacter.SetHitPoints(CurrentCharacter);
 
-                    CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt1.GetComponentInChildren<TMP_Text>();
-                    CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Continue Editing";
-
-                    bt1.onClick.AddListener(CharacterCreator.Instance.m_popUpHelper.HidePopUp);
-
-                    CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt1);
-
-                    Button bt2 = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
-                    bt2.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
-                    bt2.gameObject.SetActive(true);
-                    bt2.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
-
-                    CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt2.GetComponentInChildren<TMP_Text>();
-                    CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Finish & Save";
-
-                    bt2.onClick.AddListener(delegate
-                    {
-                        CharacterCreator.Instance.SaveCharacter(CharacterCreator.Instance.EditingCharacter);
-                        CharacterCreator.Instance.m_popUpHelper.HidePopUp();
-                        CharacterCreator.Instance.NextPage();
-                    });
-
-                    CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt2);
-
-                    CharacterCreator.Instance.m_popUpHelper.ShowPopUp("Finish creating your character and save?");
-                }
-            });
-
-            CharacterCreator.Instance.m_backButton.gameObject.SetActive(true);
-            CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
-            CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
-
-            CharacterCreator.Instance.EditingCharacter.SetSpellCasting(CharacterCreator.Instance.EditingCharacter, CharacterCreator.Instance.EditingCharacter.info.level);
-            CharacterCreator.Instance.EditingCharacter.SetHitPoints(CharacterCreator.Instance.EditingCharacter);
-
-            PrepareSkills(CharacterCreator.Instance.EditingCharacter);
-            SetInfoSheet(CharacterCreator.Instance.EditingCharacter, m_editingSkills);
-            SetSpellCastingSheet(CharacterCreator.Instance.EditingCharacter);
+            PrepareSkills(CurrentCharacter);
+            SetInfoSheet(CurrentCharacter, m_editingSkills);
+            SetSpellCastingSheet(CurrentCharacter);
 
             PanelButtonHandler();
+        }
+
+        private void ConfigureCharacterSheetPage()
+        {
+            if (m_isEditing)
+            {
+                if (!CharacterCreator.Instance.m_nextButton.gameObject.activeInHierarchy)
+                {
+                    CharacterCreator.Instance.m_nextButton.gameObject.SetActive(true);
+                }
+
+                CharacterCreator.Instance.m_nextButton.GetComponentInChildren<TMP_Text>(true).text = "Next";
+                CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+                CharacterCreator.Instance.m_nextButton.onClick.AddListener(delegate
+                {
+                    if (!CharacterCreator.Instance.m_popUpHelper.IsOn)
+                    {
+                        Button bt1 = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
+                        bt1.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
+                        bt1.gameObject.SetActive(true);
+                        bt1.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+
+                        CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt1.GetComponentInChildren<TMP_Text>();
+                        CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Continue Editing";
+
+                        bt1.onClick.AddListener(CharacterCreator.Instance.m_popUpHelper.HidePopUp);
+
+                        CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt1);
+
+                        Button bt2 = Instantiate(CharacterCreator.Instance.m_popUpHelper.m_prefButton);
+                        bt2.transform.SetParent(CharacterCreator.Instance.m_popUpHelper.m_buttonHolder);
+                        bt2.gameObject.SetActive(true);
+                        bt2.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+
+                        CharacterCreator.Instance.m_popUpHelper.m_buttonText = bt2.GetComponentInChildren<TMP_Text>();
+                        CharacterCreator.Instance.m_popUpHelper.m_buttonText.text = "Finish & Save";
+
+                        bt2.onClick.AddListener(delegate
+                        {
+                            CharacterCreator.Instance.SaveCharacter(CharacterCreator.Instance.EditingCharacter);
+                            CharacterCreator.Instance.m_popUpHelper.HidePopUp();
+                            CharacterCreator.Instance.NextPage();
+                        });
+
+                        CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt2);
+
+                        CharacterCreator.Instance.m_popUpHelper.ShowPopUp("Finish creating your character and save?");
+                    }
+                });
+
+                CharacterCreator.Instance.m_backButton.GetComponentInChildren<TMP_Text>(true).text = "Back";
+                CharacterCreator.Instance.m_backButton.gameObject.SetActive(true);
+                CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
+                CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
+            }
+            else
+            {
+                if (!CharacterCreator.Instance.m_nextButton.gameObject.activeInHierarchy)
+                {
+                    CharacterCreator.Instance.m_nextButton.gameObject.SetActive(true);
+                }
+
+                CharacterCreator.Instance.m_nextButton.GetComponentInChildren<TMP_Text>(true).text = "Change Character";
+                CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
+                CharacterCreator.Instance.m_nextButton.onClick.AddListener(delegate
+                {
+                    CharacterCreator.Instance.SetPage(CharacterCreator.Instance.CharacterListingPage);
+                });
+
+                CharacterCreator.Instance.m_backButton.onClick.RemoveAllListeners();
+                CharacterCreator.Instance.m_backButton.gameObject.SetActive(false);
+            }
         }
 
         public void SetInfoSheet(PlayerCharacterData player, List<PlayerCharacterData.Skills> skills)

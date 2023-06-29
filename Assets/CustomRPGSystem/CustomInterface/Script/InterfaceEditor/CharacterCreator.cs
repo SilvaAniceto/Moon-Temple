@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 namespace CustomRPGSystem
 {
@@ -17,6 +18,7 @@ namespace CustomRPGSystem
         [SerializeField] private Button m_LoadCharacterButton;
         public Button m_backButton;
         public Button m_nextButton;
+        public Button m_closeButton;
 
         [Header("Character Editor")]
         [SerializeField] private CharacterEditor m_characterEditor;
@@ -133,6 +135,7 @@ namespace CustomRPGSystem
             if (CharacterAttributeEditor.Instance == null) CharacterAttributeEditor.Instance = m_characterAttributeEditor;
             if (CharacterExtraPointEditor.Instance == null) CharacterExtraPointEditor.Instance = m_characterExtraPointEditor;
             if (CharacterSkillEditor.Instance == null) CharacterSkillEditor.Instance = m_characterSkillEditor;
+            if (CharacterSheet.Instance == null) CharacterSheet.Instance = m_characterSheet;
             if (CharacterListing.Instance == null) CharacterListing.Instance = m_characterListing;
 
             UIPages.Clear();
@@ -149,6 +152,46 @@ namespace CustomRPGSystem
             m_backButton.onClick.AddListener(PreviousPage);
 
             m_nextButton.gameObject.SetActive(false);
+
+            m_closeButton.gameObject.SetActive(true);
+            m_closeButton.onClick.RemoveAllListeners();
+            m_closeButton.onClick.AddListener(delegate
+            {
+                if (!Instance.m_popUpHelper.IsOn)
+                {
+                    Button bt1 = Instantiate(Instance.m_popUpHelper.m_prefButton);
+                    bt1.transform.SetParent(Instance.m_popUpHelper.m_buttonHolder);
+                    bt1.gameObject.SetActive(true);
+                    bt1.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+
+                    Instance.m_popUpHelper.m_buttonText = bt1.GetComponentInChildren<TMP_Text>();
+                    Instance.m_popUpHelper.m_buttonText.text = "Confirm";
+
+                    bt1.onClick.AddListener(delegate
+                    {
+                        Application.Quit();
+                    });
+
+                    Instance.m_popUpHelper.m_buttons.Add(bt1);
+
+                    Button bt2 = Instantiate(Instance.m_popUpHelper.m_prefButton);
+                    bt2.transform.SetParent(Instance.m_popUpHelper.m_buttonHolder);
+                    bt2.gameObject.SetActive(true);
+                    bt2.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+
+                    Instance.m_popUpHelper.m_buttonText = bt2.GetComponentInChildren<TMP_Text>();
+                    Instance.m_popUpHelper.m_buttonText.text = "Cancel";
+
+                    bt2.onClick.AddListener(delegate
+                    {
+                        Instance.m_popUpHelper.HidePopUp();
+                    });
+
+                    Instance.m_popUpHelper.m_buttons.Add(bt2);
+
+                    Instance.m_popUpHelper.ShowPopUp("Are you sure you want to quit?");
+                }
+            });
 
             m_NewCharacterButton.onClick.RemoveAllListeners();
             m_LoadCharacterButton.onClick.RemoveAllListeners();
@@ -173,6 +216,7 @@ namespace CustomRPGSystem
                 {
                     SetPage(m_characterEditor.gameObject);
                     m_nextButton.gameObject.SetActive(true);
+                    m_closeButton.gameObject.SetActive(false);
 
                     m_editingNewCharacter = true;
                     m_editingLoadedCharacter = false;
@@ -186,6 +230,7 @@ namespace CustomRPGSystem
                 m_LoadCharacterButton.onClick.AddListener(delegate
                 {
                     SetPage(m_characterListing.gameObject);
+                    m_closeButton.gameObject.SetActive(false);
 
                     m_backButton.onClick.RemoveAllListeners();
                     m_backButton.onClick.AddListener(delegate
@@ -204,6 +249,7 @@ namespace CustomRPGSystem
                     {
                         SetPage(m_characterEditor.gameObject);
                         m_nextButton.gameObject.SetActive(true);
+                        m_closeButton.gameObject.SetActive(false);
 
                         m_editingNewCharacter = true;
                         m_editingLoadedCharacter = false;
@@ -257,7 +303,7 @@ namespace CustomRPGSystem
             FileHandler.SaveToJSON<PlayerCharacterData>(player, MainCharacterDirectory + "/" + player.info.name + ".json");
         }
 
-        public void LoadCharacters(string p_path)
+        public List<PlayerCharacterData> LoadCharacters(string p_path)
         {
             array = null;
             CharacterList.Clear();
@@ -270,6 +316,8 @@ namespace CustomRPGSystem
 
                 CharacterList.Add(sc);
             }
+
+            return CharacterList;
         }
 
         public void DeleteCharacter(string p_path)

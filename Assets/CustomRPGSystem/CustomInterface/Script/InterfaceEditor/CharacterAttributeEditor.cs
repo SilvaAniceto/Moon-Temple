@@ -68,6 +68,7 @@ namespace CustomRPGSystem
             CharacterCreator.Instance.m_backButton.onClick.AddListener(CharacterCreator.Instance.PreviousPage);
 
             CharacterCreator.Instance.m_nextButton.gameObject.SetActive(true);
+            CharacterCreator.Instance.m_nextButton.GetComponentInChildren<TMP_Text>(true).text = "Next";
             CharacterCreator.Instance.m_nextButton.onClick.RemoveAllListeners();
             CharacterCreator.Instance.m_nextButton.onClick.AddListener(CharacterCreator.Instance.NextPage);
 
@@ -106,6 +107,21 @@ namespace CustomRPGSystem
             }
 
             UpdateUIDropdown();
+
+            if (m_currentAvailablePoints <= 0)
+            {
+                foreach (UIAttributeScore drop in m_UIAttributes)
+                {
+                    drop.m_attributeDrop.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                foreach (UIAttributeScore drop in m_UIAttributes)
+                {
+                    drop.m_attributeDrop.gameObject.SetActive(true);
+                }
+            }
 
             isSet = true;
         }

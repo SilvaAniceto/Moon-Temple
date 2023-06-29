@@ -24,6 +24,20 @@ namespace CustomRPGSystem
                 return m_toggleSelect;
             }
         }
+        public bool IsSelected
+        {
+            get
+            {
+                return m_toggleSelect.isOn;
+            }
+        }
+        public string CharacterId
+        {
+            get
+            {
+                return m_characterId;
+            }
+        }
         #endregion
 
         public void SetPlayerPref(string p_id, string p_name, string p_class, string p_level)
@@ -92,6 +106,8 @@ namespace CustomRPGSystem
                             Destroy(gameObject);
 
                             CharacterCreator.Instance.m_popUpHelper.HidePopUp();
+
+                            CharacterListing.Instance.SetCharacterListing();
                         });
 
                         CharacterCreator.Instance.m_popUpHelper.m_buttons.Add(bt1);
@@ -128,7 +144,7 @@ namespace CustomRPGSystem
                         CharacterExtraPointEditor.Instance.IsSet = false;
                         CharacterSkillEditor.Instance.IsSet = false;
 
-                        CharacterCreator.Instance.SetPage(CharacterCreator.Instance.CharacterExtraPointEditorPage);
+                        CharacterCreator.Instance.SetPage(CharacterCreator.Instance.CharacterAttributeEditorPage);
 
                         CharacterCreator.Instance.m_backButton.GetComponentInChildren<TMP_Text>(true).text = "Back";
                         CharacterCreator.Instance.m_backButton.gameObject.SetActive(false);
