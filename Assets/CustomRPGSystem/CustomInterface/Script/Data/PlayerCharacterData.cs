@@ -1,12 +1,200 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 using UnityEngine;
 
 namespace CustomRPGSystem
 {
+    public static class CharacterStats
+    {
+        static int m_hitDie;
+        static int m_maxHitPoints;
+        static int m_armorClass = 10;
+        public static int HitDie(Race race)
+        {
+            switch (race)
+            {
+                case Race.None:
+                    m_hitDie = 0;
+                    break;
+                case Race.Dragonborn:
+                    m_hitDie = 0;
+                    break;
+                case Race.Hill_Dwarf:
+                    m_hitDie = 0;
+                    break;
+                case Race.Mountain_Dwarf:
+                    m_hitDie = 0;
+                    break;
+                case Race.High_Elf:
+                    m_hitDie = 0;
+                    break;
+                case Race.Wood_Elf:
+                    m_hitDie = 0;
+                    break;
+                case Race.Shadow_Elf:
+                    m_hitDie = 0;
+                    break;
+                case Race.Forest_Gnome:
+                    m_hitDie = 0;
+                    break;
+                case Race.Rock_Gnome:
+                    m_hitDie = 0;
+                    break;
+                case Race.Half_Elf:
+                    m_hitDie = 0;
+                    break;
+                case Race.Half_Orc:
+                    m_hitDie = 0;
+                    break;
+                case Race.Lightfoot_Halfling:
+                    m_hitDie = 0;
+                    break;
+                case Race.Stout_Halfling:
+                    m_hitDie = 0;
+                    break;
+                case Race.Human:
+                    m_hitDie = 0;
+                    break;
+                case Race.Tiefling:
+                    m_hitDie = 0;
+                    break;
+            }
+            return m_hitDie;
+        }
+        public static int MaxHitPoint(Level level, Class characterClass, int constituition)
+        {
+            if ((int)level == 0) m_maxHitPoints = 0;
+            else if ((int)level == 1) m_maxHitPoints = m_hitDie + constituition;
+            else
+            {
+                switch (characterClass)
+                {
+                    case Class.Barbarian:
+                        m_maxHitPoints += 7 + constituition;
+                        break;              
+                    case Class.Bard:        
+                        m_maxHitPoints += 5 + constituition;
+                        break;              
+                    case Class.Cleric:      
+                        m_maxHitPoints += 5 + constituition;
+                        break;              
+                    case Class.Druid:       
+                        m_maxHitPoints += 5 + constituition;
+                        break;              
+                    case Class.Fighter:     
+                        m_maxHitPoints += 6 + constituition;
+                        break;
+                    case Class.Monk:
+                        m_maxHitPoints += 5 + constituition;
+                        break;
+                    case Class.Paladin:
+                        m_maxHitPoints += 6 + constituition;
+                        break;
+                    case Class.Ranger:
+                        m_maxHitPoints += 6 + constituition;
+                        break;
+                    case Class.Rogue:
+                        m_maxHitPoints += 5 + constituition;
+                        break;
+                    case Class.Sorcerer:
+                        m_maxHitPoints += 4 + constituition;
+                        break;
+                    case Class.Warlock:
+                        m_maxHitPoints += 5 + constituition;
+                        break;
+                    case Class.Wizard:
+                        m_maxHitPoints += 4 + constituition;
+                        break;
+                }
+            }
+
+            return m_maxHitPoints;
+        }
+        public static int ArmorClass(int abilityModifier, int[] bonus)
+        {
+            return m_armorClass + abilityModifier + bonus.Sum();
+        }
+    }
+    public static class CharacterRace
+    {
+
+    }
+    public enum Level
+    {
+        None = 0,
+        One,
+        Two,
+        Three,
+        Four,
+        Five,
+        Six,
+        Seven,
+        Eight,
+        Nine,
+        Ten,
+        Eleven,
+        Twelve,
+        Thirteen,
+        Fourteen,
+        Fifteen,
+        Sixteen,
+        Seventeen,
+        Eighteen,
+        Nineteen,
+        Twenty
+    }
+    public enum Ability
+    {
+        None,
+        Strenght,
+        Dexterity,
+        Constitution,
+        Intelligence,
+        Wisdom,
+        Charisma
+    }
+    public enum Race
+    {
+        None,
+        Dragonborn,
+        Hill_Dwarf,
+        Mountain_Dwarf,
+        High_Elf,
+        Wood_Elf,
+        Shadow_Elf,
+        Forest_Gnome,
+        Rock_Gnome,
+        Half_Elf,
+        Half_Orc,
+        Lightfoot_Halfling,
+        Stout_Halfling,
+        Human,
+        Tiefling,
+    }
+    public enum Class
+    {
+        None,
+        Barbarian,
+        Bard,
+        Cleric,
+        Druid,
+        Fighter,
+        Monk,
+        Paladin,
+        Ranger,
+        Rogue,
+        Sorcerer,
+        Warlock,
+        Wizard
+    };
+
     [Serializable]
     public class PlayerCharacterData
     {
+        public static string m_id = "";
+
         [Serializable]
         public class CharacterInfo
         {
@@ -836,40 +1024,40 @@ namespace CustomRPGSystem
                         case CharacterInfo.Class.None:
                             break;
                         case CharacterInfo.Class.Barbarian:
-                            player.info.maxHitPoints += 7 + constituition;
+                            player.info.maxHitPoints +=  7 + constituition;
                             break;
                         case CharacterInfo.Class.Bard:
-                            player.info.maxHitPoints += 5 + constituition;
+                            player.info.maxHitPoints +=  5 + constituition;
                             break;
                         case CharacterInfo.Class.Cleric:
-                            player.info.maxHitPoints += 5 + constituition;
+                            player.info.maxHitPoints +=  5 + constituition;
                             break;
                         case CharacterInfo.Class.Druid:
-                            player.info.maxHitPoints += 5 + constituition;
+                            player.info.maxHitPoints +=  5 + constituition;
                             break;
                         case CharacterInfo.Class.Fighter:
-                            player.info.maxHitPoints += 6 + constituition;
+                            player.info.maxHitPoints +=  6 + constituition;
                             break;
                         case CharacterInfo.Class.Monk:
-                            player.info.maxHitPoints += 5 + constituition;
+                            player.info.maxHitPoints +=  5 + constituition;
                             break;
                         case CharacterInfo.Class.Paladin:
-                            player.info.maxHitPoints += 6 + constituition;
+                            player.info.maxHitPoints +=  6 + constituition;
                             break;
                         case CharacterInfo.Class.Ranger:
-                            player.info.maxHitPoints += 6 + constituition;
+                            player.info.maxHitPoints +=  6 + constituition;
                             break;
                         case CharacterInfo.Class.Rogue:
-                            player.info.maxHitPoints += 5 + constituition;
+                            player.info.maxHitPoints +=  5 + constituition;
                             break;
-                        case CharacterInfo.Class.Sorcerer:
-                            player.info.maxHitPoints += 4 + constituition;
+                      case CharacterInfo.Class.Sorcerer:
+                            player.info.maxHitPoints +=  4 + constituition;
                             break;
                         case CharacterInfo.Class.Warlock:
-                            player.info.maxHitPoints += 5 + constituition;
+                            player.info.maxHitPoints +=  5 + constituition;
                             break;
                         case CharacterInfo.Class.Wizard:
-                            player.info.maxHitPoints += 4 + constituition;
+                            player.info.maxHitPoints +=  4 + constituition;
                             break;
                         default:
                             break;

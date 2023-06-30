@@ -335,6 +335,7 @@ namespace CustomRPGSystem
             {
                 m_backButton.gameObject.SetActive(false);
                 m_nextButton.gameObject.SetActive(false);
+                m_closeButton.gameObject.SetActive(true);
             }
             else m_backButton.gameObject.SetActive(true);
 
