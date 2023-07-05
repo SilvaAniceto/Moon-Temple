@@ -460,9 +460,9 @@ namespace IOP
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(m_slopeCheck.transform.position, new Vector3(m_slopeCheck.transform.position.x, transform.position.y - (GetComponent<CapsuleCollider>().bounds.extents.y + 1f), m_slopeCheck.transform.position.z));
-            Gizmos.DrawWireSphere(m_obstacleCheck.transform.position, GetComponent<CapsuleCollider>().radius -0.15f);
+            //Gizmos.color = Color.red;
+            //Gizmos.DrawLine(m_slopeCheck.transform.position, new Vector3(m_slopeCheck.transform.position.x, transform.position.y - (GetComponent<CapsuleCollider>().bounds.extents.y + 1f), m_slopeCheck.transform.position.z));
+            //Gizmos.DrawWireSphere(m_obstacleCheck.transform.position, GetComponent<CapsuleCollider>().radius -0.15f);
         }
     }
 }

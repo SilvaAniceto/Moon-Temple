@@ -239,6 +239,13 @@ namespace IOP
         {
             if (m_instance == null)
                 m_instance = this;
+
+            if (m_target == null)
+            {
+                Transform target = new GameObject("CameraTarget").transform;
+                m_target = target;
+                m_target.parent = m_baseMotion.transform;
+            }
             
             DefineCameraDirection();
 
@@ -263,6 +270,8 @@ namespace IOP
 
             m_camera.orthographicSize += Mathf.Clamp(m_zoomInput * 10, -1, 1) * m_zoomMultiplier * m_zoomSensibility * Time.deltaTime;
             m_camera.orthographicSize = Mathf.Clamp(m_camera.orthographicSize, 5, 25);
+
+            MoveBase();
 
             if (m_movingCamera) return;
 

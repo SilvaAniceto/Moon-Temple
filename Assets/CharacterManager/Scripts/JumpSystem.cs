@@ -6,13 +6,14 @@ namespace CharacterManager
     {
         public static JumpSystem m_jumpInstance;
 
-        private bool m_offGroundLevel, m_onGroundLevel, m_onSlope, m_jumpInput;
+        [SerializeField] private bool m_offGroundLevel, m_onGroundLevel, m_onSlope, m_jumpInput;
         private float m_jumpDelayCounter, m_heightDelta, m_jumpDeltaTime;
         private Rigidbody m_rigidbody;
         private SphereCollider m_sphereCollider;
         private BoxCollider m_boxCollider;
-        private CapsuleCollider m_capsuleCollider;
-        private LayerMask m_layerMask;
+        [SerializeField] private CapsuleCollider m_capsuleCollider;
+        [SerializeField] private LayerMask m_layerMask;
+        [SerializeField][Range(0, 1)] float radius;
 
         #region Properties
         public float JumpTime
@@ -160,21 +161,29 @@ namespace CharacterManager
         private bool IsGround(SphereCollider p_sphereCollider = null,BoxCollider p_boxCollider = null,CapsuleCollider p_capsuleCollider = null)
         {
             bool ground = false;
-
+           
             if (p_capsuleCollider != null)
-                ground =  Physics.CheckCapsule(p_capsuleCollider.bounds.center,
-                    new Vector3(p_capsuleCollider.bounds.center.x, p_capsuleCollider.bounds.min.y, p_capsuleCollider.bounds.center.z),
-                    p_capsuleCollider.radius * 0.9f, m_layerMask, QueryTriggerInteraction.Collide);
+                //ground =  Physics.CheckCapsule(p_capsuleCollider.bounds.center,
+                //    new Vector3(p_capsuleCollider.bounds.center.x, p_capsuleCollider.bounds.min.y, p_capsuleCollider.bounds.center.z),
+                //    p_capsuleCollider.radius/* * 0.9f*/, m_layerMask, QueryTriggerInteraction.Collide);
+                ground = Physics.CheckSphere(transform.position - new Vector3(0, 0.5f, 0), p_capsuleCollider.radius / radius, m_layerMask, QueryTriggerInteraction.Collide);
 
             if (p_boxCollider != null)
                 ground = Physics.CheckBox(p_boxCollider.bounds.center, p_boxCollider.bounds.extents, Quaternion.identity , m_layerMask, QueryTriggerInteraction.Collide);
 
             if (p_sphereCollider != null)
-                ground = Physics.CheckCapsule(p_sphereCollider.bounds.center,
-                    new Vector3(p_sphereCollider.bounds.center.x, p_sphereCollider.bounds.min.y, p_sphereCollider.bounds.center.z),
-                    p_sphereCollider.radius * 0.9f, m_layerMask, QueryTriggerInteraction.Collide);
+                //ground = Physics.CheckCapsule(p_sphereCollider.bounds.center,
+                //    new Vector3(p_sphereCollider.bounds.center.x, p_sphereCollider.bounds.min.y, p_sphereCollider.bounds.center.z),
+                //    p_sphereCollider.radius/* * 0.9f*/, m_layerMask, QueryTriggerInteraction.Collide);
+                ground = Physics.CheckSphere(p_capsuleCollider.bounds.center, p_capsuleCollider.radius, m_layerMask, QueryTriggerInteraction.Collide);
 
             return ground;
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / radius);
         }
     }
 }
