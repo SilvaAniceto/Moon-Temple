@@ -183,7 +183,7 @@ namespace CharacterManager
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawSphere(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / radius);
+            Gizmos.DrawWireSphere(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / radius);
         }
     }
 }

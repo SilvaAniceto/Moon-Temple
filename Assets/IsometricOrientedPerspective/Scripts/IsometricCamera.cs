@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace IOP
 {
-    public class IsometricCamera : IsometricOrientedPerspective
+    public class IsometricCamera : MonoBehaviour
     {
         public static IsometricCamera m_instance;
 
