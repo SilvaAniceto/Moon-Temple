@@ -262,9 +262,10 @@ namespace IOP
 
         void Update()
         {
-            var targetRotation = Quaternion.LookRotation(new Vector3(m_target.position.x, m_target.position.y, m_target.position.z) - transform.position);
+            var targetRotation = Quaternion.LookRotation(m_target.position - transform.position);
 
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
+            if (m_movingCamera) transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
+            else transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1 * Time.deltaTime);
 
             m_zoomInput = Input.GetAxis("CameraZoom");
 

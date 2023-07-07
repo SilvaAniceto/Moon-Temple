@@ -13,12 +13,14 @@ namespace IOP
         [SerializeField] private LayerMask m_layerMask;
         [SerializeField] private float m_maxSlopeAngle;
         [SerializeField] private float m_movementSpeed;
+        [SerializeField][Range(1, 3)] private float m_jumpHeight;
         [SerializeField][Range (-20, 0)] private float m_gravity;
+        [SerializeField][Range(0.1f, 1)] private float m_groundRadiusCheck = 0.85f;
+        [SerializeField][Range(0.1f, 1)] private float m_slopeRadiusCheck = 0.85f;
 
-        private Vector3 m_gravityVector;
+        [SerializeField] private Vector3 m_gravityVector;
         private CapsuleCollider m_capsuleCollider;
         private CharacterController m_characterController;
-
         private void Awake()
         {
             m_capsuleCollider = GetComponent<CapsuleCollider>();
@@ -28,7 +30,7 @@ namespace IOP
             if (m_characterController == null)
             {
                 m_characterController = this.gameObject.AddComponent<CharacterController>();
-                m_characterController.slopeLimit = m_maxSlopeAngle;
+                m_characterController.slopeLimit = 0;
             }
         }
 
@@ -38,8 +40,7 @@ namespace IOP
             {
                 m_gravityVector.y = 0f;
             }
-
-            Vector3 direction = AdjustInputMoveDirection(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
             Vector3 right = direction.x * IsometricOrientedPerspective.IsometricRight;
             Vector3 forward = direction.z * IsometricOrientedPerspective.IsometricForward;
@@ -53,11 +54,11 @@ namespace IOP
                 gameObject.transform.forward = move;
             }
 
-            // Changes the height position of the player..
-            //if (Input.GetButtonDown("Jump") && m_jumpSystem.OnGroundLevel)
-            //{
-            //    playerVelocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
-            //}
+            //Changes the height position of the player..
+            if (Input.GetButtonDown("Jump") && OnGround())
+            {
+                m_gravityVector.y += Mathf.Sqrt(m_jumpHeight * -3.0f * m_gravity);
+            }
 
             m_gravityVector.y += m_gravity * Time.deltaTime;
             m_characterController.Move(m_gravityVector * Time.deltaTime);
@@ -65,19 +66,19 @@ namespace IOP
 
         private bool OnSlope()
         {
-            if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / 0.85f, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity, m_layerMask, QueryTriggerInteraction.Collide))
+            if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / m_slopeRadiusCheck, -transform.up, out RaycastHit hitInfo, Mathf.Infinity, m_layerMask, QueryTriggerInteraction.Collide))
             {
-                float slopeAngle = Vector3.Angle(Vector3.up, hitInfo.normal);
-                return slopeAngle < m_maxSlopeAngle && slopeAngle != 0;
+                float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
+                return slopeAngle <= m_maxSlopeAngle && slopeAngle != 0;
             }
             return false;
         }
 
         private float SlopeAngle()
         {
-            if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / 0.85f, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity, m_layerMask, QueryTriggerInteraction.Collide))
+            if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / m_slopeRadiusCheck, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity, m_layerMask, QueryTriggerInteraction.Collide))
             {
-                float slopeAngle = Vector3.Angle(Vector3.up, hitInfo.normal);
+                float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
                 return slopeAngle;
             }
             return 0;
@@ -85,7 +86,7 @@ namespace IOP
 
         private RaycastHit SlopeHit()
         {
-            Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / 0.85f, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity, m_layerMask, QueryTriggerInteraction.Collide);
+            Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / m_slopeRadiusCheck, Vector3.down, out RaycastHit hitInfo, Mathf.Infinity, m_layerMask, QueryTriggerInteraction.Collide);
             return hitInfo;
         }
 
@@ -96,37 +97,18 @@ namespace IOP
 
         private bool OnGround()
         {
-            bool ground = false;
+            bool ground;
 
-            ground = Physics.CheckSphere(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius /0.85f, m_layerMask, QueryTriggerInteraction.Collide);
+            ground = Physics.CheckSphere(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / m_groundRadiusCheck, m_layerMask, QueryTriggerInteraction.Collide);
            
             return ground;
         }
 
-        private Vector3 AdjustInputMoveDirection(float x, float y)
-        {
-            Vector3 vector3 = Vector3.zero;
-
-            if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.SOUTH)
-                vector3 = new Vector3(x, 0, y);
-
-            if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.WEST)
-                vector3 = new Vector3 (y, 0, -x);
-
-            if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.NORTH)
-                vector3 = new Vector3(-x,  0, -y);
-
-            if (IsometricCamera.m_instance.CamPosition == IsometricCamera.CameraPosition.EAST)
-                vector3 = new Vector3(-y, 0, x);
-
-            return vector3;
-        }
-
-        private void OnDrawGizmos()
-        {
-            if (m_capsuleCollider == null) return;
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / 0.85f);
-        }
+        //private void OnDrawGizmos()
+        //{
+        //    if (m_capsuleCollider == null) return;
+        //    Gizmos.color = Color.red;
+        //    Gizmos.DrawWireSphere(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius *  m_slopeRadiusCheck);
+        //}
     }
 }
