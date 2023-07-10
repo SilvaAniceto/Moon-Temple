@@ -679,10 +679,7 @@ MonoBehaviour:
   m_maxSlopeAngle: 30
   m_movementSpeed: 8
   m_jumpHeight: 1
-  m_gravity: -9.81
-  m_groundRadiusCheck: 0.85
-  m_slopeRadiusCheck: 1
-  m_gravityVector: {x: 0, y: 0, z: 0}
+  m_jumpForce: -3
 --- !u!1 &431844761
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,4 @@
-using CharacterManager;
-using System.Collections;
-using System.Collections.Generic;
+using CharactersCreator;
 using UnityEngine;
 
 namespace IOP
@@ -14,16 +12,21 @@ namespace IOP
         [SerializeField] private float m_maxSlopeAngle;
         [SerializeField] private float m_movementSpeed;
         [SerializeField][Range(1, 3)] private float m_jumpHeight;
-        [SerializeField][Range (-20, 0)] private float m_gravity;
-        [SerializeField][Range(0.1f, 1)] private float m_groundRadiusCheck = 0.85f;
-        [SerializeField][Range(0.1f, 1)] private float m_slopeRadiusCheck = 0.85f;
+        [SerializeField][Range(-10f, -1.2f)] private float m_jumpForce = -3.0f;
 
-        [SerializeField] private Vector3 m_gravityVector;
+        [Range(0.1f, 1)] private float m_groundRadiusCheck = 0.85f;
+        [Range(0.1f, 1)] private float m_slopeRadiusCheck = 1f;
+
         private CapsuleCollider m_capsuleCollider;
         private CharacterController m_characterController;
+        private IsometricGravity Gravity = new IsometricGravity() { Vector = Vector3.zero};
+
         private void Awake()
         {
             m_capsuleCollider = GetComponent<CapsuleCollider>();
+            Gravity.Collider = m_capsuleCollider;
+            Gravity.GroundRadiusCheck = m_groundRadiusCheck;
+            Gravity.LayerMask = m_layerMask;
         }
         private void Start()
         {
@@ -36,9 +39,11 @@ namespace IOP
 
         void Update()
         {
-            if (OnGround() && m_gravityVector.y < 0)
+            Gravity.Position = transform.position;
+
+            if (IsometricGravity.OnGround() && Gravity.Vector.y < 0)
             {
-                m_gravityVector.y = 0f;
+                Gravity.Vector = Vector3.zero;
             }
             Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
@@ -46,6 +51,7 @@ namespace IOP
             Vector3 forward = direction.z * IsometricOrientedPerspective.IsometricForward;
 
             Vector3 move = right + forward + Vector3.zero;
+
             if (OnSlope()) m_characterController.Move(GetSlopeMoveDirection(move) * Time.deltaTime * m_movementSpeed);
             else m_characterController.Move(move * Time.deltaTime * m_movementSpeed);
 
@@ -54,14 +60,13 @@ namespace IOP
                 gameObject.transform.forward = move;
             }
 
-            //Changes the height position of the player..
-            if (Input.GetButtonDown("Jump") && OnGround())
+            if (Input.GetButtonDown("Jump") && IsometricGravity.OnGround())
             {
-                m_gravityVector.y += Mathf.Sqrt(m_jumpHeight * -3.0f * m_gravity);
+                Gravity.Vector += IsometricGravity.Jump(m_jumpHeight, m_jumpForce);
             }
 
-            m_gravityVector.y += m_gravity * Time.deltaTime;
-            m_characterController.Move(m_gravityVector * Time.deltaTime);
+            Gravity.Vector += IsometricGravity.GravityForce();
+            m_characterController.Move(Gravity.Vector * Time.deltaTime);
         }
 
         private bool OnSlope()
@@ -94,21 +99,5 @@ namespace IOP
         {
             return Vector3.ProjectOnPlane(new Vector3(direction.x, (int)(direction.y * (int)SlopeAngle()), direction.z), SlopeHit().normal).normalized;
         }
-
-        private bool OnGround()
-        {
-            bool ground;
-
-            ground = Physics.CheckSphere(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius / m_groundRadiusCheck, m_layerMask, QueryTriggerInteraction.Collide);
-           
-            return ground;
-        }
-
-        //private void OnDrawGizmos()
-        //{
-        //    if (m_capsuleCollider == null) return;
-        //    Gizmos.color = Color.red;
-        //    Gizmos.DrawWireSphere(transform.position - new Vector3(0, 0.5f, 0), m_capsuleCollider.radius *  m_slopeRadiusCheck);
-        //}
     }
 }
