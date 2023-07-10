@@ -4,23 +4,22 @@ namespace CharactersCreator
 {
     public class IsometricGravity
     {
-        public static float UniversalGravity { get { return -9.81f; } }
-
         private static Vector3 m_gravityVector = Vector3.zero;
         private static Vector3 m_position = Vector3.zero;
         private static CapsuleCollider m_capsuleCollider;
-        private static float m_groundRadiusCheck;
+        private static float m_groundRadiusCheck = 0.85f;
         private static LayerMask m_layerMask;
+        private static bool m_isJumping;
 
         public Vector3 Vector { get { return m_gravityVector; } set {if (value == m_gravityVector) return; m_gravityVector = value; } }
         public Vector3 Position { get { return m_position; } set { m_position = value; } }
         public CapsuleCollider Collider { get { return m_capsuleCollider; } set { m_capsuleCollider = value; } }
-        public float GroundRadiusCheck { get { return m_groundRadiusCheck;} set { m_groundRadiusCheck = value;} }
+        public float GroundRadiusCheck { get { return m_groundRadiusCheck;} }
         public LayerMask LayerMask { get { return m_layerMask; } set { m_layerMask = value; } }
 
         public static Vector3 GravityForce()
         {
-            return new Vector3(0, UniversalGravity * Time.deltaTime, 0);
+            return new Vector3(0, Physics.gravity.y * Time.deltaTime, 0);
         }
         public static bool OnGround()
         {
@@ -30,9 +29,27 @@ namespace CharactersCreator
 
             return ground;
         }
-        public static Vector3 Jump(float jumpHeight, float jumpForce)
+        public static void Jump(float jumpHeight, float jumpForce, bool jumpInput)
         {
-            return new Vector3(0, Mathf.Sqrt(jumpHeight * jumpForce * UniversalGravity), 0);
+            if (OnGround() && m_gravityVector.y < 0)
+            {
+                m_gravityVector = Vector3.zero;
+                m_isJumping = false;
+            }
+
+            if (jumpInput && OnGround())
+            {
+                m_isJumping = true;
+                m_gravityVector += new Vector3(0, Mathf.Sqrt(jumpHeight * jumpForce * Physics.gravity.y), 0);
+            }
+
+            if (!jumpInput && m_isJumping)
+            {
+                m_isJumping = false;
+                m_gravityVector = new Vector3(0, m_position.y, 0);
+            }
+
+            m_gravityVector += GravityForce();
         }
     }
 }
