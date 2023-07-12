@@ -9,15 +9,22 @@ namespace IOP
         public static IsomectricCharacterController Instance { get; private set; }
 
         [SerializeField] private LayerMask m_layerMask;
-        [SerializeField] private float m_maxSlopeAngle;
-        [SerializeField] private float m_movementSpeed;
-        [SerializeField][Range(1, 3)] private float m_jumpHeight;
+        [SerializeField] private float m_maxSlopeAngle = 45f;
+        [SerializeField] private float m_movementSpeed = 8;
+        [SerializeField] private float m_sprintSpeed = 10;
+        [SerializeField][Range(1f, 5)] private float m_acceleration = 2.5f;
+        [SerializeField][Range(1f, 10)] private float m_rotation = 5f;
+        [SerializeField][Range(1.2f, 3)] private float m_jumpHeight = 1.5f;
         [SerializeField][Range(-10f, -1.2f)] private float m_jumpForce = -3.0f;
 
         private CapsuleCollider m_capsuleCollider;
         private CharacterController m_characterController;
-        private IsometricGravity Gravity = new IsometricGravity() { Vector = Vector3.zero};
+        private IsometricGravity Gravity = new IsometricGravity();
 
+        public bool jumping;
+        public float vertical;
+        public float y;
+        public Vector3 currentVel;
         private void Awake()
         {
             m_capsuleCollider = GetComponent<CapsuleCollider>();
@@ -35,6 +42,9 @@ namespace IOP
 
         void Update()
         {
+            jumping = Gravity.Jumping;
+            vertical = Gravity.VerticalDisplacement;
+            y = Gravity.Y;
             Gravity.Position = transform.position;
 
             Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
@@ -44,12 +54,25 @@ namespace IOP
 
             Vector3 move = right + forward + Vector3.zero;
 
-            if (OnSlope() && IsometricGravity.OnGround()) m_characterController.Move(GetSlopeMoveDirection(move) * Time.deltaTime * m_movementSpeed);
-            else m_characterController.Move(move * Time.deltaTime * m_movementSpeed);
+            float speed = 0;
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                speed = m_sprintSpeed;
+            }
+            else
+            {
+                speed = m_movementSpeed;
+            }
+
+            currentVel = Vector3.MoveTowards(currentVel, move, m_acceleration * Time.deltaTime);
+
+            if (OnSlope() && IsometricGravity.OnGround()) m_characterController.Move(GetSlopeMoveDirection(currentVel) * Time.deltaTime * speed);
+            else m_characterController.Move(currentVel * Time.deltaTime * speed);
 
             if (move != Vector3.zero)
             {
-                gameObject.transform.forward = move;
+               // gameObject.transform.forward = move;
+               transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), m_rotation * Time.deltaTime);
             }
             
             IsometricGravity.Jump(m_jumpHeight, m_jumpForce, Input.GetButton("Jump") ? true : Input.GetButtonUp("Jump") ? false : false);
