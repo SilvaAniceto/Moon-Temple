@@ -21,7 +21,7 @@ namespace CharactersCreator
         public float Y { get { return m_position.y; } }
         public static Vector3 GravityForce()
         {
-            if (!OnGround() && !m_isJumping) return new Vector3(0, (Physics.gravity.y * (Mathf.Sqrt(m_verticalDisplacement) / 2)) * Time.deltaTime, 0);
+            if (!OnGround() && !m_isJumping) return new Vector3(0, (Physics.gravity.y * (Mathf.Sqrt(m_verticalDisplacement) / 1.5f)) * Time.deltaTime, 0);
             return new Vector3(0, Physics.gravity.y * Time.deltaTime, 0);
         }
         public static bool OnGround()
