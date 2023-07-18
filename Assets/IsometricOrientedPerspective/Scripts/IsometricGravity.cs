@@ -12,18 +12,19 @@ namespace CharactersCreator
         private static LayerMask m_layerMask;
         private static bool m_isJumping;
         private static float m_verticalDisplacement;
+
         public Vector3 Vector { get { return m_gravityVector; } set {if (value == m_gravityVector) return; m_gravityVector = value; } }
         public Vector3 Position { get { return m_position; } set { m_position = value; } }
         public CapsuleCollider Collider { get { return m_capsuleCollider; } set { m_capsuleCollider = value; } }
         public LayerMask LayerMask { get { return m_layerMask; } set { m_layerMask = value; } }
         public bool Jumping { get { return m_isJumping;} }
-        public float VerticalDisplacement { get { return Mathf.Sqrt(m_verticalDisplacement); } }
-        public float Y { get { return m_position.y; } }
+
         public static Vector3 GravityForce()
         {
             if (!OnGround() && !m_isJumping) return new Vector3(0, (Physics.gravity.y * (Mathf.Sqrt(m_verticalDisplacement) / 1.5f)) * Time.deltaTime, 0);
             return new Vector3(0, Physics.gravity.y * Time.deltaTime, 0);
         }
+
         public static bool OnGround()
         {
             bool ground;
@@ -38,9 +39,10 @@ namespace CharactersCreator
 
             return ground;
         }
-        public static void Jump(float jumpHeight, float jumpForce, bool jumpInput)
+
+        public static void Jump(float jumpHeight, bool jumpInput)
         {
-            m_verticalDisplacement = Mathf.Sqrt(jumpHeight * jumpForce * Physics.gravity.y);
+            m_verticalDisplacement = Mathf.Sqrt(jumpHeight * -3.0f * Physics.gravity.y);
 
             if (jumpInput && OnGround())
             {
