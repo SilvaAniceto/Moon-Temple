@@ -1,7 +1,6 @@
-using System.Collections;
 using UnityEngine;
 
-namespace CharactersCreator
+namespace IOP
 {
     public class IsometricGravity : MonoBehaviour
     {
@@ -13,11 +12,10 @@ namespace CharactersCreator
         private static bool m_isJumping;
         private static float m_verticalDisplacement;
 
-        public Vector3 Vector { get { return m_gravityVector; } set {if (value == m_gravityVector) return; m_gravityVector = value; } }
+        public Vector3 Vector { get { return m_gravityVector; }}
         public Vector3 Position { get { return m_position; } set { m_position = value; } }
         public CapsuleCollider Collider { get { return m_capsuleCollider; } set { m_capsuleCollider = value; } }
         public LayerMask LayerMask { get { return m_layerMask; } set { m_layerMask = value; } }
-        public bool Jumping { get { return m_isJumping;} }
 
         public static Vector3 GravityForce()
         {
