@@ -34,6 +34,7 @@ namespace IsometricGameController
 
         private GameControllerState m_state;
         private Vector3 m_direction;
+        private bool m_confirm;
         private bool m_accelerate;
         private bool m_jump;
 
@@ -132,7 +133,16 @@ namespace IsometricGameController
         public void SetInput(IsometricInputHandler inputs)
         {
             m_direction = inputs.IsometricMoveDirection;
-            m_jump = inputs.JumpInput;
+            
+            switch (m_state)
+            {
+                case GameControllerState.Exploring:
+                    m_jump = inputs.JumpInput;
+                    break;
+                case GameControllerState.Combat:
+                    m_confirm = inputs.PlayerConfirmEntry;
+                    break;
+            }
 
             if (inputs.AccelerateSpeed) m_accelerate = !m_accelerate;
             if (m_direction == Vector3.zero) m_accelerate = false;
@@ -141,6 +151,7 @@ namespace IsometricGameController
         public void OnGameControllerStateChanged(GameControllerState state)
         {
             m_cursor.position = new Vector3(transform.position.x, transform.parent.position.y, transform.position.z);
+            CharacterController.Move(Vector3.zero);
             switch (state)
             {
                 case GameControllerState.Exploring:
