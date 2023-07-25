@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IOP
+namespace IsometricGameController
 {
     public class IsometricCamera : MonoBehaviour
     {
@@ -265,7 +265,7 @@ namespace IOP
             var targetRotation = Quaternion.LookRotation(m_target.position - transform.position);
 
             if (m_movingCamera) transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
-            else transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1 * Time.deltaTime);
+            else transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.deltaTime);
 
             m_zoomInput = Input.GetAxis("CameraZoom");
 
@@ -278,19 +278,12 @@ namespace IOP
 
             if (Input.GetButton("CameraControll"))
             {
-                Vector3 righMovement = transform.right * 2f * Time.deltaTime * Input.GetAxis("HorizontalCameraRotation");
+                Vector3 righMovement = transform.right * m_cameraSpeed * Time.deltaTime * Input.GetAxis("HorizontalCameraRotation");
 
                 if (!m_movingCamera)
                     transform.position += righMovement;
 
                 GetLeftRightOffSet(m_currentOffset, Input.GetAxis("HorizontalCameraRotation"));
-            }
-            if (Input.GetAxis("CameraControll2") < 0)
-            {
-                GetLeftRightOffSet(m_currentOffset, Input.GetAxis("HorizontalCameraRotation"));
-
-                if (HorizontalAxis != 0)
-                    SetCameraPosition(HorizontalAxis);
             }
 
             if (Input.GetButtonUp("CameraControll"))

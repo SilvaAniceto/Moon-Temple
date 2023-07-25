@@ -1,7 +1,7 @@
-using TreeEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace IOP
+namespace IsometricGameController
 {
     [RequireComponent(typeof(CapsuleCollider))]
     public class IsomectricCharacterController : IsometricGravity, IIsometricController
@@ -10,45 +10,68 @@ namespace IOP
         public Vector3 CurrentyVelocity { get; set; }
         public CapsuleCollider CapsuleCollider { get; set; }
         public CharacterController CharacterController { get; set; }
-        
+        public GameControllerState ControllerState 
+        { 
+            get => m_state; 
+            set 
+            {
+                m_state = value;
+                OnGameStateChanged?.Invoke(ControllerState); 
+            } 
+        }
+
         [SerializeField] private LayerMask m_layerMask;
         [SerializeField] private float m_maxSlopeAngle = 45f;
         [SerializeField] private float m_movementSpeed = 8;
+
         [SerializeField][Range(1f, 5)] private float m_acceleration = 2.5f;
         [SerializeField][Range(1f, 10)] private float m_rotation = 5f;
         [SerializeField][Range(1.2f, 3)] private float m_jumpHeight = 1.5f;
 
+        public static UnityEvent<GameControllerState> OnGameStateChanged = new UnityEvent<GameControllerState>();
+
+        [SerializeField] private Transform m_cursor;
+
+        private GameControllerState m_state;
+        private Vector3 m_direction;
+        private bool m_accelerate;
+        private bool m_jump;
+
         private void Awake()
         {
+            if (Instance == null) Instance = this;
+
             CapsuleCollider = GetComponent<CapsuleCollider>();
             Collider = CapsuleCollider;
             LayerMask = m_layerMask;
-        }
 
-        private void Start()
-        {
             if (CharacterController == null)
             {
                 CharacterController = gameObject.AddComponent<CharacterController>();
                 CharacterController.slopeLimit = 0;
             }
+
+            OnGameStateChanged.AddListener(OnGameControllerStateChanged);
+        }
+
+        private void Start()
+        {
+            
         }
 
         void Update()
         {
-            Vector3 direction = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-            bool jumpInput = Input.GetButton("Jump") ? true : Input.GetButtonUp("Jump") ? false : false;
-            float speed = Input.GetKey(KeyCode.LeftShift) ? m_movementSpeed * 2f : m_movementSpeed;
-            float height = Input.GetKey(KeyCode.LeftShift) ? m_jumpHeight * 1.5f : m_jumpHeight;
+            float speed = m_accelerate ? m_movementSpeed * 2f : m_movementSpeed;
+            float height = m_accelerate ? m_jumpHeight * 1.5f : m_jumpHeight;
 
-            Position = transform.position;
-
-            UpdateMovePosition(direction.normalized, speed);
-            Jump(height, jumpInput);
+            UpdateMovePosition(m_direction.normalized, speed);
+            Jump(height, m_jump);
         }
 
         public void UpdateMovePosition(Vector3 inputDirection, float movementSpeed)
         {
+            Position = transform.position;
+
             Vector3 right = inputDirection.x * IsometricOrientedPerspective.IsometricRight;
             Vector3 forward = inputDirection.z * IsometricOrientedPerspective.IsometricForward;
 
@@ -65,6 +88,14 @@ namespace IOP
             }
 
             CharacterController.Move(Vector * Time.deltaTime);
+
+            if (ControllerState == GameControllerState.Combat)
+            {
+                m_cursor.forward = IsometricOrientedPerspective.IsometricForward;
+                m_cursor.Translate(inputDirection * Time.deltaTime * movementSpeed * m_acceleration);
+
+                transform.LookAt(new Vector3(m_cursor.position.x, transform.position.y, m_cursor.position.z));
+            }
         }
 
         public bool OnSlope()
@@ -96,6 +127,31 @@ namespace IOP
         public Vector3 GetSlopeMoveDirection(Vector3 direction)
         {
             return Vector3.ProjectOnPlane(new Vector3(direction.x, (int)(direction.y * (int)SlopeAngle()), direction.z), SlopeHit().normal).normalized;
+        }
+
+        public void SetInput(IsometricInputHandler inputs)
+        {
+            m_direction = inputs.IsometricMoveDirection;
+            m_jump = inputs.JumpInput;
+
+            if (inputs.AccelerateSpeed) m_accelerate = !m_accelerate;
+            if (m_direction == Vector3.zero) m_accelerate = false;
+        }
+
+        public void OnGameControllerStateChanged(GameControllerState state)
+        {
+            m_cursor.position = new Vector3(transform.position.x, transform.parent.position.y, transform.position.z);
+            switch (state)
+            {
+                case GameControllerState.Exploring:
+                    m_cursor.gameObject.SetActive(false);
+                    CharacterController.enabled = true;
+                    break;
+                case GameControllerState.Combat:
+                    m_cursor.gameObject.SetActive(true);
+                    CharacterController.enabled = false;
+                    break;
+            }
         }
     }
 }

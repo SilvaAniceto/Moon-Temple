@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace IOP
+namespace IsometricGameController
 {
     public class IsometricGravity : MonoBehaviour
     {
