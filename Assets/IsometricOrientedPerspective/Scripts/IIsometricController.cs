@@ -10,6 +10,7 @@ namespace IsometricGameController
     }
     public struct IsometricInputHandler
     {
+        public bool PlayerConfirmEntry;
         public float HorizontalInput;
         public float VerticalInput;
         public Vector3 IsometricMoveDirection;

@@ -22,6 +22,7 @@ namespace IsometricGameController
             isometricInputHandler.IsometricMoveDirection = new Vector3(isometricInputHandler.HorizontalInput, 0, isometricInputHandler.VerticalInput);
             isometricInputHandler.JumpInput = Input.GetButton("Jump") ? true : Input.GetButtonUp("Jump") ? false : false;
             isometricInputHandler.AccelerateSpeed = Input.GetButtonDown("AccelerateSpeed");
+            isometricInputHandler.PlayerConfirmEntry = Input.GetButtonDown("ConfirmEntry");
 
             IsometricController.SetInput(isometricInputHandler);
         }
