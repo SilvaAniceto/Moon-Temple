@@ -48,8 +48,6 @@ namespace IsometricGameController
         private bool m_accelerate;
         private bool m_jump;
 
-        public bool ground;
-
         private void Awake()
         {
             if (Instance == null) Instance = this;
@@ -71,8 +69,6 @@ namespace IsometricGameController
         void Update()
         {
             ApplyGravity();
-
-            ground = CheckGroundLevel();
 
             float speed = m_accelerate ? m_movementSpeed * 2f : m_movementSpeed;
             float height = m_accelerate ? JumpHeight * 1.5f : JumpHeight;
