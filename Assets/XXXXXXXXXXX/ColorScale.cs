@@ -1,149 +1,79 @@
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
-[ExecuteInEditMode]
 public class ColorScale : MonoBehaviour
 {
-    private float[] colorArray = new float[3];
-    [Range(0, 1)] public float red;
-    [Range(0, 1)] public float green;
-    [Range(0, 1)] public float blue;
-    [Range(0, 3)] public float colorRange;
-
-    public float[] RGBScale
+    [System.Serializable]
+    public struct PrimaryColor
     {
-        get
-        {
-            colorArray[0] = red;
-            colorArray[1] = green;
-            colorArray[2] = blue;
-            return colorArray;
-        }
-        set
-        {
-            red = value[0];
-            green = value[1];
-            blue = value[2];
-        }
+        [Range(0, 1)] public float R_Parameter;
+        [Range(0, 1)] public float G_Parameter;
+        [Range(0, 1)] public float B_Parameter;
+        [Range(0, 1)] public float A_Parameter;
     }
-    //public int[] Red
-    //{
-    //    get
-    //    {
-    //        red = 255;
-    //        green = 0;
-    //        blue = 255;
 
-    //        colorArray[0] = red;
-    //        colorArray[1] = green;
-    //        colorArray[2] = blue;
-    //        return colorArray;
-    //    }
-    //}
-    //public int[] Green
-    //{
-    //    get
-    //    {
-    //        red = 0;
-    //        green = 255;
-    //        blue = 0;
+    [System.Serializable]
+    public struct SecundaryColor
+    {
+        [Range(0, 1)] public float R_Parameter;
+        [Range(0, 1)] public float G_Parameter;
+        [Range(0, 1)] public float B_Parameter;
+        [Range(0, 1)] public float A_Parameter;
+    }
 
-    //        colorArray[0] = red;
-    //        colorArray[1] = green;
-    //        colorArray[2] = blue;
-    //        return colorArray;
-    //    }
-    //}
-    //public int[] Blue
-    //{
-    //    get
-    //    {
-    //        red = 0;
-    //        green = 0;
-    //        blue = 255;
+    PrimaryColor Red =    new PrimaryColor() { R_Parameter = 1, G_Parameter = 0, B_Parameter = 0, A_Parameter = 1 };
+    PrimaryColor Yellow = new PrimaryColor() { R_Parameter = 1, G_Parameter = 1, B_Parameter = 0, A_Parameter = 1 };
+    PrimaryColor Blue =   new PrimaryColor() { R_Parameter = 0, G_Parameter = 0, B_Parameter = 1, A_Parameter = 1 };
+    PrimaryColor Green =  new PrimaryColor() { R_Parameter = 0, G_Parameter = 1, B_Parameter = 0, A_Parameter = 1 };
 
-    //        colorArray[0] = red;
-    //        colorArray[1] = green;
-    //        colorArray[2] = blue;
-    //        return colorArray;
-    //    }
-    //}
-    //public int RedValue
-    //{
-    //    get
-    //    {
-    //        return (red * 100) / 255;
-    //    }
-    //    set
-    //    {
-    //        red = value;
-    //    }
-    //}
-    //public int GreenValue
-    //{
-    //    get
-    //    {
-    //        return (green * 100) / 255;
-    //    }
-    //    set
-    //    {
-    //        green = value;
-    //    }
-    //}
-    //public int BlueValue
-    //{
-    //    get
-    //    {
-    //        return (blue * 100) / 255;
-    //    }
-    //    set
-    //    {
-    //        blue = value;
-    //    }
-    //}
+    public List<PrimaryColor> PrimaryColors = new List<PrimaryColor>();
 
+    SecundaryColor Orange = new SecundaryColor() { R_Parameter = 1, G_Parameter = 0.5f, B_Parameter = 1, A_Parameter = 1 };
+    SecundaryColor Violet = new SecundaryColor() { R_Parameter = 0.5f, G_Parameter = 0, B_Parameter = 1, A_Parameter = 1 };
+
+    public List<SecundaryColor> SecundaryColors = new List<SecundaryColor>();
+
+    [SerializeField] private Image Color1;
+    [SerializeField] private Image Color2;
+    [SerializeField] private Image Color3;
     [SerializeField] private Image BlankSheet;
     [SerializeField] private Button ColorButton;
 
     private void Awake()
     {
+        PrimaryColors.Add(Red);
+        PrimaryColors.Add(Yellow);
+        PrimaryColors.Add(Blue);
+        PrimaryColors.Add(Green);
+
+        SecundaryColors.Add(Orange);
+        SecundaryColors.Add(Violet);
+
         ColorButton.onClick.AddListener(delegate
         {
-            SetColor();
+            Color color1 = new Color();
+            color1.r = Red.R_Parameter;
+            color1.g = Red.G_Parameter;
+            color1.b = Red.B_Parameter;
+            color1.a = Red.A_Parameter;
+            Color1.color = color1;
+
+            Color color2 = new Color();
+            color2.r = Blue.R_Parameter;
+            color2.g = Blue.G_Parameter;
+            color2.b = Blue.B_Parameter;
+            color2.a = Blue.A_Parameter;
+            Color2.color = color2;
+
+            Color color3 = new Color();
+            color3.r = Yellow.R_Parameter;
+            color3.g = Yellow.G_Parameter;
+            color3.b = Yellow.B_Parameter;
+            color3.a = Yellow.A_Parameter;
+            Color3.color = color3;
+
+            BlankSheet.color = (Color.yellow + Color.blue) / 2;
         });
-
-        ChangeColor(colorRange);
-    }
-
-    private void Update()
-    {
-        ChangeColor(colorRange );
-    }
-
-    public void SetColor()
-    {
-        Color newColor = new Color();
-        newColor.r = red;
-        newColor.g = green;
-        newColor.b = blue;
-        newColor.a = 100f;
-
-        BlankSheet.color = newColor;
-    }
-
-    public void ChangeColor(float value)
-    {
-        if (value <= 1) red = Mathf.Clamp(value, 0, 1);
-        else if (value > 1 && value <= 2) green = Mathf.Clamp(value - 1, 0, 1);
-        else blue = Mathf.Clamp(value - 2, 0, 1);
-
-        Color newColor = new Color();
-        newColor.r = red;
-        newColor.g = green;
-        newColor.b = blue;
-        newColor.a = 100f;
-
-        BlankSheet.color = newColor;
     }
 }
