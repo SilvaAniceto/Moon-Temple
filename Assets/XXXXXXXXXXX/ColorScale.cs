@@ -4,76 +4,79 @@ using System.Collections.Generic;
 
 public class ColorScale : MonoBehaviour
 {
-    [System.Serializable]
-    public struct PrimaryColor
-    {
-        [Range(0, 1)] public float R_Parameter;
-        [Range(0, 1)] public float G_Parameter;
-        [Range(0, 1)] public float B_Parameter;
-        [Range(0, 1)] public float A_Parameter;
-    }
+    [SerializeField] private List<Color> PrimaryColors = new List<Color>();
+    [SerializeField] private List<Image> PrimaryColorsPanel = new List<Image>();
 
-    [System.Serializable]
-    public struct SecundaryColor
-    {
-        [Range(0, 1)] public float R_Parameter;
-        [Range(0, 1)] public float G_Parameter;
-        [Range(0, 1)] public float B_Parameter;
-        [Range(0, 1)] public float A_Parameter;
-    }
+    [SerializeField] private List<Color> SecundaryColors = new List<Color>();
+    [SerializeField] private List<Image> SecundaryColorsPanel = new List<Image>();
 
-    PrimaryColor Red =    new PrimaryColor() { R_Parameter = 1, G_Parameter = 0, B_Parameter = 0, A_Parameter = 1 };
-    PrimaryColor Yellow = new PrimaryColor() { R_Parameter = 1, G_Parameter = 1, B_Parameter = 0, A_Parameter = 1 };
-    PrimaryColor Blue =   new PrimaryColor() { R_Parameter = 0, G_Parameter = 0, B_Parameter = 1, A_Parameter = 1 };
-    PrimaryColor Green =  new PrimaryColor() { R_Parameter = 0, G_Parameter = 1, B_Parameter = 0, A_Parameter = 1 };
+    [SerializeField] private List<Color> TertiaryColors = new List<Color>();
+    [SerializeField] private List<Image> TertiaryColorsPanel = new List<Image>();
 
-    public List<PrimaryColor> PrimaryColors = new List<PrimaryColor>();
-
-    SecundaryColor Orange = new SecundaryColor() { R_Parameter = 1, G_Parameter = 0.5f, B_Parameter = 1, A_Parameter = 1 };
-    SecundaryColor Violet = new SecundaryColor() { R_Parameter = 0.5f, G_Parameter = 0, B_Parameter = 1, A_Parameter = 1 };
-
-    public List<SecundaryColor> SecundaryColors = new List<SecundaryColor>();
-
-    [SerializeField] private Image Color1;
-    [SerializeField] private Image Color2;
-    [SerializeField] private Image Color3;
     [SerializeField] private Image BlankSheet;
     [SerializeField] private Button ColorButton;
+    [SerializeField] private Color Color1;
+    [SerializeField] private Color Color2;
 
     private void Awake()
     {
-        PrimaryColors.Add(Red);
-        PrimaryColors.Add(Yellow);
-        PrimaryColors.Add(Blue);
-        PrimaryColors.Add(Green);
+        PrimaryColors.Clear();
+        PrimaryColors.Add(Color.red);
+        PrimaryColors.Add(new Color() { r = 0, g = 0.5f, b = 1, a = 1 });
+        PrimaryColors.Add(new Color() { r = 0, g = 0.5f, b = 0, a = 1 });
+        PrimaryColors.Add(Color.yellow);
 
-        SecundaryColors.Add(Orange);
-        SecundaryColors.Add(Violet);
+        for (int i = 0; i < PrimaryColors.Count; i++)
+        {
+            PrimaryColorsPanel[i].color = PrimaryColors[i];
+            if (i == 0)
+            {
+                Color color1 = (PrimaryColors[i] + PrimaryColors[i + 1]) / 2;
+                Color color2 = (PrimaryColors[i] + PrimaryColors[PrimaryColors.Count - 1]) / 2;
+                if (!SecundaryColors.Contains(color1))
+                {
+                    SecundaryColors.Add(color1);
+                }
+                if (!SecundaryColors.Contains(color2))
+                {
+                    SecundaryColors.Add(color2);
+                }
+            }
+            else if (i == PrimaryColors.Count - 1)
+            {
+                Color color1 = (PrimaryColors[i] + PrimaryColors[0]) / 2;
+                Color color2 = (PrimaryColors[i] + PrimaryColors[i - 1]) / 2;
+                if (!SecundaryColors.Contains(color1))
+                {
+                    SecundaryColors.Add(color1);
+                }
+                if (!SecundaryColors.Contains(color2))
+                {
+                    SecundaryColors.Add(color2);
+                }
+            }
+            else
+            {
+                Color color1 = (PrimaryColors[i] + PrimaryColors[i + 1]) / 2;
+                Color color2 = (PrimaryColors[i] + PrimaryColors[i - 1]) / 2;
+                if (!SecundaryColors.Contains(color1))
+                {
+                    SecundaryColors.Add(color1);
+                }
+                if (!SecundaryColors.Contains(color2))
+                {
+                    SecundaryColors.Add(color2);
+                }
+            }
+            SecundaryColorsPanel[i].color = SecundaryColors[i];
+        }
+
+        Color1.a = 1;
+        Color2.a = 1;
 
         ColorButton.onClick.AddListener(delegate
         {
-            Color color1 = new Color();
-            color1.r = Red.R_Parameter;
-            color1.g = Red.G_Parameter;
-            color1.b = Red.B_Parameter;
-            color1.a = Red.A_Parameter;
-            Color1.color = color1;
-
-            Color color2 = new Color();
-            color2.r = Blue.R_Parameter;
-            color2.g = Blue.G_Parameter;
-            color2.b = Blue.B_Parameter;
-            color2.a = Blue.A_Parameter;
-            Color2.color = color2;
-
-            Color color3 = new Color();
-            color3.r = Yellow.R_Parameter;
-            color3.g = Yellow.G_Parameter;
-            color3.b = Yellow.B_Parameter;
-            color3.a = Yellow.A_Parameter;
-            Color3.color = color3;
-
-            BlankSheet.color = (Color.yellow + Color.blue) / 2;
+            BlankSheet.color = (Color1 + Color2) / 2;
         });
     }
 }
