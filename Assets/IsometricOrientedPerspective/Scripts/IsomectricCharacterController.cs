@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
 
 namespace IsometricGameController
 {
@@ -8,18 +7,16 @@ namespace IsometricGameController
     public class IsomectricCharacterController : MonoBehaviour, IIsometricController, IIsometricGravity
     {
         public static IsomectricCharacterController Instance { get; private set; }
+
+        public float OnGroundSpeed { get => m_onGroundSpeed; set { if (m_onGroundSpeed == value) return; m_onGroundSpeed = value; } }
+        public float OnGroundAcceleration { get => m_acceleration; set { if (m_acceleration == value) return; m_acceleration = value; } }
+        public float OnAirSpeed { get => OnGroundSpeed * 0.8f; }
+        public float OnAirAcceleration { get => OnGroundAcceleration * 0.8f; }
+        public float MaxSlopeAngle { get => m_maxSlopeAngle; set { if (m_maxSlopeAngle == value) return; m_maxSlopeAngle = value; } }
         public Vector3 CurrentyVelocity { get; set; }
         public CapsuleCollider CapsuleCollider { get; set; }
         public CharacterController CharacterController { get; set; }
-        public GameControllerState ControllerState
-        {
-            get => m_state;
-            set
-            {
-                m_state = value;
-                OnGameStateChanged?.Invoke(ControllerState);
-            }
-        }
+        public GameControllerState ControllerState { get => m_state; set { m_state = value; OnGameStateChanged?.Invoke(ControllerState); } }
 
         public float Gravity { get => 9.81f; }
         public Vector3 GravityVelocity { get; set; }
@@ -31,16 +28,15 @@ namespace IsometricGameController
 
         [SerializeField] private LayerMask m_layerMask;
         [SerializeField] private float m_maxSlopeAngle = 45f;
-        [SerializeField] private float m_movementSpeed = 8;
+        [SerializeField] private float m_onGroundSpeed = 8;
 
         [SerializeField][Range(1f, 5)] private float m_acceleration = 2.5f;
-        [SerializeField][Range(1f, 10)] private float m_rotation = 5f;
         [SerializeField][Range(1.2f, 10)] private float m_jumpHeight = 1.5f;
         [SerializeField][Range(0, 100)] private float m_drag = 0.5f;
 
-        public static UnityEvent<GameControllerState> OnGameStateChanged = new UnityEvent<GameControllerState>();
-
         [SerializeField] private Transform m_cursor;
+
+        public static UnityEvent<GameControllerState> OnGameStateChanged = new UnityEvent<GameControllerState>();
 
         private GameControllerState m_state;
         private Vector3 m_direction;
@@ -70,7 +66,7 @@ namespace IsometricGameController
         {
             ApplyGravity();
 
-            float speed = m_accelerate ? m_movementSpeed * 2f : m_movementSpeed;
+            float speed = CheckGroundLevel() ? (m_accelerate ? OnGroundSpeed * 2f : OnGroundSpeed) : (m_accelerate ? OnAirSpeed * 2f : OnAirSpeed);
             float height = m_accelerate ? JumpHeight * 1.5f : JumpHeight;
 
             UpdateMovePosition(m_direction.normalized, speed);
@@ -91,11 +87,9 @@ namespace IsometricGameController
 
             Vector3 move = right + forward + Vector3.zero;
 
-            CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, m_acceleration * Time.deltaTime);
-
             if (CheckGroundLevel())
             {
-                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, m_acceleration * Time.deltaTime);
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnGroundAcceleration * Time.deltaTime);
 
                 if (OnSlope())
                     CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
@@ -104,18 +98,25 @@ namespace IsometricGameController
             }
             else
             {
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnAirAcceleration * Time.deltaTime);
+
+                float x = ApplyDrag(CurrentyVelocity.x, Drag);
+                float z = ApplyDrag(CurrentyVelocity.z, Drag);
+
+                CurrentyVelocity = new Vector3(x, 0, z);
+
                 CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
             }
 
             if (move != Vector3.zero)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), m_rotation * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 5 * Time.deltaTime);
             }
 
             if (ControllerState == GameControllerState.Combat)
             {
                 m_cursor.forward = IsometricOrientedPerspective.IsometricForward;
-                m_cursor.Translate(inputDirection * Time.deltaTime * movementSpeed * m_acceleration);
+                m_cursor.Translate(inputDirection * Time.deltaTime * movementSpeed * OnGroundAcceleration);
 
                 transform.LookAt(new Vector3(m_cursor.position.x, transform.position.y, m_cursor.position.z));
             }
@@ -146,7 +147,7 @@ namespace IsometricGameController
             if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, WhatIsGround, QueryTriggerInteraction.Collide))
             {
                 float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
-                return slopeAngle <= m_maxSlopeAngle && slopeAngle != 0;
+                return slopeAngle <= MaxSlopeAngle && slopeAngle != 0;
             }
             return false;
         }
@@ -221,9 +222,9 @@ namespace IsometricGameController
             return ground;
         }
 
-        public void ApplyDrag(float velocity)
+        public float ApplyDrag(float velocity, float drag)
         {
-            
+            return velocity * (1 / (1 + drag * Time.deltaTime));
         }
     }
 }

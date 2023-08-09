@@ -19,6 +19,11 @@ namespace IsometricGameController
     }
     public interface IIsometricController
     {
+        float OnGroundSpeed { get; set; }
+        float OnGroundAcceleration { get; set; }
+        float OnAirSpeed { get; }
+        float OnAirAcceleration { get; }
+        float MaxSlopeAngle { get; set; }
         Vector3 CurrentyVelocity { get; set; }
         CapsuleCollider CapsuleCollider { get; set; }
         GameControllerState ControllerState { get; set; }

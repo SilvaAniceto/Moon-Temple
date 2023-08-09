@@ -12,7 +12,7 @@ namespace IsometricGameController
         LayerMask WhatIsGround { get; set; }
         Vector3 GravityVelocity { get; set; }
 
-        void ApplyDrag(float velocity);
+        float ApplyDrag(float velocity, float drag);
         void ApplyGravity();
         bool CheckGroundLevel();
     }
