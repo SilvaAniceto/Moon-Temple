@@ -75,7 +75,15 @@ namespace IsometricGameController
 
         public void ApplyGravity()
         {
-            if (!OnAir) GravityVelocity -= new Vector3(0.0f, Gravity * 1.5f * Time.deltaTime, 0.0f);
+            if (!OnAir)
+            {
+                GravityVelocity -= new Vector3(0.0f, Gravity * 1.5f * Time.deltaTime, 0.0f);
+            }
+            if (!CheckGroundLevel() && !OnAir)
+            {
+                GravityVelocity -= new Vector3(0.0f, Gravity * 5f * Time.deltaTime, 0.0f);
+            } 
+            
             GravityVelocity -= new Vector3(0.0f, Gravity * Time.deltaTime, 0.0f);
             CharacterController.Move(GravityVelocity * Time.deltaTime);
         }
@@ -86,7 +94,7 @@ namespace IsometricGameController
             Vector3 forward = inputDirection.z * IsometricOrientedPerspective.IsometricForward;
 
             Vector3 move = right + forward + Vector3.zero;
-
+            
             if (CheckGroundLevel())
             {
                 CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnGroundAcceleration * Time.deltaTime);
@@ -213,10 +221,10 @@ namespace IsometricGameController
             bool ground;
 
             ground = Physics.CheckSphere(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius / 0.85f, WhatIsGround, QueryTriggerInteraction.Collide);
-           
-            if (ground && CurrentyVelocity.y < 0)
+
+            if (ground && GravityVelocity.y < 0 && !OnSlope())
             {
-                CurrentyVelocity = new Vector3(CurrentyVelocity.x, 0.0f, CurrentyVelocity.z);
+                GravityVelocity = new Vector3(GravityVelocity.x, 0.0f, GravityVelocity.z);
                 OnAir = false;
             }
             return ground;
