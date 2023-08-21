@@ -22,7 +22,7 @@ namespace IsometricGameController
             {
                 debugInput = !debugInput;
 
-                if (debugInput) controller.ControllerState = GameControllerState.Combat;
+                if (debugInput) controller.ControllerState = GameControllerState.TurnBased;
                 else controller.ControllerState = GameControllerState.Exploring;
             }
         }

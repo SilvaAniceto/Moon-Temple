@@ -6,7 +6,7 @@ namespace IsometricGameController
     public enum GameControllerState
     {
         Exploring,
-        Combat
+        TurnBased
     }
     public struct IsometricInputHandler
     {
@@ -24,6 +24,10 @@ namespace IsometricGameController
         float OnAirSpeed { get; }
         float OnAirAcceleration { get; }
         float MaxSlopeAngle { get; set; }
+        float TurnBasedDistanceTravelled { get; set; }
+        bool TurnBasedMovementStarted { get; set; }
+        Vector3 TurnBasedTargetPosition { get; set; }
+        Vector3 TurnBasedTargetDirection { get; set; }
         Vector3 CurrentyVelocity { get; set; }
         CapsuleCollider CapsuleCollider { get; set; }
         GameControllerState ControllerState { get; set; }
@@ -37,6 +41,6 @@ namespace IsometricGameController
         Vector3 GetSlopeMoveDirection(Vector3 direction);
         void OnGameControllerStateChanged(GameControllerState state);
         void UpdateMovePosition(Vector3 inputDirection, float movementSpeed);
-        Vector3 UpdateCursorPosition(Vector3 inputDirection, float movementSpeed, bool confirmPosition);
+        Vector3 UpdateCursorPosition(Vector3 inputDirection, float movementSpeed);
     }
 }

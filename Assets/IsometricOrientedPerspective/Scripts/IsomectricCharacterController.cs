@@ -15,6 +15,10 @@ namespace IsometricGameController
         public float OnAirSpeed { get => OnGroundSpeed * 0.8f; }
         public float OnAirAcceleration { get => OnGroundAcceleration * 0.8f; }
         public float MaxSlopeAngle { get => m_maxSlopeAngle; set { if (m_maxSlopeAngle == value) return; m_maxSlopeAngle = value; } }
+        public float TurnBasedDistanceTravelled { get; set; }
+        public bool TurnBasedMovementStarted { get; set; }
+        public Vector3 TurnBasedTargetPosition { get; set; }
+        public Vector3 TurnBasedTargetDirection { get; set; }
         public Vector3 CurrentyVelocity { get; set; }
         public CapsuleCollider CapsuleCollider { get; set; }
         public CharacterController CharacterController { get; set; }
@@ -41,12 +45,12 @@ namespace IsometricGameController
         public static UnityEvent<GameControllerState> OnGameStateChanged = new UnityEvent<GameControllerState>();
 
         private GameControllerState m_state;
-        private Vector3 m_targetPosition;
         private Vector3 m_direction;
         private bool m_confirm;
         private bool m_accelerate;
         private bool m_jump;
-        private float distance;
+
+        public float distance;
 
         private void Awake()
         {
@@ -78,18 +82,37 @@ namespace IsometricGameController
                 case GameControllerState.Exploring:
                     UpdateMovePosition(m_direction.normalized, speed);
                     Jump(height, m_jump);
-                    break;
-                case GameControllerState.Combat:
-                    m_targetPosition = UpdateCursorPosition(m_direction.normalized, speed, m_confirm);
-                    distance = Vector3.Distance(m_targetPosition, transform.position);
+                break;
 
-                    if (m_confirm)
+                case GameControllerState.TurnBased:
+                    if (!TurnBasedMovementStarted)
                     {
-                        Vector3 direction = transform.position - m_targetPosition;
-                        StartCoroutine(MoveCharacter(direction.normalized, m_targetPosition, speed));
+                        TurnBasedTargetPosition = UpdateCursorPosition(m_direction.normalized, speed);
+
+                        if (m_confirm)
+                        {
+                            TurnBasedMovementStarted = true;
+                            TurnBasedTargetDirection = TurnBasedTargetPosition - transform.position;
+                        }
                     }
-                    break;
+                    else
+                    {
+                        TurnBasedDistanceTravelled = Vector2.Distance(new Vector2(TurnBasedTargetPosition.x, TurnBasedTargetPosition.z), new Vector2(transform.position.x, transform.position.z));
+                        if (Mathf.RoundToInt(TurnBasedDistanceTravelled) != 0)
+                        {
+                            if (!CharacterController.enabled) CharacterController.enabled = true;
+                            UpdateMovePosition(TurnBasedTargetDirection.normalized, speed);
+                        }
+                        else
+                        {
+                            CurrentyVelocity = Vector3.zero;
+                            CharacterController.enabled = false;
+                            TurnBasedMovementStarted = false;
+                        }
+                    }
+                break;
             }
+            distance = TurnBasedDistanceTravelled;
         }
 
         public void ApplyGravity()
@@ -109,11 +132,19 @@ namespace IsometricGameController
 
         public void UpdateMovePosition(Vector3 inputDirection, float movementSpeed)
         {
-            Vector3 right = inputDirection.x * IsometricOrientedPerspective.IsometricRight;
-            Vector3 forward = inputDirection.z * IsometricOrientedPerspective.IsometricForward;
+            Vector3 move = Vector3.zero;
+            if (!TurnBasedMovementStarted)
+            {
+                Vector3 right = inputDirection.x * IsometricOrientedPerspective.IsometricRight;
+                Vector3 forward = inputDirection.z * IsometricOrientedPerspective.IsometricForward;
 
-            Vector3 move = right + forward + Vector3.zero;
-            
+                move = right + forward + Vector3.zero;
+            }
+            else
+            {
+                move = new Vector3(inputDirection.x, 0, inputDirection.z);
+            }
+
             if (CheckGroundLevel())
             {
                 CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnGroundAcceleration * Time.deltaTime);
@@ -141,7 +172,7 @@ namespace IsometricGameController
             }
         }
 
-        public Vector3 UpdateCursorPosition(Vector3 inputDirection, float movementSpeed, bool confirmPosition)
+        public Vector3 UpdateCursorPosition(Vector3 inputDirection, float movementSpeed)
         {
             m_cursor.forward = IsometricOrientedPerspective.IsometricForward;
             m_cursor.Translate(inputDirection * Time.deltaTime * movementSpeed * OnGroundAcceleration);
@@ -149,19 +180,6 @@ namespace IsometricGameController
             transform.LookAt(new Vector3(m_cursor.position.x, transform.position.y, m_cursor.position.z));
 
             return m_cursor.position;
-        }
-
-        IEnumerator MoveCharacter(Vector3 direction, Vector3 targetPosition, float speed)
-        {
-            if (!CharacterController.enabled) CharacterController.enabled = true;
-            while (distance > 0) 
-            {
-                UpdateMovePosition(direction, speed);
-                distance = Vector3.Distance(targetPosition, transform.position);
-            }
-            CharacterController.enabled = false;
-
-            yield return null;
         }
 
         public void Jump(float jumpHeight, bool jumpInput)
@@ -224,7 +242,7 @@ namespace IsometricGameController
                 case GameControllerState.Exploring:
                     m_jump = inputs.JumpInput;
                     break;
-                case GameControllerState.Combat:
+                case GameControllerState.TurnBased:
                     m_confirm = inputs.PlayerConfirmEntry;
                     break;
             }
@@ -243,7 +261,7 @@ namespace IsometricGameController
                     m_cursor.gameObject.SetActive(false);
                     CharacterController.enabled = true;
                     break;
-                case GameControllerState.Combat:
+                case GameControllerState.TurnBased:
                     m_cursor.gameObject.SetActive(true);
                     CharacterController.enabled = false;
                     break;
