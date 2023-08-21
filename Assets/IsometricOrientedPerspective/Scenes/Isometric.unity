@@ -1383,7 +1383,7 @@ Transform:
   m_GameObject: {fileID: 46491069}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2, y: 0.1, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 349381199}
   m_RootOrder: 1
@@ -10551,10 +10551,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   m_maxSlopeAngle: 45
-  m_movementSpeed: 8
+  m_onGroundSpeed: 8
   m_acceleration: 2.5
-  m_rotation: 5
   m_jumpHeight: 1.5
+  m_drag: 0.5
   m_cursor: {fileID: 46491070}
 --- !u!136 &544792297
 CapsuleCollider:

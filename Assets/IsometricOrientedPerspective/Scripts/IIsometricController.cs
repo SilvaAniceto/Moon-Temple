@@ -37,5 +37,6 @@ namespace IsometricGameController
         Vector3 GetSlopeMoveDirection(Vector3 direction);
         void OnGameControllerStateChanged(GameControllerState state);
         void UpdateMovePosition(Vector3 inputDirection, float movementSpeed);
+        Vector3 UpdateCursorPosition(Vector3 inputDirection, float movementSpeed, bool confirmPosition);
     }
 }

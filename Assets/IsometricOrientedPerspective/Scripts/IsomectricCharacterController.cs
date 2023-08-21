@@ -1,3 +1,5 @@
+using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -39,10 +41,12 @@ namespace IsometricGameController
         public static UnityEvent<GameControllerState> OnGameStateChanged = new UnityEvent<GameControllerState>();
 
         private GameControllerState m_state;
+        private Vector3 m_targetPosition;
         private Vector3 m_direction;
         private bool m_confirm;
         private bool m_accelerate;
         private bool m_jump;
+        private float distance;
 
         private void Awake()
         {
@@ -69,8 +73,23 @@ namespace IsometricGameController
             float speed = CheckGroundLevel() ? (m_accelerate ? OnGroundSpeed * 2f : OnGroundSpeed) : (m_accelerate ? OnAirSpeed * 2f : OnAirSpeed);
             float height = m_accelerate ? JumpHeight * 1.5f : JumpHeight;
 
-            UpdateMovePosition(m_direction.normalized, speed);
-            Jump(height, m_jump);
+            switch (ControllerState)
+            {
+                case GameControllerState.Exploring:
+                    UpdateMovePosition(m_direction.normalized, speed);
+                    Jump(height, m_jump);
+                    break;
+                case GameControllerState.Combat:
+                    m_targetPosition = UpdateCursorPosition(m_direction.normalized, speed, m_confirm);
+                    distance = Vector3.Distance(m_targetPosition, transform.position);
+
+                    if (m_confirm)
+                    {
+                        Vector3 direction = transform.position - m_targetPosition;
+                        StartCoroutine(MoveCharacter(direction.normalized, m_targetPosition, speed));
+                    }
+                    break;
+            }
         }
 
         public void ApplyGravity()
@@ -120,14 +139,29 @@ namespace IsometricGameController
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 5 * Time.deltaTime);
             }
+        }
 
-            if (ControllerState == GameControllerState.Combat)
+        public Vector3 UpdateCursorPosition(Vector3 inputDirection, float movementSpeed, bool confirmPosition)
+        {
+            m_cursor.forward = IsometricOrientedPerspective.IsometricForward;
+            m_cursor.Translate(inputDirection * Time.deltaTime * movementSpeed * OnGroundAcceleration);
+
+            transform.LookAt(new Vector3(m_cursor.position.x, transform.position.y, m_cursor.position.z));
+
+            return m_cursor.position;
+        }
+
+        IEnumerator MoveCharacter(Vector3 direction, Vector3 targetPosition, float speed)
+        {
+            if (!CharacterController.enabled) CharacterController.enabled = true;
+            while (distance > 0) 
             {
-                m_cursor.forward = IsometricOrientedPerspective.IsometricForward;
-                m_cursor.Translate(inputDirection * Time.deltaTime * movementSpeed * OnGroundAcceleration);
-
-                transform.LookAt(new Vector3(m_cursor.position.x, transform.position.y, m_cursor.position.z));
+                UpdateMovePosition(direction, speed);
+                distance = Vector3.Distance(targetPosition, transform.position);
             }
+            CharacterController.enabled = false;
+
+            yield return null;
         }
 
         public void Jump(float jumpHeight, bool jumpInput)
