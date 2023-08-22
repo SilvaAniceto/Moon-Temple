@@ -4,8 +4,8 @@ namespace IsometricGameController
 {
     public interface IIsometricGravity
     {
-        bool OnAir { get; set; }
         float Gravity { get; }
+        float GravityMultiplierFactor { get; set; }
         float Drag { get; set; }
         float JumpSpeed { get; }
         float JumpHeight { get; set; }

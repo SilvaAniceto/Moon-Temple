@@ -19,6 +19,7 @@ namespace IsometricGameController
     }
     public interface IIsometricController
     {
+        bool OnGround { get; set; }
         float OnGroundSpeed { get; set; }
         float OnGroundAcceleration { get; set; }
         float OnAirSpeed { get; }
@@ -36,7 +37,7 @@ namespace IsometricGameController
         bool OnSlope();
         float SlopeAngle();
         RaycastHit SlopeHit();
-        void Jump(float jumpHeight, bool jumpInput);
+        void Jump(bool jumpInput);
         void SetInput(IsometricInputHandler inputs);
         Vector3 GetSlopeMoveDirection(Vector3 direction);
         void OnGameControllerStateChanged(GameControllerState state);
