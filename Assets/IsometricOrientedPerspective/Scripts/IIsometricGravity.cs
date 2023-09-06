@@ -4,6 +4,10 @@ namespace IsometricGameController
 {
     public interface IIsometricGravity
     {
+        Vector3 LastGroundedPosition { get; set; }
+        Vector3 CurrentUngroudedPosition { get; set; }
+        bool Jumping { get; set; }
+        bool Falling { get; set; }
         float Gravity { get; }
         float GravityMultiplierFactor { get; set; }
         float Drag { get; set; }

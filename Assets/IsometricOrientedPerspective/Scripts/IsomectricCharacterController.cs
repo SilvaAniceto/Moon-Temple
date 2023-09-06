@@ -13,9 +13,24 @@ namespace IsometricGameController
         public static UnityEvent<GameControllerState> OnGameStateChanged = new UnityEvent<GameControllerState>();
 
         #region PROPERTIES
-        public bool OnGround { get => onGround; set { if (onGround == value) return; onGround = value; if (!onGround) { StopCoroutine(CheckingUngroundedStates()); lastGroundedPos = transform.localPosition; StartCoroutine(CheckingUngroundedStates()); } } }
+        public bool OnGround
+        { 
+            get => onGround;
+            set
+            {
+                if (onGround == value) return;
+                onGround = value;
+                if (!onGround)
+                {
+                    StopCoroutine(CheckingUngroundedStates());
+                    LastGroundedPosition = transform.localPosition;
+                    StartCoroutine(CheckingUngroundedStates());
+                }
+            }
+        }
         public float OnGroundSpeed { get => m_onGroundSpeed; set { if (m_onGroundSpeed == value) return; m_onGroundSpeed = value; } }
         public float OnGroundAcceleration { get => m_acceleration; set { if (m_acceleration == value) return; m_acceleration = value; } }
+        public bool AllowJump { get; set; }
         public float OnAirSpeed { get => OnGroundSpeed * 0.8f; }
         public float OnAirAcceleration { get => OnGroundAcceleration * 0.8f; }
         public float MaxSlopeAngle { get => m_maxSlopeAngle; set { if (m_maxSlopeAngle == value) return; m_maxSlopeAngle = value; } }
@@ -28,22 +43,18 @@ namespace IsometricGameController
         public CharacterController CharacterController { get; set; }
         public GameControllerState ControllerState { get => m_state; set { m_state = value; OnGameStateChanged?.Invoke(ControllerState); } }
 
+        public Vector3 LastGroundedPosition { get; set; }
+        public Vector3 CurrentUngroudedPosition { get; set; }
+        public bool Jumping { get; set; }
+        public bool Falling { get; set; }
         public float Gravity { get => 9.81f; }
         public float GravityMultiplierFactor { get; set; }
         public Vector3 GravityVelocity { get; set; }
-        public float JumpHeight { get => m_jumpHeight; set { if (value == m_jumpHeight) return; m_jumpHeight = value; } }
+        public float JumpHeight { get => m_accelerate? m_jumpHeight *1.5f : m_jumpHeight; set { if (value == m_jumpHeight) return; m_jumpHeight = value; } }
         public float JumpSpeed { get => Mathf.Sqrt(2.0f * JumpHeight * Gravity); }
         public float Drag { get => m_drag; set { if (value == m_drag) return; m_drag = value; } }
         public LayerMask WhatIsGround { get => m_layerMask; set { if (value == m_layerMask) return; m_layerMask = value; } }
         #endregion
-
-        public bool jumping;
-        public bool falling;
-        public bool onGround;
-        public bool allowJump = true;
-        public Vector3 lastGroundedPos;
-        public Vector3 currentPos;
-        public Vector3 gravityVel;
 
         #region INSPECTOR FIELDS
         [SerializeField] private LayerMask m_layerMask;
@@ -58,6 +69,7 @@ namespace IsometricGameController
         #endregion
 
         #region PRIVATE FIELDS
+        private bool onGround;
         private GameControllerState m_state;
         private Vector3 m_direction;
         private bool m_confirm;
@@ -76,6 +88,7 @@ namespace IsometricGameController
                 CharacterController.slopeLimit = 0;
             }
 
+            StartCoroutine(CheckingUngroundedStates());
             GravityMultiplierFactor = 1.0f;
 
             OnGameStateChanged.AddListener(OnGameControllerStateChanged);
@@ -86,12 +99,9 @@ namespace IsometricGameController
         }
         void Update()
         {
-            gravityVel = GravityVelocity;
-
-            //ApplyGravity();
+            ApplyGravity();
 
             float speed = CheckGroundLevel() ? (m_accelerate ? OnGroundSpeed * 2f : OnGroundSpeed) : (m_accelerate ? OnAirSpeed * 2f : OnAirSpeed);
-            float height = m_accelerate ? JumpHeight * 1.5f : JumpHeight;
 
             switch (ControllerState)
             {
@@ -143,7 +153,7 @@ namespace IsometricGameController
         }
         public void UpdateMovePosition(Vector3 inputDirection, float movementSpeed)
         {
-            Vector3 move = Vector3.zero;
+            Vector3 move = new Vector3();
             if (!TurnBasedMovementStarted)
             {
                 Vector3 right = inputDirection.x * IsometricOrientedPerspective.IsometricRight;
@@ -193,39 +203,22 @@ namespace IsometricGameController
         }
         public void Jump(bool jumpInput)
         {
-            #region NOT IN USE
-            //if (jumpInput && !jumping) GravityVelocity = new Vector3(0.0f, JumpSpeed, 0.0f);
-
-            //if (Mathf.RoundToInt(transform.position.y) >= Mathf.RoundToInt(Mathf.Sqrt(JumpSpeed)))
-            //{
-            //    ApplyGravity();
-            //}
-
-            //if (!jumpInput && jumping)
-            //{
-            //    GravityVelocity = new Vector3(0.0f, Gravity, 0.0f);
-            //    ApplyGravity();
-            //}
-            #endregion
             if (jumpInput)
             {
-                if (Mathf.RoundToInt(transform.position.y) <= Mathf.RoundToInt(Mathf.Sqrt(JumpSpeed)))
+                if (AllowJump)
                 {
-                    Vector3 jumpVector = new Vector3(0.0f, transform.position.y, 0.0f);
+                    float yVelocity = Mathf.Lerp(transform.position.y, JumpSpeed, 0.8f);
 
-                    jumpVector = Vector3.MoveTowards(jumpVector, new Vector3(0.0f, JumpSpeed, 0.0f), OnGroundAcceleration * Time.deltaTime);
+                    Vector3 jumpVector = new Vector3(0.0f, yVelocity, 0.0f);
 
-                    CharacterController.Move(jumpVector * Time.deltaTime * JumpSpeed);
-                }
-                else
-                {
-                    ApplyGravity();
+                    jumpVector = Vector3.MoveTowards(jumpVector, jumpVector, Time.fixedDeltaTime);
+
+                    CharacterController.Move(jumpVector * Time.deltaTime);
                 }
             }
-
-            if (!jumpInput)
+            if (!jumpInput && Jumping)
             {
-                ApplyGravity();
+                AllowJump = false;
             }
         }
         #endregion
@@ -235,27 +228,28 @@ namespace IsometricGameController
         {
             yield return new WaitForSeconds(0.125f);
 
-            currentPos = transform.localPosition;
+            CurrentUngroudedPosition = transform.localPosition;
 
-            if (lastGroundedPos.y > currentPos.y)
+            if (LastGroundedPosition.y > CurrentUngroudedPosition.y)
             {
                 GravityMultiplierFactor = 5f;
-                falling = true;
+                Falling = true;
             }
-            if (lastGroundedPos.y < currentPos.y)
+            if (LastGroundedPosition.y < CurrentUngroudedPosition.y)
             {
                 GravityMultiplierFactor = 1.5f;
-                jumping = true;
-                allowJump = false;
+                Jumping = true;
             }
 
             yield return new WaitUntil(() => onGround);
 
             GravityMultiplierFactor = 1.0f;
-            falling = false;
+            Falling = false;
+            Jumping = false;
+            AllowJump = false;
 
-            yield return new WaitForSeconds(0.5f);
-            jumping = false;
+            yield return new WaitForSeconds(0.2f);
+            AllowJump = true;
         }
         public bool CheckGroundLevel()
         {

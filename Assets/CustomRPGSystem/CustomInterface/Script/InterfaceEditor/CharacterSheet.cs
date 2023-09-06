@@ -15,11 +15,13 @@ namespace CustomRPGSystem
         [SerializeField] private GameObject m_attributePanel;
         [SerializeField] private GameObject m_skillPanel;
         [SerializeField] private GameObject m_spellcastPanel;
+        [SerializeField] private GameObject m_cardPanel;
 
         [Header("Panel Buttons")]
         [SerializeField] private Button m_skillButton;
         [SerializeField] private Button m_attributeButton;
         [SerializeField] private Button m_spellcastButton;
+        [SerializeField] private Button m_cardButton;
 
         [Header("Character Identification")]
         [SerializeField] private TMP_Text m_nameText;
@@ -84,6 +86,7 @@ namespace CustomRPGSystem
                 m_attributePanel.SetActive(false);
                 m_skillPanel.SetActive(true);
                 m_spellcastPanel.SetActive(false);
+                m_cardPanel.SetActive(false);
 
                 PanelButtonHandler();
             });
@@ -93,6 +96,7 @@ namespace CustomRPGSystem
                 m_attributePanel.SetActive(true);
                 m_skillPanel.SetActive(false);
                 m_spellcastPanel.SetActive(false);
+                m_cardPanel.SetActive(false);
 
                 PanelButtonHandler();
             });
@@ -102,6 +106,17 @@ namespace CustomRPGSystem
                 m_attributePanel.SetActive(false);
                 m_skillPanel.SetActive(false);
                 m_spellcastPanel.SetActive(true);
+                m_cardPanel.SetActive(false);
+
+                PanelButtonHandler();
+            });
+
+            m_cardButton.onClick.AddListener(delegate
+            {
+                m_attributePanel.SetActive(false);
+                m_skillPanel.SetActive(false);
+                m_spellcastPanel.SetActive(false);
+                m_cardPanel.SetActive(true);
 
                 PanelButtonHandler();
             });
@@ -282,6 +297,9 @@ namespace CustomRPGSystem
 
             if (m_spellcastPanel.activeInHierarchy) m_spellcastButton.gameObject.SetActive(false);
             else m_spellcastButton.gameObject.SetActive(true);
+
+            if (m_cardPanel.activeInHierarchy) m_cardButton.gameObject.SetActive(false);
+            else m_cardButton.gameObject.SetActive(true);
         }
         
         void PrepareSkills(PlayerCharacterData player)

@@ -22,6 +22,7 @@ namespace IsometricGameController
         bool OnGround { get; set; }
         float OnGroundSpeed { get; set; }
         float OnGroundAcceleration { get; set; }
+        bool AllowJump { get; set; }
         float OnAirSpeed { get; }
         float OnAirAcceleration { get; }
         float MaxSlopeAngle { get; set; }
