@@ -1,5 +1,4 @@
 using System.Collections;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,6 +12,13 @@ namespace IsometricGameController
         public static UnityEvent<GameControllerState> OnGameStateChanged = new UnityEvent<GameControllerState>();
 
         #region PROPERTIES
+        public float OnGroundSpeed { get; set; }
+        public float OnGroundAcceleration { get; set; }
+        public bool AllowJump { get; set; }
+        public float OnAirSpeed { get => OnGroundSpeed * 0.8f; }
+        public float OnAirAcceleration { get => OnGroundAcceleration * 0.8f; }
+        public float MaxSlopeAngle { get; set; }
+        public float TurnBasedDistanceTravelled { get; set; }
         public bool OnGround
         { 
             get => onGround;
@@ -28,14 +34,9 @@ namespace IsometricGameController
                 }
             }
         }
-        public float OnGroundSpeed { get => m_onGroundSpeed; set { if (m_onGroundSpeed == value) return; m_onGroundSpeed = value; } }
-        public float OnGroundAcceleration { get => m_acceleration; set { if (m_acceleration == value) return; m_acceleration = value; } }
-        public bool AllowJump { get; set; }
-        public float OnAirSpeed { get => OnGroundSpeed * 0.8f; }
-        public float OnAirAcceleration { get => OnGroundAcceleration * 0.8f; }
-        public float MaxSlopeAngle { get => m_maxSlopeAngle; set { if (m_maxSlopeAngle == value) return; m_maxSlopeAngle = value; } }
-        public float TurnBasedDistanceTravelled { get; set; }
         public bool TurnBasedMovementStarted { get; set; }
+        public Vector3 Forward { get; set; }
+        public Vector3 Right { get; set; }
         public Vector3 TurnBasedTargetPosition { get; set; }
         public Vector3 TurnBasedTargetDirection { get; set; }
         public Vector3 CurrentyVelocity { get; set; }
@@ -50,23 +51,23 @@ namespace IsometricGameController
         public float Gravity { get => 9.81f; }
         public float GravityMultiplierFactor { get; set; }
         public Vector3 GravityVelocity { get; set; }
-        public float JumpHeight { get => m_accelerate? m_jumpHeight *1.5f : m_jumpHeight; set { if (value == m_jumpHeight) return; m_jumpHeight = value; } }
+        public float JumpHeight { get; set; }
         public float JumpSpeed { get => Mathf.Sqrt(2.0f * JumpHeight * Gravity); }
-        public float Drag { get => m_drag; set { if (value == m_drag) return; m_drag = value; } }
-        public LayerMask WhatIsGround { get => m_layerMask; set { if (value == m_layerMask) return; m_layerMask = value; } }
+        public float Drag { get; set; }
+        public LayerMask WhatIsGround { get; set; }
         #endregion
 
-        #region INSPECTOR FIELDS
-        [SerializeField] private LayerMask m_layerMask;
-        [SerializeField] private float m_maxSlopeAngle = 45f;
-        [SerializeField] private float m_onGroundSpeed = 8;
+        //#region INSPECTOR FIELDS
+        //[SerializeField] private LayerMask m_layerMask;
+        //[SerializeField] private float m_maxSlopeAngle = 45f;
+        //[SerializeField] private float m_onGroundSpeed = 8;
 
-        [SerializeField][Range(1f, 5)] private float m_acceleration = 2.5f;
-        [SerializeField][Range(1.2f, 10)] private float m_jumpHeight = 1.5f;
-        [SerializeField][Range(0, 100)] private float m_drag = 0.5f;
+        //[SerializeField][Range(1f, 5)] private float m_acceleration = 2.5f;
+        //[SerializeField][Range(1.2f, 10)] private float m_jumpHeight = 1.5f;
+        //[SerializeField][Range(0, 100)] private float m_drag = 0.5f;
 
-        [SerializeField] private Transform m_cursor;
-        #endregion
+        //[SerializeField] private Transform m_cursor;
+        //#endregion
 
         #region PRIVATE FIELDS
         private bool onGround;
@@ -75,6 +76,8 @@ namespace IsometricGameController
         private bool m_confirm;
         private bool m_accelerate;
         private bool m_jump;
+        private bool m_aiming;
+        private Vector2 m_playerLook;
         #endregion
 
         #region DEFAULT METHODS
@@ -156,8 +159,8 @@ namespace IsometricGameController
             Vector3 move = new Vector3();
             if (!TurnBasedMovementStarted)
             {
-                Vector3 right = inputDirection.x * IsometricOrientedPerspective.IsometricRight;
-                Vector3 forward = inputDirection.z * IsometricOrientedPerspective.IsometricForward;
+                Vector3 right = inputDirection.x * Right;
+                Vector3 forward = inputDirection.z * Forward;
 
                 move = right + forward + Vector3.zero;
             }
@@ -194,12 +197,13 @@ namespace IsometricGameController
         }
         public Vector3 UpdateCursorPosition(Vector3 inputDirection, float movementSpeed)
         {
-            m_cursor.forward = IsometricOrientedPerspective.IsometricForward;
-            m_cursor.Translate(inputDirection * Time.deltaTime * movementSpeed * OnGroundAcceleration);
+            //m_cursor.forward = IsometricOrientedPerspective.IsometricForward;
+            //m_cursor.Translate(inputDirection * Time.deltaTime * movementSpeed * OnGroundAcceleration);
 
-            transform.LookAt(new Vector3(m_cursor.position.x, transform.position.y, m_cursor.position.z));
+            //transform.LookAt(new Vector3(m_cursor.position.x, transform.position.y, m_cursor.position.z));
 
-            return m_cursor.position;
+            //return m_cursor.position;
+            return Vector3.zero;
         }
         public void Jump(bool jumpInput)
         {
@@ -309,22 +313,25 @@ namespace IsometricGameController
 
             if (inputs.AccelerateSpeed) m_accelerate = !m_accelerate;
             if (m_direction == Vector3.zero) m_accelerate = false;
+
+            m_aiming = inputs.CameraAimInput;
+            m_playerLook = inputs.CameraLook;
         }
         public void OnGameControllerStateChanged(GameControllerState state)
         {
-            m_cursor.position = new Vector3(transform.position.x, transform.parent.position.y, transform.position.z);
-            CharacterController.Move(Vector3.zero);
-            switch (state)
-            {
-                case GameControllerState.Exploring:
-                    m_cursor.gameObject.SetActive(false);
-                    CharacterController.enabled = true;
-                    break;
-                case GameControllerState.TurnBased:
-                    m_cursor.gameObject.SetActive(true);
-                    CharacterController.enabled = false;
-                    break;
-            }
+            //m_cursor.position = new Vector3(transform.position.x, transform.parent.position.y, transform.position.z);
+            //CharacterController.Move(Vector3.zero);
+            //switch (state)
+            //{
+            //    case GameControllerState.Exploring:
+            //        m_cursor.gameObject.SetActive(false);
+            //        CharacterController.enabled = true;
+            //        break;
+            //    case GameControllerState.TurnBased:
+            //        m_cursor.gameObject.SetActive(true);
+            //        CharacterController.enabled = false;
+            //        break;
+            //}
         }
         #endregion
     }
