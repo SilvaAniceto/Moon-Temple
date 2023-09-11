@@ -235,7 +235,11 @@ namespace CustomGameController
         }
         public void UpdateThirdPersonMovePosition(Vector3 inputDirection, float movementSpeed)
         {
-            Vector3 move = new Vector3(inputDirection.x, 0.0f, inputDirection.z);
+            Vector3 move = new Vector3();
+            Vector3 right = inputDirection.x * Right;
+            Vector3 forward = inputDirection.z * Forward;
+
+            move = right + forward + Vector3.zero;
 
             if (CheckGroundLevel())
             {
@@ -262,6 +266,40 @@ namespace CustomGameController
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 5 * Time.deltaTime);
             }
+        }
+        public void UpdateFirstPersonMovePosition(Vector3 inputDirection, float movementSpeed)
+        {
+            Vector3 move = new Vector3();
+            Vector3 right = inputDirection.x * Right;
+            Vector3 forward = inputDirection.z * Forward;
+
+            move = right + forward + Vector3.zero;
+
+            if (CheckGroundLevel())
+            {
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnGroundAcceleration * Time.deltaTime);
+
+                if (OnSlope())
+                    CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                else
+                    CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
+            }
+            else
+            {
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnAirAcceleration * Time.deltaTime);
+
+                float x = ApplyDrag(CurrentyVelocity.x, Drag);
+                float z = ApplyDrag(CurrentyVelocity.z, Drag);
+
+                CurrentyVelocity = new Vector3(x, 0, z);
+
+                CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
+            }
+
+            //if (move != Vector3.zero)
+            //{
+            //    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 5 * Time.deltaTime);
+            //}
         }
         #endregion
 
@@ -336,7 +374,7 @@ namespace CustomGameController
                 case CustomCamera.CameraPerspective.Over_Shoulder:
                     break;
                 case CustomCamera.CameraPerspective.First_Person:
-                    UpdateThirdPersonMovePosition(m_direction.normalized, speed);
+                    UpdateFirstPersonMovePosition(m_direction.normalized, speed);
                     break;
                 default:
                     break;

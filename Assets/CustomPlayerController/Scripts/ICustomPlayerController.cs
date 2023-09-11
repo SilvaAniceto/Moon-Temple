@@ -83,6 +83,7 @@ namespace CustomGameController
         void Jump(bool jumpInput);
         void UpdateIsometricMovePosition(Vector3 inputDirection, float movementSpeed);
         void UpdateThirdPersonMovePosition(Vector3 inputDirection, float movementSpeed);
+        void UpdateFirstPersonMovePosition(Vector3 inputDirection, float movementSpeed);
         #endregion
 
         #region PLAYER INPUT METHODS

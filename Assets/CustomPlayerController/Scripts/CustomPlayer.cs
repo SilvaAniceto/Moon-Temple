@@ -28,9 +28,6 @@ namespace CustomGameController
         {
             CameraCustom.Perspective = CustomCamera.CameraPerspective.Isometric;
 
-            CustomController.Forward = CustomPerspective.CustomForward;
-            CustomController.Right = CustomPerspective.CustomRight;
-
             CustomController.GroundLayer = m_groundLayer;
             CustomController.MaxSlopeAngle = m_maxSlopeAngle;
             CustomController.OnGroundSpeed = m_onGroundSpeed;
@@ -41,6 +38,9 @@ namespace CustomGameController
         }
         void Update()
         {
+            CustomController.Forward = CustomPerspective.CustomForward;
+            CustomController.Right = CustomPerspective.CustomRight;
+
             ReadPlayerInput();
         }
 
