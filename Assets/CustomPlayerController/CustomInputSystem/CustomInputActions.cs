@@ -46,18 +46,9 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""CameraLook"",
-                    ""type"": ""Value"",
-                    ""id"": ""c4d56ee4-e397-42f5-869d-3d0da0e8c6c3"",
-                    ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""CameraAim"",
+                    ""name"": ""Sprint"",
                     ""type"": ""Button"",
-                    ""id"": ""b79945f8-d227-43a3-887d-8a44f606511e"",
+                    ""id"": ""9e002070-7928-42dd-a6a1-f70e35746461"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -155,23 +146,23 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""d5bc5552-4f15-4fb8-92d9-952e00ca95a3"",
-                    ""path"": ""<Mouse>/delta"",
+                    ""id"": ""92f0bd53-e01c-4d4e-a163-0e8fc489a751"",
+                    ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
-                    ""processors"": ""ScaleVector2(y=-1)"",
+                    ""processors"": """",
                     ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""CameraLook"",
+                    ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""52167fa4-7daa-4763-9186-fcd3513c69d4"",
-                    ""path"": ""<Mouse>/rightButton"",
+                    ""id"": ""76f81138-9880-4a76-98ee-695bb7c73d62"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""CameraAim"",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -195,8 +186,7 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
         m_PlayerActions = asset.FindActionMap("PlayerActions", throwIfNotFound: true);
         m_PlayerActions_Move = m_PlayerActions.FindAction("Move", throwIfNotFound: true);
         m_PlayerActions_Jump = m_PlayerActions.FindAction("Jump", throwIfNotFound: true);
-        m_PlayerActions_CameraLook = m_PlayerActions.FindAction("CameraLook", throwIfNotFound: true);
-        m_PlayerActions_CameraAim = m_PlayerActions.FindAction("CameraAim", throwIfNotFound: true);
+        m_PlayerActions_Sprint = m_PlayerActions.FindAction("Sprint", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -258,16 +248,14 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
     private IPlayerActionsActions m_PlayerActionsActionsCallbackInterface;
     private readonly InputAction m_PlayerActions_Move;
     private readonly InputAction m_PlayerActions_Jump;
-    private readonly InputAction m_PlayerActions_CameraLook;
-    private readonly InputAction m_PlayerActions_CameraAim;
+    private readonly InputAction m_PlayerActions_Sprint;
     public struct PlayerActionsActions
     {
         private @CustomInputActions m_Wrapper;
         public PlayerActionsActions(@CustomInputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Move => m_Wrapper.m_PlayerActions_Move;
         public InputAction @Jump => m_Wrapper.m_PlayerActions_Jump;
-        public InputAction @CameraLook => m_Wrapper.m_PlayerActions_CameraLook;
-        public InputAction @CameraAim => m_Wrapper.m_PlayerActions_CameraAim;
+        public InputAction @Sprint => m_Wrapper.m_PlayerActions_Sprint;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -283,12 +271,9 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
                 @Jump.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnJump;
-                @CameraLook.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCameraLook;
-                @CameraLook.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCameraLook;
-                @CameraLook.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCameraLook;
-                @CameraAim.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCameraAim;
-                @CameraAim.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCameraAim;
-                @CameraAim.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCameraAim;
+                @Sprint.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnSprint;
+                @Sprint.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnSprint;
+                @Sprint.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnSprint;
             }
             m_Wrapper.m_PlayerActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -299,12 +284,9 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
-                @CameraLook.started += instance.OnCameraLook;
-                @CameraLook.performed += instance.OnCameraLook;
-                @CameraLook.canceled += instance.OnCameraLook;
-                @CameraAim.started += instance.OnCameraAim;
-                @CameraAim.performed += instance.OnCameraAim;
-                @CameraAim.canceled += instance.OnCameraAim;
+                @Sprint.started += instance.OnSprint;
+                @Sprint.performed += instance.OnSprint;
+                @Sprint.canceled += instance.OnSprint;
             }
         }
     }
@@ -331,7 +313,6 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
     {
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
-        void OnCameraLook(InputAction.CallbackContext context);
-        void OnCameraAim(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
     }
 }

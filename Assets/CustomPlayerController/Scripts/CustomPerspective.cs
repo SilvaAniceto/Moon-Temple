@@ -1,13 +1,13 @@
 using UnityEngine;
 
-namespace IsometricGameController
+namespace CustomGameController
 {
-    public static class IsometricOrientedPerspective
+    public static class CustomPerspective
     {
         /// <summary>
         /// New forward orientation for Isometric Perspective.
         /// </summary>
-        public static Vector3 IsometricForward
+        public static Vector3 CustomForward
         {
             get
             {
@@ -21,7 +21,7 @@ namespace IsometricGameController
         /// <summary>
         /// New right orientation for Isometric Perspective.
         /// </summary>
-        public static Vector3 IsometricRight
+        public static Vector3 CustomRight
         {
             get
             {

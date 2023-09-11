@@ -24,18 +24,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CameraLook",
-                    "type": "Value",
-                    "id": "c4d56ee4-e397-42f5-869d-3d0da0e8c6c3",
-                    "expectedControlType": "Vector2",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "CameraAim",
+                    "name": "Sprint",
                     "type": "Button",
-                    "id": "b79945f8-d227-43a3-887d-8a44f606511e",
+                    "id": "9e002070-7928-42dd-a6a1-f70e35746461",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -133,23 +124,23 @@
                 },
                 {
                     "name": "",
-                    "id": "d5bc5552-4f15-4fb8-92d9-952e00ca95a3",
-                    "path": "<Mouse>/delta",
+                    "id": "92f0bd53-e01c-4d4e-a163-0e8fc489a751",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "",
-                    "processors": "ScaleVector2(y=-1)",
+                    "processors": "",
                     "groups": "Mouse&Keyboard",
-                    "action": "CameraLook",
+                    "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "52167fa4-7daa-4763-9186-fcd3513c69d4",
-                    "path": "<Mouse>/rightButton",
+                    "id": "76f81138-9880-4a76-98ee-695bb7c73d62",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Mouse&Keyboard",
-                    "action": "CameraAim",
+                    "groups": "Gamepad",
+                    "action": "Sprint",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

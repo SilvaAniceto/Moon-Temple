@@ -1,0 +1,80 @@
+{
+    "name": "DebugInput",
+    "maps": [
+        {
+            "name": "DebugActions",
+            "id": "5e2751c5-7ee9-478a-b4bf-07e0ff1940a6",
+            "actions": [
+                {
+                    "name": "ToggleIsometric",
+                    "type": "Button",
+                    "id": "87461e76-d466-4c55-a2d8-2f3e5024313c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleThirdPerson",
+                    "type": "Button",
+                    "id": "55391433-9036-4752-9e4d-1bc2502a4dc9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleFirstPerson",
+                    "type": "Button",
+                    "id": "6fc871f6-3a5a-4722-8558-cd74402809e1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "01db970a-8e61-484d-bb43-7bcfbf4f86da",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "ToggleIsometric",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1a52593b-fd63-410a-91f2-6fedc258990f",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "ToggleThirdPerson",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fea45eb8-c7b9-4248-a62e-449f5d847a2e",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "ToggleFirstPerson",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": [
+        {
+            "name": "Keyboard",
+            "bindingGroup": "Keyboard",
+            "devices": []
+        }
+    ]
+}
