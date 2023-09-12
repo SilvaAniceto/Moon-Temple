@@ -7389,7 +7389,7 @@ MonoBehaviour:
   m_drag: 1.8
   m_CameraTarget: {fileID: 544792295}
   m_CameraPivot: {fileID: 551122439}
-  m_cameraSensibility: 1
+  m_cameraSensibility: 0.5
 --- !u!4 &349381199
 Transform:
   m_ObjectHideFlags: 0
