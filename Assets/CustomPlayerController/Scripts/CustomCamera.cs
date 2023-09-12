@@ -78,16 +78,16 @@ namespace CustomGameController
 
         public void UpdateFirstPersonCamera(float cameraTilt, float cameraPan)
         {
-            xRot += cameraTilt;
-            yRot += cameraPan;
+            xRot += cameraTilt * CameraSensibility;
+            yRot += cameraPan * CameraSensibility;
             PlayerCamera.transform.localRotation = Quaternion.Euler(xRot, yRot, 0.0f);
-            CameraTarget.transform.localRotation = Quaternion.Euler(CameraTarget.transform.localRotation.x, yRot, CameraTarget.transform.localRotation.z);
+            CameraTarget.transform.rotation = Quaternion.Euler(CameraTarget.transform.localRotation.x, yRot, CameraTarget.transform.localRotation.z);
         }
 
         public void UpdateIsometricCamera(float cameraTilt, float cameraPan)
         {
-            xRot += cameraTilt;
-            yRot += cameraPan;
+            xRot += cameraTilt * CameraSensibility;
+            yRot += cameraPan * CameraSensibility;
             CameraPivot.transform.localRotation = Quaternion.Euler(xRot, yRot, 0.0f);
         }
     }

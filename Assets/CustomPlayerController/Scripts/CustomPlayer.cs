@@ -11,9 +11,9 @@ namespace CustomGameController
         [SerializeField] private float m_maxSlopeAngle = 45f;
         [SerializeField] private float m_onGroundSpeed = 8;
 
-        [SerializeField][Range(1f, 5)] private float m_acceleration = 2.5f;
-        [SerializeField][Range(1.2f, 10)] private float m_jumpHeight = 1.5f;
-        [SerializeField][Range(0, 100)] private float m_drag = 0.5f;
+        [SerializeField, Range(1f, 5)] private float m_acceleration = 2.5f;
+        [SerializeField, Range(1.2f, 10)] private float m_jumpHeight = 1.5f;
+        [SerializeField, Range(0, 100)] private float m_drag = 0.5f;
 
         [SerializeField] private Transform m_CameraTarget;
         [SerializeField] private Transform m_CameraPivot;
