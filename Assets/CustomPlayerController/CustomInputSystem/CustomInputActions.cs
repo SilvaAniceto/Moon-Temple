@@ -53,6 +53,24 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CameraAxis"",
+                    ""type"": ""Value"",
+                    ""id"": ""e5d67788-fd8d-4a3f-92a8-336696ee5243"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": ""ScaleVector2(y=-1)"",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ChangeCameraPerspectiva"",
+                    ""type"": ""Button"",
+                    ""id"": ""88e9d148-1a63-4168-a7ad-e19a321727c0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -165,6 +183,50 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
                     ""action"": ""Sprint"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c3af5d24-9d4e-4bee-86c7-fbba516e50b8"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": ""ScaleVector2(y=-1)"",
+                    ""groups"": ""Mouse&Keyboard"",
+                    ""action"": ""CameraAxis"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4bc6381d-1ad6-4dd2-8bd7-5d044e51810e"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""CameraAxis"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e06605df-99bd-4129-bdb1-01781baa5a89"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse&Keyboard"",
+                    ""action"": ""ChangeCameraPerspectiva"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6fdb3392-a843-4687-b7e6-4c0eb28427f9"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""ChangeCameraPerspectiva"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -187,6 +249,8 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
         m_PlayerActions_Move = m_PlayerActions.FindAction("Move", throwIfNotFound: true);
         m_PlayerActions_Jump = m_PlayerActions.FindAction("Jump", throwIfNotFound: true);
         m_PlayerActions_Sprint = m_PlayerActions.FindAction("Sprint", throwIfNotFound: true);
+        m_PlayerActions_CameraAxis = m_PlayerActions.FindAction("CameraAxis", throwIfNotFound: true);
+        m_PlayerActions_ChangeCameraPerspectiva = m_PlayerActions.FindAction("ChangeCameraPerspectiva", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -249,6 +313,8 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_Move;
     private readonly InputAction m_PlayerActions_Jump;
     private readonly InputAction m_PlayerActions_Sprint;
+    private readonly InputAction m_PlayerActions_CameraAxis;
+    private readonly InputAction m_PlayerActions_ChangeCameraPerspectiva;
     public struct PlayerActionsActions
     {
         private @CustomInputActions m_Wrapper;
@@ -256,6 +322,8 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_PlayerActions_Move;
         public InputAction @Jump => m_Wrapper.m_PlayerActions_Jump;
         public InputAction @Sprint => m_Wrapper.m_PlayerActions_Sprint;
+        public InputAction @CameraAxis => m_Wrapper.m_PlayerActions_CameraAxis;
+        public InputAction @ChangeCameraPerspectiva => m_Wrapper.m_PlayerActions_ChangeCameraPerspectiva;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -274,6 +342,12 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
                 @Sprint.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnSprint;
                 @Sprint.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnSprint;
                 @Sprint.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnSprint;
+                @CameraAxis.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCameraAxis;
+                @CameraAxis.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCameraAxis;
+                @CameraAxis.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnCameraAxis;
+                @ChangeCameraPerspectiva.started -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnChangeCameraPerspectiva;
+                @ChangeCameraPerspectiva.performed -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnChangeCameraPerspectiva;
+                @ChangeCameraPerspectiva.canceled -= m_Wrapper.m_PlayerActionsActionsCallbackInterface.OnChangeCameraPerspectiva;
             }
             m_Wrapper.m_PlayerActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -287,6 +361,12 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
                 @Sprint.started += instance.OnSprint;
                 @Sprint.performed += instance.OnSprint;
                 @Sprint.canceled += instance.OnSprint;
+                @CameraAxis.started += instance.OnCameraAxis;
+                @CameraAxis.performed += instance.OnCameraAxis;
+                @CameraAxis.canceled += instance.OnCameraAxis;
+                @ChangeCameraPerspectiva.started += instance.OnChangeCameraPerspectiva;
+                @ChangeCameraPerspectiva.performed += instance.OnChangeCameraPerspectiva;
+                @ChangeCameraPerspectiva.canceled += instance.OnChangeCameraPerspectiva;
             }
         }
     }
@@ -314,5 +394,7 @@ public partial class @CustomInputActions : IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
+        void OnCameraAxis(InputAction.CallbackContext context);
+        void OnChangeCameraPerspectiva(InputAction.CallbackContext context);
     }
 }

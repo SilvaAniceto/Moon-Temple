@@ -296,19 +296,19 @@ namespace CustomGameController
                 CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
             }
 
-            //if (move != Vector3.zero)
-            //{
-            //    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 5 * Time.deltaTime);
-            //}
+            //transform.rotation = new Quaternion(transform.rotation.x, CustomCamera.Instance.PlayerCamera.transform.rotation.y, transform.rotation.z, 0.0f);
         }
         #endregion
 
-        #region PLAYER INPUT METHODS
+        #region PLAYER INPUT VALUES & METHODS
+        public Vector3 PlayerDirection { get; set; }
+        public bool SprintInput { get; set; }
+        public bool JumpInput { get; set; }
         public void SetInput(CustomPlayerInputHandler inputs)
         {
-            m_direction = inputs.MoveDirectionInput;
-            m_jump = inputs.JumpInput;
-            m_sprint = inputs.SprintInput;
+            PlayerDirection = inputs.MoveDirectionInput;
+            SprintInput = inputs.SprintInput;
+            JumpInput = inputs.JumpInput;
 
             #region NOT IN USE
             //switch (m_state)
@@ -329,10 +329,6 @@ namespace CustomGameController
         #region PRIVATE FIELDS
         private bool onGround;
         private GameControllerState m_state;
-
-        private Vector3 m_direction;
-        private bool m_sprint;
-        private bool m_jump;
         #endregion
 
         #region DEFAULT METHODS
@@ -359,27 +355,28 @@ namespace CustomGameController
         {
             ApplyGravity();
 
-            float speed = CheckGroundLevel() ? (m_sprint ? OnGroundSpeed * 2f : OnGroundSpeed) : (m_sprint ? OnAirSpeed * 2f : OnAirSpeed);
+            float speed = CheckGroundLevel() ? (SprintInput ? OnGroundSpeed * 2f : OnGroundSpeed) : (SprintInput ? OnAirSpeed * 2f : OnAirSpeed);
 
-            switch (CustomCamera.Instance.Perspective)
+            switch (CustomCamera.Instance.CameraPerspective)
             {
-                case CustomCamera.CameraPerspective.None:
+                case CameraPerspective.None:
                     break;
-                case CustomCamera.CameraPerspective.Isometric:
-                    UpdateIsometricMovePosition(m_direction.normalized, speed);
+                case CameraPerspective.Isometric:
+                    UpdateIsometricMovePosition(PlayerDirection.normalized, speed);
                     break;
-                case CustomCamera.CameraPerspective.Third_Person:
-                    UpdateThirdPersonMovePosition(m_direction.normalized, speed);
+                case CameraPerspective.Third_Person:
+                    UpdateThirdPersonMovePosition(PlayerDirection.normalized, speed);
                     break;
-                case CustomCamera.CameraPerspective.Over_Shoulder:
+                case CameraPerspective.Over_Shoulder:
                     break;
-                case CustomCamera.CameraPerspective.First_Person:
-                    UpdateFirstPersonMovePosition(m_direction.normalized, speed);
+                case CameraPerspective.First_Person:
+                    UpdateFirstPersonMovePosition(PlayerDirection.normalized, speed);
                     break;
                 default:
                     break;
             }
-            Jump(m_jump);
+
+            Jump(JumpInput);
 
             #region NOT IN USE
             //switch (ControllerState)

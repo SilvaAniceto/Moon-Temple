@@ -2,92 +2,93 @@ using UnityEngine;
 
 namespace CustomGameController
 {
-    public interface ICustomCamera
-    {
-        Vector2 CameraLook { get; set; }
-        bool CameraAimInput { get; set; }
-
-        void SetInput(CustomPlayerInputHandler inputs);
-    }
     public class CustomCamera : MonoBehaviour, ICustomCamera
     {
         public static CustomCamera Instance;
+        public Camera PlayerCamera { get; set; }
+        public CameraPerspective CameraPerspective { get; set; }
+        public Transform CameraTarget { get; set; }
+        public Transform CameraPivot { get; set; }
+        public float CameraSensibility { get; set; }
+        public float CameraPan { get; set; }
+        public float CameraTilt { get; set; }
+        public bool ChangeCameraPerspective { get; set; }
 
-        public enum CameraPerspective
-        {
-            None = 0,
-            Isometric,
-            Third_Person,
-            Over_Shoulder,
-            First_Person
-        }
-
-        [SerializeField] private Camera m_camera;
-
-        [Header("Camera Settings")]
-        [Range(10f, 100f)][SerializeField] private float m_cameraSpeed;
-        [Range(1f, 3f)][SerializeField] private float m_verticalOffset;
-
-        [Header("Camera Target")]
-        [SerializeField] private Transform m_target;
-
-        public Vector2 CameraLook { get; set; }
-        public bool CameraAimInput { get; set; }
-        public CameraPerspective Perspective { get; set; }
-
+        float xRot = 0;
+        float yRot = 0;
         private void Awake()
         {
             if (Instance == null) Instance = this;
+
+            PlayerCamera = GetComponentInChildren<Camera>();
         }
 
         void Update()
         {
-            if (Perspective != CameraPerspective.First_Person)
+            if (CameraPerspective != CameraPerspective.First_Person)
             {
-                var targetRotation = Quaternion.LookRotation(m_target.position - transform.position);
+                var targetRotation = Quaternion.LookRotation(CameraTarget.position - transform.position);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
+                UpdateIsometricCamera(CameraTilt, CameraPan);
             }
-            else if (Perspective == CameraPerspective.First_Person)
+            else if (CameraPerspective == CameraPerspective.First_Person)
             {
-                transform.rotation = m_target.rotation;
+                UpdateFirstPersonCamera(CameraTilt, CameraPan);
             }
         }
 
         public void SetInput(CustomPlayerInputHandler inputs)
         {
-
+            CameraPan = inputs.CameraAxis.y;
+            CameraTilt = inputs.CameraAxis.x;
+            ChangeCameraPerspective = inputs.ChangeCameraPerspective;
         }
 
         public void SetCameraPerspective(CameraPerspective perspective)
         {
-            Perspective = perspective;
+            CameraPerspective = perspective;
             switch (perspective)
             {
                 case CameraPerspective.None:
-                    m_camera.transform.localPosition = Vector3.zero;
+                    PlayerCamera.transform.localPosition = Vector3.zero;
                     break;
                 case CameraPerspective.Isometric:
-                    m_camera.transform.localPosition = new Vector3(-25.0f, 15.0f, -25.0f);
-                    m_camera.transform.rotation = Quaternion.Euler( new Vector3(0.0f, 45.0f, 0.0f));
+                    PlayerCamera.transform.localPosition = new Vector3(-25.0f, 15.0f, -25.0f);
+                    PlayerCamera.transform.localRotation = Quaternion.Euler( new Vector3(0.0f, 45.0f, 0.0f));
 
-                    m_camera.orthographic = true;
-                    m_camera.orthographicSize = 10;
+                    PlayerCamera.orthographic = true;
+                    PlayerCamera.orthographicSize = 10;
                     break;
                 case CameraPerspective.Third_Person:
-                    m_camera.transform.localPosition = new Vector3(0.0f, 4.5f, -10.0f);
-                    m_camera.transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
+                    PlayerCamera.transform.localPosition = new Vector3(0.0f, 4.5f, -10.0f);
+                    PlayerCamera.transform.localRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
 
-                    m_camera.orthographic = false;
+                    PlayerCamera.orthographic = false;
                     break;
                 case CameraPerspective.Over_Shoulder:
                     break;
                 case CameraPerspective.First_Person:
-                    m_camera.transform.localPosition = new Vector3(0.0f, 1.5f, 0f);
-                    m_camera.transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
+                    PlayerCamera.transform.localPosition = new Vector3(0.0f, 1.5f, 0f);
+                    PlayerCamera.transform.localRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
 
-                    m_camera.orthographic = false;
+                    PlayerCamera.orthographic = false;
                     break;
             }
+        }
+
+        public void UpdateFirstPersonCamera(float cameraTilt, float cameraPan)
+        {
+            xRot += cameraTilt;
+            yRot += cameraPan;
+            PlayerCamera.transform.localRotation = Quaternion.Euler(xRot, yRot, 0.0f);
+            CameraTarget.transform.localRotation = Quaternion.Euler(CameraTarget.transform.localRotation.x, yRot, CameraTarget.transform.localRotation.z);
+        }
+
+        public void UpdateIsometricCamera(float cameraTilt, float cameraPan)
+        {
+            xRot += cameraTilt;
+            yRot += cameraPan;
+            CameraPivot.transform.localRotation = Quaternion.Euler(xRot, yRot, 0.0f);
         }
     }
 }

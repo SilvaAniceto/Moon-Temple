@@ -7387,6 +7387,9 @@ MonoBehaviour:
   m_acceleration: 2.5
   m_jumpHeight: 1.5
   m_drag: 1.8
+  m_CameraTarget: {fileID: 544792295}
+  m_CameraPivot: {fileID: 551122439}
+  m_cameraSensibility: 1
 --- !u!4 &349381199
 Transform:
   m_ObjectHideFlags: 0
@@ -38118,10 +38121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfc3c0dcd88369a458d57b38ebe29649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_camera: {fileID: 1976609390}
-  m_cameraSpeed: 35
-  m_verticalOffset: 1
-  m_target: {fileID: 544792295}
 --- !u!1 &1978336565
 GameObject:
   m_ObjectHideFlags: 0

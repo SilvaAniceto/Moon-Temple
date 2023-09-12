@@ -12,6 +12,9 @@ namespace CustomGameController
         public Vector3 MoveDirectionInput;
         public bool JumpInput;
         public bool SprintInput;
+
+        public Vector2 CameraAxis;
+        public bool ChangeCameraPerspective;
     }
     public interface ICustomPlayerController
     {
@@ -86,7 +89,10 @@ namespace CustomGameController
         void UpdateFirstPersonMovePosition(Vector3 inputDirection, float movementSpeed);
         #endregion
 
-        #region PLAYER INPUT METHODS
+        #region PLAYER INPUT VALUES & METHODS
+        Vector3 PlayerDirection { get; set; }
+        bool SprintInput { get; set; }
+        bool JumpInput { get; set; }
         void SetInput(CustomPlayerInputHandler inputs);
         #endregion
     }

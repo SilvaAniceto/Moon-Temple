@@ -19,17 +19,17 @@ namespace CustomGameController
         {
             if (DebugInput.DebugActions.ToggleIsometric.WasPerformedThisFrame())
             {
-                customCamera.SetCameraPerspective(CustomCamera.CameraPerspective.Isometric);
+                customCamera.SetCameraPerspective(CameraPerspective.Isometric);
             }
 
             if (DebugInput.DebugActions.ToggleThirdPerson.WasPerformedThisFrame())
             {
-                customCamera.SetCameraPerspective(CustomCamera.CameraPerspective.Third_Person);
+                customCamera.SetCameraPerspective(CameraPerspective.Third_Person);
             }
 
             if (DebugInput.DebugActions.ToggleFirstPerson.WasPerformedThisFrame())
             {
-                customCamera.SetCameraPerspective(CustomCamera.CameraPerspective.First_Person);
+                customCamera.SetCameraPerspective(CameraPerspective.First_Person);
             }
         }
     }
