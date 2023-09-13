@@ -30,7 +30,7 @@ namespace CustomGameController
 
         private void Start()
         {
-            CameraCustom.CameraPerspective = CameraPerspective.Isometric;
+            CameraCustom.CameraPerspective = CameraPerspective.Third_Person;
 
             CustomController.GroundLayer = m_groundLayer;
             CustomController.MaxSlopeAngle = m_maxSlopeAngle;
@@ -46,9 +46,6 @@ namespace CustomGameController
         }
         void Update()
         {
-            CustomController.Forward = CustomPerspective.CustomForward;
-            CustomController.Right = CustomPerspective.CustomRight;
-
             ReadPlayerInput();
         }
 
