@@ -1,24 +1,40 @@
+using Cinemachine;
 using UnityEngine;
 
 namespace CustomGameController
 {
-    [ExecuteAlways]
     public class CustomCamera : MonoBehaviour, ICustomCamera
     {
-        //public static CustomCamera Instance;
+        public static CustomCamera Instance;
         public Camera PlayerCamera { get; set; }
         public CameraPerspective CameraPerspective { get; set; }
         public Transform CameraTarget { get; set; }
         public Transform CameraPivot { get; set; }
+        public float CameraTargetHeight { get; set; }
+        public Vector3 CameraHeightOfftset { get => new Vector3(0.0f, CameraTargetHeight / 2, 0.0f); }
         public float CameraSensibility { get; set; }
         public float CameraPan { get; set; }
         public float CameraTilt { get; set; }
         public bool ChangeCameraPerspective { get; set; }
 
         [SerializeField] private CustomCharacterController CustomController;
-        private void Update()
+        private Cinemachine3rdPersonFollow VirtualCamera;
+
+        float xRot = 0;
+        float yRot = 0;
+
+        private void Awake()
         {
-            UpdateCameraCustom();
+            if (Instance == null) Instance = this;
+
+            PlayerCamera = Camera.main;
+            VirtualCamera = GetComponentInChildren<Cinemachine3rdPersonFollow>();
+        }
+
+        private void LateUpdate()
+        {
+            CameraTarget.position = CustomController.transform.position + CameraHeightOfftset;
+
         }
         public void SetInput(CustomPlayerInputHandler inputs)
         {
@@ -33,73 +49,62 @@ namespace CustomGameController
             CustomController.Right = CustomPerspective.CustomRight;
         }
 
-        //float xRot = 0;
-        //float yRot = 0;
-        //private void Awake()
-        //{
-        //    if (Instance == null) Instance = this;
+        void Update()
+        {
+            UpdateCameraCustom();
 
-        //    PlayerCamera = GetComponentInChildren<Camera>();
-        //}
+            if (CameraPerspective != CameraPerspective.First_Person)
+            {
+                UpdateIsometricCamera(CameraTilt, CameraPan);
+            }
+            else if (CameraPerspective == CameraPerspective.First_Person)
+            {
+                UpdateFirstPersonCamera(CameraTilt, CameraPan);
+            }
+        }
+        public void SetCameraPerspective(CameraPerspective perspective)
+        {
+            CameraPerspective = perspective;
+            switch (perspective)
+            {
+                case CameraPerspective.None:
+                    break;
+                case CameraPerspective.Isometric:
+                    transform.rotation = Quaternion.Euler(new Vector3(0.0f, 45.0f, 0.0f));
+                    PlayerCamera.orthographic = true;
+                    VirtualCamera.CameraDistance = 45.0f;
+                    break;
+                case CameraPerspective.Third_Person:
+                    transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
+                    PlayerCamera.orthographic = false;
+                    VirtualCamera.CameraDistance = 5.0f;
+                    break;
+                case CameraPerspective.Over_Shoulder:
+                    break;
+                case CameraPerspective.First_Person:
+                    transform.rotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
+                    PlayerCamera.orthographic = false;
+                    VirtualCamera.CameraDistance = 0.0f;
+                    break;
+            }
+        }
 
-        //void Update()
-        //{
-        //    if (CameraPerspective != CameraPerspective.First_Person)
-        //    {
-        //        var targetRotation = Quaternion.LookRotation(CameraTarget.position - transform.position);
-        //        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 1);
-        //        UpdateIsometricCamera(CameraTilt, CameraPan);
-        //    }
-        //    else if (CameraPerspective == CameraPerspective.First_Person)
-        //    {
-        //        UpdateFirstPersonCamera(CameraTilt, CameraPan);
-        //    }
-        //}
-        //public void SetCameraPerspective(CameraPerspective perspective)
-        //{
-        //    CameraPerspective = perspective;
-        //    switch (perspective)
-        //    {
-        //        case CameraPerspective.None:
-        //            PlayerCamera.transform.localPosition = Vector3.zero;
-        //            break;
-        //        case CameraPerspective.Isometric:
-        //            PlayerCamera.transform.localPosition = new Vector3(-25.0f, 15.0f, -25.0f);
-        //            PlayerCamera.transform.localRotation = Quaternion.Euler( new Vector3(0.0f, 45.0f, 0.0f));
+        public void UpdateFirstPersonCamera(float cameraTilt, float cameraPan)
+        {
+            xRot += cameraTilt;
+            yRot += cameraPan;
+            CameraTarget.transform.rotation = Quaternion.Euler(xRot, yRot, 0);
+        }
 
-        //            PlayerCamera.orthographic = true;
-        //            PlayerCamera.orthographicSize = 10;
-        //            break;
-        //        case CameraPerspective.Third_Person:
-        //            PlayerCamera.transform.localPosition = new Vector3(0.0f, 4.5f, -10.0f);
-        //            PlayerCamera.transform.localRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
+        public void UpdateIsometricCamera(float cameraTilt, float cameraPan)
+        {
+            xRot += cameraTilt;
+            yRot += cameraPan;
 
-        //            PlayerCamera.orthographic = false;
-        //            break;
-        //        case CameraPerspective.Over_Shoulder:
-        //            break;
-        //        case CameraPerspective.First_Person:
-        //            PlayerCamera.transform.localPosition = new Vector3(0.0f, 1.5f, 0f);
-        //            PlayerCamera.transform.localRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
+            xRot = Mathf.Clamp(xRot, 10.0f, 45.0f);
+            yRot = Mathf.Clamp(yRot, -45.0f, 45.0f);
 
-        //            PlayerCamera.orthographic = false;
-        //            break;
-        //    }
-        //}
-
-        //public void UpdateFirstPersonCamera(float cameraTilt, float cameraPan)
-        //{
-        //    xRot += cameraTilt;
-        //    yRot += cameraPan;
-        //    PlayerCamera.transform.localRotation = Quaternion.Euler(xRot, yRot, 0.0f);
-        //    CameraTarget.transform.localRotation = Quaternion.Euler(CameraTarget.transform.localRotation.x, yRot, CameraTarget.transform.localRotation.z);
-        //}
-
-        //public void UpdateIsometricCamera(float cameraTilt, float cameraPan)
-        //{
-        //    xRot += cameraTilt;
-        //    yRot += cameraPan;
-        //    CameraPivot.transform.localRotation = Quaternion.Euler(xRot, yRot, 0.0f);
-        //}
+            CameraTarget.transform.localRotation = Quaternion.Euler(xRot, yRot, 0);
+        }
     }
 }

@@ -357,24 +357,24 @@ namespace CustomGameController
 
             float speed = CheckGroundLevel() ? (SprintInput ? OnGroundSpeed * 2f : OnGroundSpeed) : (SprintInput ? OnAirSpeed * 2f : OnAirSpeed);
 
-            //switch (CustomCamera.Instance.CameraPerspective)
-            //{
-            //    case CameraPerspective.None:
-            //        break;
-            //    case CameraPerspective.Isometric:
-            //        UpdateIsometricMovePosition(PlayerDirection.normalized, speed);
-            //        break;
-            //    case CameraPerspective.Third_Person:
-            //        UpdateThirdPersonMovePosition(PlayerDirection.normalized, speed);
-            //        break;
-            //    case CameraPerspective.Over_Shoulder:
-            //        break;
-            //    case CameraPerspective.First_Person:
-            //        UpdateFirstPersonMovePosition(PlayerDirection.normalized, speed);
-            //        break;
-            //    default:
-            //        break;
-            //}
+            switch (CustomCamera.Instance.CameraPerspective)
+            {
+                case CameraPerspective.None:
+                    break;
+                case CameraPerspective.Isometric:
+                    UpdateIsometricMovePosition(PlayerDirection.normalized, speed);
+                    break;
+                case CameraPerspective.Third_Person:
+                    UpdateThirdPersonMovePosition(PlayerDirection.normalized, speed);
+                    break;
+                case CameraPerspective.Over_Shoulder:
+                    break;
+                case CameraPerspective.First_Person:
+                    UpdateFirstPersonMovePosition(PlayerDirection.normalized, speed);
+                    break;
+                default:
+                    break;
+            }
 
             Jump(JumpInput);
 

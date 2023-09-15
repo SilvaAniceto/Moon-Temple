@@ -16,6 +16,7 @@ namespace CustomGameController
         [SerializeField, Range(0, 100)] private float m_drag = 0.5f;
 
         [SerializeField] private Transform m_CameraTarget;
+        [SerializeField, Range(1f, 5)] private float m_CameraTargetHeight = 0.0f;
         [SerializeField] private Transform m_CameraPivot;
         [SerializeField, Range(0.1f, 1.0f)] private float m_cameraSensibility = 1.0f;
         #endregion
@@ -30,7 +31,7 @@ namespace CustomGameController
 
         private void Start()
         {
-            CameraCustom.CameraPerspective = CameraPerspective.Third_Person;
+            CameraCustom.SetCameraPerspective(CameraPerspective.Third_Person);
 
             CustomController.GroundLayer = m_groundLayer;
             CustomController.MaxSlopeAngle = m_maxSlopeAngle;
@@ -41,6 +42,7 @@ namespace CustomGameController
             CustomController.Drag = m_drag;
 
             CameraCustom.CameraTarget = m_CameraTarget;
+            CameraCustom.CameraTargetHeight = m_CameraTargetHeight;
             CameraCustom.CameraPivot = m_CameraPivot;
             CameraCustom.CameraSensibility = m_cameraSensibility;
         }

@@ -16,7 +16,9 @@ namespace CustomGameController
         Camera PlayerCamera { get; set; }
         CameraPerspective CameraPerspective { get; set; }
         Transform CameraTarget { get; set; }
-        Transform CameraPivot { get; set; }
+        //Transform CameraPivot { get; set; }
+        float CameraTargetHeight { get; set; }
+        Vector3 CameraHeightOfftset { get; }
         float CameraSensibility { get; set; }
         float CameraPan { get; set; }
         float CameraTilt { get; set; }
