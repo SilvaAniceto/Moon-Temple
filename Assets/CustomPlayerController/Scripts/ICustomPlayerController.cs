@@ -39,6 +39,7 @@ namespace CustomGameController
         #endregion
 
         #region PLAYER CONTROLLER SETTINGS
+        float CurrentSpeed { get; }
         /// <summary>
         /// The field defines the target movement speed of the player's character.
         /// </summary>

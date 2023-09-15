@@ -10,6 +10,10 @@ namespace CustomGameController
         public static CustomCharacterController Instance { get; private set; }
 
         public static UnityEvent<GameControllerState> OnGameStateChanged = new UnityEvent<GameControllerState>();
+
+        public static UnityEvent<Vector3, float> OnCharacterMove = new UnityEvent<Vector3, float>();
+
+        public static UnityEvent<bool> OnCharacterJump = new UnityEvent<bool>();
         IEnumerator CheckingUngroundedStates()
         {
             yield return new WaitForSeconds(0.125f);
@@ -82,9 +86,37 @@ namespace CustomGameController
         #endregion
 
         #region PLAYER CONTROLLER SETTINGS
-        public float OnGroundSpeed { get; set; }
+        public float CurrentSpeed
+        {
+            get
+            {
+                if (CheckGroundLevel()) return OnGroundSpeed;
+                else return OnAirSpeed;
+            }
+        }
+        public float OnGroundSpeed
+        {
+            get
+            {
+                if (SprintInput) return m_PlayerSpeed * 2.0f;
+                else return m_PlayerSpeed;
+            }
+            set
+            {
+                if (m_PlayerSpeed == value) return;
+
+                m_PlayerSpeed = value;
+            }
+        }
         public float OnGroundAcceleration { get; set; }
-        public float OnAirSpeed { get => OnGroundSpeed * 0.8f; }
+        public float OnAirSpeed
+        {
+            get
+            {
+                if (SprintInput) return (OnGroundSpeed * 0.8f) * 2.0f;
+                else return (OnGroundSpeed * 0.8f);
+            } 
+        }
         public float OnAirAcceleration { get => OnGroundAcceleration * 0.8f; }
         public float MaxSlopeAngle { get; set; }
         public float JumpHeight { get; set; }
@@ -301,34 +333,49 @@ namespace CustomGameController
         #endregion
 
         #region PLAYER INPUT VALUES & METHODS
-        public Vector3 PlayerDirection { get; set; }
+        public Vector3 PlayerDirection
+        {
+            get
+            {
+                return m_PlayerDirection;
+            }
+            set
+            {
+                m_PlayerDirection = value;
+
+                OnCharacterMove?.Invoke(PlayerDirection.normalized, CurrentSpeed);
+            }
+        }
         public bool SprintInput { get; set; }
-        public bool JumpInput { get; set; }
+        public bool JumpInput
+        {
+            get
+            {
+                return m_JumpInput;
+            }
+            set
+            {
+                m_JumpInput = value;
+
+                OnCharacterJump?.Invoke(m_JumpInput);
+            }
+        }
         public void SetInput(CustomPlayerInputHandler inputs)
         {
             PlayerDirection = inputs.MoveDirectionInput;
             SprintInput = inputs.SprintInput;
             JumpInput = inputs.JumpInput;
-
-            #region NOT IN USE
-            //switch (m_state)
-            //{
-            //    case GameControllerState.Exploring:
-            //        m_jump = inputs.JumpInput;
-            //        break;
-            //    case GameControllerState.TurnBased:
-            //        m_confirm = inputs.PlayerConfirmEntry;
-            //        break;
-            //}
-            //if (inputs.SprintInput) m_accelerate = !m_accelerate;
-            //if (m_direction == Vector3.zero) m_accelerate = false;
-            #endregion
         }
         #endregion
 
         #region PRIVATE FIELDS
         private bool onGround;
         private GameControllerState m_state;
+
+        private float m_PlayerSpeed;
+
+        private Vector3 m_PlayerDirection;
+        private bool m_JumpInput;
         #endregion
 
         #region DEFAULT METHODS
@@ -349,34 +396,12 @@ namespace CustomGameController
         }
         private void Start()
         {
-
+            OnCharacterMove.AddListener(UpdateThirdPersonMovePosition);
+            OnCharacterJump.AddListener(Jump);
         }
         void Update()
         {
             ApplyGravity();
-
-            float speed = CheckGroundLevel() ? (SprintInput ? OnGroundSpeed * 2f : OnGroundSpeed) : (SprintInput ? OnAirSpeed * 2f : OnAirSpeed);
-
-            switch (CustomCamera.Instance.CameraPerspective)
-            {
-                case CameraPerspective.None:
-                    break;
-                case CameraPerspective.Isometric:
-                    UpdateIsometricMovePosition(PlayerDirection.normalized, speed);
-                    break;
-                case CameraPerspective.Third_Person:
-                    UpdateThirdPersonMovePosition(PlayerDirection.normalized, speed);
-                    break;
-                case CameraPerspective.Over_Shoulder:
-                    break;
-                case CameraPerspective.First_Person:
-                    UpdateFirstPersonMovePosition(PlayerDirection.normalized, speed);
-                    break;
-                default:
-                    break;
-            }
-
-            Jump(JumpInput);
 
             #region NOT IN USE
             //switch (ControllerState)

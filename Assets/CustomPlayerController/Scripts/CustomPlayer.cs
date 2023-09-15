@@ -17,7 +17,6 @@ namespace CustomGameController
 
         [SerializeField] private Transform m_CameraTarget;
         [SerializeField, Range(1f, 5)] private float m_CameraTargetHeight = 0.0f;
-        [SerializeField] private Transform m_CameraPivot;
         [SerializeField, Range(0.1f, 1.0f)] private float m_cameraSensibility = 1.0f;
         #endregion
 
@@ -41,9 +40,9 @@ namespace CustomGameController
             CustomController.JumpHeight = m_jumpHeight;
             CustomController.Drag = m_drag;
 
+            CameraCustom.CustomController = CustomController;
             CameraCustom.CameraTarget = m_CameraTarget;
             CameraCustom.CameraTargetHeight = m_CameraTargetHeight;
-            CameraCustom.CameraPivot = m_CameraPivot;
             CameraCustom.CameraSensibility = m_cameraSensibility;
         }
         void Update()
