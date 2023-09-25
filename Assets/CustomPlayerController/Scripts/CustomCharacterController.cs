@@ -139,14 +139,16 @@ namespace CustomGameController
         {
             GravityVelocity -= new Vector3(0.0f, Gravity * GravityMultiplierFactor * Time.deltaTime, 0.0f);
 
-            if (SlopeAngle() > MaxSlopeAngle) CharacterController.Move(GetSlopeMoveDirection(GravityVelocity) * Time.deltaTime * OnGroundSpeed);
-            else CharacterController.Move(GravityVelocity * Time.deltaTime);
+            if (SlopeAngle() <= MaxSlopeAngle)
+                CharacterController.Move(GravityVelocity * Time.deltaTime);
+            else 
+                CharacterController.Move(GetSlopeMoveDirection(GravityVelocity + SlopeHit().transform.forward) * Time.deltaTime * OnGroundSpeed);
         }
         public bool CheckGroundLevel()
         {
             bool ground;
 
-            ground = Physics.CheckSphere(transform.position - new Vector3(0, 0.7f, 0), GetComponent<CapsuleCollider>().radius - 0.1f, GroundLayer, QueryTriggerInteraction.Collide);
+            ground = Physics.CheckSphere(transform.position - new Vector3(0.0f, 0.6f, 0.0f), GetComponent<CapsuleCollider>().radius * 0.98f, GroundLayer, QueryTriggerInteraction.Collide);
 
             OnGround = ground;
 
@@ -254,13 +256,13 @@ namespace CustomGameController
 
                 if (OnSlope())
                 {
-                    if (SlopeAngle() > MaxSlopeAngle)
+                    if (SlopeAngle() <= MaxSlopeAngle)
                     {
-                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed);
+                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
                     }
                     else
                     {
-                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed);
                     }
                 }
                 else
@@ -297,13 +299,13 @@ namespace CustomGameController
 
                 if (OnSlope())
                 {
-                    if (SlopeAngle() > MaxSlopeAngle)
+                    if (SlopeAngle() <= MaxSlopeAngle)
                     {
-                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
+                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
                     }
                     else
                     {
-                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
                     }
                 }
                 else
@@ -340,13 +342,13 @@ namespace CustomGameController
 
                 if (OnSlope())
                 {
-                    if (SlopeAngle() > MaxSlopeAngle)
+                    if (SlopeAngle() <= MaxSlopeAngle)
                     {
-                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
+                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
                     }
                     else
                     {
-                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
                     }
                 }
                 else
@@ -380,13 +382,13 @@ namespace CustomGameController
 
                 if (OnSlope())
                 {
-                    if (SlopeAngle() > MaxSlopeAngle)
+                    if (SlopeAngle() <= MaxSlopeAngle)
                     {
-                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
+                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
                     }
                     else
                     {
-                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
                     }
                 }
                 else
@@ -480,9 +482,11 @@ namespace CustomGameController
             OnCharacterJump.AddListener(Jump);
         }
         public float s;
+        public float s1;
         void Update()
         {
-            s = SlopeAngle();
+            s = GetComponent<CapsuleCollider>().radius * 0.98f;
+            s1 = GetComponent<CapsuleCollider>().radius / 1.02f;
             ApplyGravity();
 
             #region NOT IN USE
