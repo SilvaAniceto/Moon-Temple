@@ -9,11 +9,11 @@ namespace CustomGameController
     {
         public static CustomCharacterController Instance { get; private set; }
 
-        public static UnityEvent<GameControllerState> OnGameStateChanged = new UnityEvent<GameControllerState>();
+        [HideInInspector] public UnityEvent<GameControllerState> OnGameStateChanged = new UnityEvent<GameControllerState>();
 
-        public static UnityEvent<Vector3, float> OnCharacterMove = new UnityEvent<Vector3, float>();
+        [HideInInspector] public UnityEvent<Vector3, float> OnCharacterMove = new UnityEvent<Vector3, float>();
 
-        public static UnityEvent<bool> OnCharacterJump = new UnityEvent<bool>();
+        [HideInInspector] public UnityEvent<bool> OnCharacterJump = new UnityEvent<bool>();
         IEnumerator CheckingUngroundedStates()
         {
             yield return new WaitForSeconds(0.125f);
@@ -22,12 +22,12 @@ namespace CustomGameController
 
             if (LastGroundedPosition.y > CurrentUngroudedPosition.y)
             {
-                GravityMultiplierFactor = 5f;
+                GravityMultiplierFactor = 10f;
                 Falling = true;
             }
             if (LastGroundedPosition.y < CurrentUngroudedPosition.y)
             {
-                GravityMultiplierFactor = 1.5f;
+                GravityMultiplierFactor = 1.85f;
                 Jumping = true;
             }
 
@@ -94,6 +94,14 @@ namespace CustomGameController
                 else return OnAirSpeed;
             }
         }
+        public float CurrentAcceleration
+        {
+            get
+            {
+                if (CheckGroundLevel()) return OnGroundAcceleration;
+                else return OnAirAcceleration;
+            }
+        }
         public float OnGroundSpeed
         {
             get
@@ -113,8 +121,7 @@ namespace CustomGameController
         {
             get
             {
-                if (SprintInput) return (OnGroundSpeed * 0.8f) * 2.0f;
-                else return (OnGroundSpeed * 0.8f);
+                return (OnGroundSpeed * 0.8f);
             } 
         }
         public float OnAirAcceleration { get => OnGroundAcceleration * 0.8f; }
@@ -131,17 +138,19 @@ namespace CustomGameController
         public void ApplyGravity()
         {
             GravityVelocity -= new Vector3(0.0f, Gravity * GravityMultiplierFactor * Time.deltaTime, 0.0f);
-            CharacterController.Move(GravityVelocity * Time.deltaTime);
+
+            if (SlopeAngle() > MaxSlopeAngle) CharacterController.Move(GetSlopeMoveDirection(GravityVelocity) * Time.deltaTime * OnGroundSpeed);
+            else CharacterController.Move(GravityVelocity * Time.deltaTime);
         }
         public bool CheckGroundLevel()
         {
             bool ground;
 
-            ground = Physics.CheckSphere(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius / 0.85f, GroundLayer, QueryTriggerInteraction.Collide);
+            ground = Physics.CheckSphere(transform.position - new Vector3(0, 0.7f, 0), GetComponent<CapsuleCollider>().radius - 0.1f, GroundLayer, QueryTriggerInteraction.Collide);
 
             OnGround = ground;
 
-            if (ground && GravityVelocity.y < 0 && !OnSlope()) GravityVelocity = new Vector3(GravityVelocity.x, 0.0f, GravityVelocity.z);
+            if (ground && GravityVelocity.y < 0) GravityVelocity = new Vector3(GravityVelocity.x, 0.0f, GravityVelocity.z);
 
             return ground;
         }
@@ -172,7 +181,7 @@ namespace CustomGameController
             if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, GroundLayer, QueryTriggerInteraction.Collide))
             {
                 float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
-                return slopeAngle <= MaxSlopeAngle && slopeAngle != 0;
+                return slopeAngle != 0;
             }
             return false;
         }
@@ -241,16 +250,25 @@ namespace CustomGameController
 
             if (CheckGroundLevel())
             {
-                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnGroundAcceleration * Time.deltaTime);
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
                 if (OnSlope())
-                    CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                {
+                    if (SlopeAngle() > MaxSlopeAngle)
+                    {
+                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed);
+                    }
+                    else
+                    {
+                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                    }
+                }
                 else
                     CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
             }
             else
             {
-                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnAirAcceleration * Time.deltaTime);
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
                 float x = ApplyDrag(CurrentyVelocity.x, Drag);
                 float z = ApplyDrag(CurrentyVelocity.z, Drag);
@@ -262,7 +280,7 @@ namespace CustomGameController
 
             if (move != Vector3.zero)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 5 * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 4.5f * Time.deltaTime);
             }
         }
         public void UpdateThirdPersonMovePosition(Vector3 inputDirection, float movementSpeed)
@@ -275,16 +293,25 @@ namespace CustomGameController
 
             if (CheckGroundLevel())
             {
-                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnGroundAcceleration * Time.deltaTime);
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
                 if (OnSlope())
-                    CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                {
+                    if (SlopeAngle() > MaxSlopeAngle)
+                    {
+                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
+                    }
+                    else
+                    {
+                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                    }
+                }
                 else
                     CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
             }
             else
             {
-                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnAirAcceleration * Time.deltaTime);
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
                 float x = ApplyDrag(CurrentyVelocity.x, Drag);
                 float z = ApplyDrag(CurrentyVelocity.z, Drag);
@@ -296,7 +323,7 @@ namespace CustomGameController
 
             if (move != Vector3.zero)
             {
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 5 * Time.deltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 4.5f * Time.deltaTime);
             }
         }
         public void UpdateFirstPersonMovePosition(Vector3 inputDirection, float movementSpeed)
@@ -309,16 +336,25 @@ namespace CustomGameController
 
             if (CheckGroundLevel())
             {
-                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnGroundAcceleration * Time.deltaTime);
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
                 if (OnSlope())
-                    CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                {
+                    if (SlopeAngle() > MaxSlopeAngle)
+                    {
+                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
+                    }
+                    else
+                    {
+                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                    }
+                }
                 else
                     CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
             }
             else
             {
-                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, OnAirAcceleration * Time.deltaTime);
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
                 float x = ApplyDrag(CurrentyVelocity.x, Drag);
                 float z = ApplyDrag(CurrentyVelocity.z, Drag);
@@ -328,7 +364,50 @@ namespace CustomGameController
                 CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
             }
 
-            //transform.rotation = new Quaternion(transform.rotation.x, CustomCamera.Instance.PlayerCamera.transform.rotation.y, transform.rotation.z, 0.0f);
+            transform.rotation = Quaternion.LookRotation(Forward);
+        }
+        public void UpdateOverShoulderMovePosition(Vector3 inputDirection, float movementSpeed)
+        {
+            Vector3 move = new Vector3();
+            Vector3 right = inputDirection.x * Right;
+            Vector3 forward = inputDirection.z * Forward;
+
+            move = right + forward + Vector3.zero;
+
+            if (CheckGroundLevel())
+            {
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
+
+                if (OnSlope())
+                {
+                    if (SlopeAngle() > MaxSlopeAngle)
+                    {
+                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
+                    }
+                    else
+                    {
+                        CharacterController.Move(GetSlopeMoveDirection(CurrentyVelocity) * Time.deltaTime * movementSpeed);
+                    }
+                }
+                else
+                    CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
+            }
+            else
+            {
+                CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
+
+                float x = ApplyDrag(CurrentyVelocity.x, Drag);
+                float z = ApplyDrag(CurrentyVelocity.z, Drag);
+
+                CurrentyVelocity = new Vector3(x, 0, z);
+
+                CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
+            }
+
+            if (move != Vector3.zero)
+            {
+                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 4.5f * Time.deltaTime);
+            }
         }
         #endregion
 
@@ -343,7 +422,7 @@ namespace CustomGameController
             {
                 m_PlayerDirection = value;
 
-                OnCharacterMove?.Invoke(PlayerDirection.normalized, CurrentSpeed);
+                OnCharacterMove?.Invoke(PlayerDirection, CurrentSpeed);
             }
         }
         public bool SprintInput { get; set; }
@@ -363,6 +442,8 @@ namespace CustomGameController
         public void SetInput(CustomPlayerInputHandler inputs)
         {
             PlayerDirection = inputs.MoveDirectionInput;
+            PlayerDirection.Normalize();
+
             SprintInput = inputs.SprintInput;
             JumpInput = inputs.JumpInput;
         }
@@ -396,11 +477,12 @@ namespace CustomGameController
         }
         private void Start()
         {
-            OnCharacterMove.AddListener(UpdateThirdPersonMovePosition);
             OnCharacterJump.AddListener(Jump);
         }
+        public float s;
         void Update()
         {
+            s = SlopeAngle();
             ApplyGravity();
 
             #region NOT IN USE
@@ -438,6 +520,29 @@ namespace CustomGameController
             //    break;
             //}
             #endregion
+        }
+        #endregion
+
+        #region CALLBACKS
+        public void SetCharacterMoveCallBacks(CameraPerspective cameraPerspective)
+        {
+            OnCharacterMove.RemoveAllListeners();
+
+            switch (cameraPerspective)
+            {
+                case CameraPerspective.First_Person:
+                    OnCharacterMove.AddListener(UpdateFirstPersonMovePosition);
+                    break;
+                case CameraPerspective.Isometric:
+                    OnCharacterMove.AddListener(UpdateIsometricMovePosition);
+                    break;
+                case CameraPerspective.Third_Person:
+                    OnCharacterMove.AddListener(UpdateThirdPersonMovePosition);
+                    break;
+                case CameraPerspective.Over_Shoulder:
+                    OnCharacterMove.AddListener(UpdateOverShoulderMovePosition);
+                    break;
+            }
         }
         #endregion
     }

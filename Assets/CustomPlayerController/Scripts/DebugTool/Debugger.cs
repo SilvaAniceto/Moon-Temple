@@ -4,6 +4,7 @@ namespace CustomGameController
 {
     public class Debugger : MonoBehaviour
     {
+        public bool enableDebugger = false;
         public CustomCharacterController controller;
         public CustomCamera customCamera;
 
@@ -17,6 +18,8 @@ namespace CustomGameController
 
         void Update()
         {
+            if (!enableDebugger) return;
+
             if (DebugInput.DebugActions.ToggleIsometric.WasPerformedThisFrame())
             {
                 customCamera.SetCameraPerspective(CameraPerspective.Isometric);
@@ -30,6 +33,11 @@ namespace CustomGameController
             if (DebugInput.DebugActions.ToggleFirstPerson.WasPerformedThisFrame())
             {
                 customCamera.SetCameraPerspective(CameraPerspective.First_Person);
+            }
+
+            if (DebugInput.DebugActions.ToggleOverShoulder.WasPerformedThisFrame())
+            {
+                customCamera.SetCameraPerspective(CameraPerspective.Over_Shoulder);
             }
         }
     }

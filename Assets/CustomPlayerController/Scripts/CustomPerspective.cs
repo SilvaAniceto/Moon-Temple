@@ -4,9 +4,6 @@ namespace CustomGameController
 {
     public static class CustomPerspective
     {
-        /// <summary>
-        /// New forward orientation for Isometric Perspective.
-        /// </summary>
         public static Vector3 CustomForward
         {
             get
@@ -18,9 +15,6 @@ namespace CustomGameController
                 return isometricForward;
             }
         }
-        /// <summary>
-        /// New right orientation for Isometric Perspective.
-        /// </summary>
         public static Vector3 CustomRight
         {
             get

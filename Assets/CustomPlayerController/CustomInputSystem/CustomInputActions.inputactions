@@ -178,7 +178,7 @@
                     "id": "4bc6381d-1ad6-4dd2-8bd7-5d044e51810e",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "ScaleVector2(x=0.0001,y=0.0001)",
                     "groups": "Gamepad",
                     "action": "CameraAxis",
                     "isComposite": false,

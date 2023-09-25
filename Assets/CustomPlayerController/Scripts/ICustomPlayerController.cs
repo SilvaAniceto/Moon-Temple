@@ -40,39 +40,13 @@ namespace CustomGameController
 
         #region PLAYER CONTROLLER SETTINGS
         float CurrentSpeed { get; }
-        /// <summary>
-        /// The field defines the target movement speed of the player's character.
-        /// </summary>
+        float CurrentAcceleration { get; }
         float OnGroundSpeed { get; set; }
-
-        /// <summary>
-        /// The field defines the accelaration time to reach the target speed of the player's character.
-        /// </summary>
         float OnGroundAcceleration { get; set; }
-
-        /// <summary>
-        /// The field defines the target movement speed of the player's character when in the air.
-        /// </summary>
         float OnAirSpeed { get; }
-
-        /// <summary>
-        /// The field defines the accelaration time to reach the target speed of the player's character when in air.
-        /// </summary>
         float OnAirAcceleration { get; }
-
-        /// <summary>
-        /// The field defines the maximun angle of a slope that the player's character can move on.
-        /// </summary>
         float MaxSlopeAngle { get; set; }
-
-        /// <summary>
-        /// The field defines the maximun jump height that player's character can reach.
-        /// </summary>
         float JumpHeight { get; set; }
-
-        /// <summary>
-        /// The field defines the jump speed variation.
-        /// </summary>
         float JumpSpeed { get; }
         #endregion
 
@@ -88,6 +62,7 @@ namespace CustomGameController
         void UpdateIsometricMovePosition(Vector3 inputDirection, float movementSpeed);
         void UpdateThirdPersonMovePosition(Vector3 inputDirection, float movementSpeed);
         void UpdateFirstPersonMovePosition(Vector3 inputDirection, float movementSpeed);
+        void UpdateOverShoulderMovePosition(Vector3 inputDirection, float movementSpeed);
         #endregion
 
         #region PLAYER INPUT VALUES & METHODS

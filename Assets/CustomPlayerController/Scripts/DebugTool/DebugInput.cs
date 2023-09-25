@@ -53,6 +53,15 @@ public partial class @DebugInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleOverShoulder"",
+                    ""type"": ""Button"",
+                    ""id"": ""46119893-bcc9-4272-9374-ee3000f53cdf"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -63,6 +72,17 @@ public partial class @DebugInput : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
+                    ""action"": ""ToggleIsometric"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e4a6c022-1947-40d8-bec4-31bc1d668dfd"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
                     ""action"": ""ToggleIsometric"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -80,12 +100,56 @@ public partial class @DebugInput : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""b76fbf1a-e8f6-472f-8ccf-485f5429ed1e"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""ToggleThirdPerson"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""fea45eb8-c7b9-4248-a62e-449f5d847a2e"",
                     ""path"": ""<Keyboard>/3"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""ToggleFirstPerson"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d679448d-e9b3-4d32-8451-8f7f8ebebf0e"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""ToggleFirstPerson"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2987f2e9-ae9f-4698-9120-b7a6579c21b8"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""ToggleOverShoulder"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""18edbadb-b8e2-423f-b107-7e3e0b409819"",
+                    ""path"": ""<Keyboard>/4"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""ToggleOverShoulder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -97,6 +161,11 @@ public partial class @DebugInput : IInputActionCollection2, IDisposable
             ""name"": ""Keyboard"",
             ""bindingGroup"": ""Keyboard"",
             ""devices"": []
+        },
+        {
+            ""name"": ""Gamepad"",
+            ""bindingGroup"": ""Gamepad"",
+            ""devices"": []
         }
     ]
 }");
@@ -105,6 +174,7 @@ public partial class @DebugInput : IInputActionCollection2, IDisposable
         m_DebugActions_ToggleIsometric = m_DebugActions.FindAction("ToggleIsometric", throwIfNotFound: true);
         m_DebugActions_ToggleThirdPerson = m_DebugActions.FindAction("ToggleThirdPerson", throwIfNotFound: true);
         m_DebugActions_ToggleFirstPerson = m_DebugActions.FindAction("ToggleFirstPerson", throwIfNotFound: true);
+        m_DebugActions_ToggleOverShoulder = m_DebugActions.FindAction("ToggleOverShoulder", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -167,6 +237,7 @@ public partial class @DebugInput : IInputActionCollection2, IDisposable
     private readonly InputAction m_DebugActions_ToggleIsometric;
     private readonly InputAction m_DebugActions_ToggleThirdPerson;
     private readonly InputAction m_DebugActions_ToggleFirstPerson;
+    private readonly InputAction m_DebugActions_ToggleOverShoulder;
     public struct DebugActionsActions
     {
         private @DebugInput m_Wrapper;
@@ -174,6 +245,7 @@ public partial class @DebugInput : IInputActionCollection2, IDisposable
         public InputAction @ToggleIsometric => m_Wrapper.m_DebugActions_ToggleIsometric;
         public InputAction @ToggleThirdPerson => m_Wrapper.m_DebugActions_ToggleThirdPerson;
         public InputAction @ToggleFirstPerson => m_Wrapper.m_DebugActions_ToggleFirstPerson;
+        public InputAction @ToggleOverShoulder => m_Wrapper.m_DebugActions_ToggleOverShoulder;
         public InputActionMap Get() { return m_Wrapper.m_DebugActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -192,6 +264,9 @@ public partial class @DebugInput : IInputActionCollection2, IDisposable
                 @ToggleFirstPerson.started -= m_Wrapper.m_DebugActionsActionsCallbackInterface.OnToggleFirstPerson;
                 @ToggleFirstPerson.performed -= m_Wrapper.m_DebugActionsActionsCallbackInterface.OnToggleFirstPerson;
                 @ToggleFirstPerson.canceled -= m_Wrapper.m_DebugActionsActionsCallbackInterface.OnToggleFirstPerson;
+                @ToggleOverShoulder.started -= m_Wrapper.m_DebugActionsActionsCallbackInterface.OnToggleOverShoulder;
+                @ToggleOverShoulder.performed -= m_Wrapper.m_DebugActionsActionsCallbackInterface.OnToggleOverShoulder;
+                @ToggleOverShoulder.canceled -= m_Wrapper.m_DebugActionsActionsCallbackInterface.OnToggleOverShoulder;
             }
             m_Wrapper.m_DebugActionsActionsCallbackInterface = instance;
             if (instance != null)
@@ -205,6 +280,9 @@ public partial class @DebugInput : IInputActionCollection2, IDisposable
                 @ToggleFirstPerson.started += instance.OnToggleFirstPerson;
                 @ToggleFirstPerson.performed += instance.OnToggleFirstPerson;
                 @ToggleFirstPerson.canceled += instance.OnToggleFirstPerson;
+                @ToggleOverShoulder.started += instance.OnToggleOverShoulder;
+                @ToggleOverShoulder.performed += instance.OnToggleOverShoulder;
+                @ToggleOverShoulder.canceled += instance.OnToggleOverShoulder;
             }
         }
     }
@@ -218,10 +296,20 @@ public partial class @DebugInput : IInputActionCollection2, IDisposable
             return asset.controlSchemes[m_KeyboardSchemeIndex];
         }
     }
+    private int m_GamepadSchemeIndex = -1;
+    public InputControlScheme GamepadScheme
+    {
+        get
+        {
+            if (m_GamepadSchemeIndex == -1) m_GamepadSchemeIndex = asset.FindControlSchemeIndex("Gamepad");
+            return asset.controlSchemes[m_GamepadSchemeIndex];
+        }
+    }
     public interface IDebugActionsActions
     {
         void OnToggleIsometric(InputAction.CallbackContext context);
         void OnToggleThirdPerson(InputAction.CallbackContext context);
         void OnToggleFirstPerson(InputAction.CallbackContext context);
+        void OnToggleOverShoulder(InputAction.CallbackContext context);
     }
 }
