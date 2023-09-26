@@ -58,7 +58,7 @@ MonoBehaviour:
   CameraCustom: {fileID: 7068005868399241386}
   m_CameraTarget: {fileID: 7068005868295073508}
   m_CameraTargetHeight: 1.88
-  m_cameraSensibility: 0.5
+  m_cameraSensibility: 1
   m_defaultPerspective: 2
 --- !u!1 &7068005867914164206
 GameObject:

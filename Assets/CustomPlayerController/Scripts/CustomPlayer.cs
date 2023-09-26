@@ -18,7 +18,7 @@ namespace CustomGameController
         [SerializeField] private CustomCamera CameraCustom;
         [SerializeField] private Transform m_CameraTarget;
         [SerializeField, Range(1f, 5)] private float m_CameraTargetHeight = 0.0f;
-        [SerializeField, Range(0.1f, 1.0f)] private float m_cameraSensibility = 1.0f;
+        [SerializeField, Range(0.5f, 1.5f)] private float m_cameraSensibility = 1.0f;
         [SerializeField] CameraPerspective m_defaultPerspective;
         #endregion
 
@@ -71,7 +71,7 @@ namespace CustomGameController
             Vector2 camAxis = InputActions.PlayerActions.CameraAxis.ReadValue<Vector2>();
             camAxis = new Vector2(camAxis.y, camAxis.x);
 
-            inputHandler.CameraAxis = camAxis.normalized;
+            inputHandler.CameraAxis = camAxis;
             inputHandler.ChangeCameraPerspective = InputActions.PlayerActions.ChangeCameraPerspectiva.IsPressed();
 
             CustomController.SetInput(inputHandler);

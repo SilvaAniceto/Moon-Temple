@@ -53,8 +53,8 @@ namespace CustomGameController
         }
         public void SetInput(CustomPlayerInputHandler inputs)
         {
-            CameraPan = inputs.CameraAxis.y;
-            CameraTilt = inputs.CameraAxis.x;
+            CameraPan = Mathf.Clamp(inputs.CameraAxis.y, -1, 1);
+            CameraTilt = Mathf.Clamp(inputs.CameraAxis.x, -1, 1);
             ChangeCameraPerspective = inputs.ChangeCameraPerspective;
         }
         #endregion

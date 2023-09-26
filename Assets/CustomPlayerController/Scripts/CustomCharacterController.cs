@@ -106,7 +106,7 @@ namespace CustomGameController
         {
             get
             {
-                if (SprintInput) return m_PlayerSpeed * 2.0f;
+                if (SprintInput) return m_PlayerSpeed * 1.8f;
                 else return m_PlayerSpeed;
             }
             set
@@ -148,7 +148,7 @@ namespace CustomGameController
         {
             bool ground;
 
-            ground = Physics.CheckSphere(transform.position - new Vector3(0.0f, 0.6f, 0.0f), GetComponent<CapsuleCollider>().radius * 0.98f, GroundLayer, QueryTriggerInteraction.Collide);
+            ground = Physics.CheckSphere(transform.position - new Vector3(0.0f, 0.65f, 0.0f), GetComponent<CapsuleCollider>().radius * 0.98f, GroundLayer, QueryTriggerInteraction.Collide);
 
             OnGround = ground;
 
@@ -180,7 +180,7 @@ namespace CustomGameController
         #region PLAYER SLOPE METHODS
         public bool OnSlope()
         {
-            if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, GroundLayer, QueryTriggerInteraction.Collide))
+            if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius * 1.08f, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, GroundLayer, QueryTriggerInteraction.Collide))
             {
                 float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
                 return slopeAngle != 0;
@@ -189,7 +189,7 @@ namespace CustomGameController
         }
         public float SlopeAngle()
         {
-            if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, GroundLayer, QueryTriggerInteraction.Collide))
+            if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius * 1.08f, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, GroundLayer, QueryTriggerInteraction.Collide))
             {
                 float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
                 return slopeAngle;
@@ -198,7 +198,7 @@ namespace CustomGameController
         }
         public RaycastHit SlopeHit()
         {
-            Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, GroundLayer, QueryTriggerInteraction.Collide);
+            Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius * 1.08f, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, GroundLayer, QueryTriggerInteraction.Collide);
             return hitInfo;
         }
         public Vector3 GetSlopeMoveDirection(Vector3 direction)
@@ -481,12 +481,8 @@ namespace CustomGameController
         {
             OnCharacterJump.AddListener(Jump);
         }
-        public float s;
-        public float s1;
         void Update()
         {
-            s = GetComponent<CapsuleCollider>().radius * 0.98f;
-            s1 = GetComponent<CapsuleCollider>().radius / 1.02f;
             ApplyGravity();
 
             #region NOT IN USE
