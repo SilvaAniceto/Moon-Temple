@@ -252,6 +252,7 @@ namespace CustomGameController
 
             if (CheckGroundLevel())
             {
+
                 CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
                 if (OnSlope())
@@ -423,6 +424,13 @@ namespace CustomGameController
             set
             {
                 m_PlayerDirection = value;
+
+                if (m_PlayerDirection == Vector3.zero)
+                {
+                    CharacterController.Move(m_PlayerDirection);
+                    CurrentyVelocity = m_PlayerDirection;
+                    return;
+                }
 
                 OnCharacterMove?.Invoke(PlayerDirection, CurrentSpeed);
             }
