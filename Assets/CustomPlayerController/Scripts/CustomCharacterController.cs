@@ -33,6 +33,7 @@ namespace CustomGameController
 
             yield return new WaitUntil(() => onGround);
 
+            CurrentyVelocity = CurrentyVelocity / Drag * 0.85f;
             GravityMultiplierFactor = 1.0f;
             Falling = false;
             Jumping = false;
@@ -367,7 +368,12 @@ namespace CustomGameController
                 CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
             }
 
-            transform.rotation = Quaternion.LookRotation(Forward);
+            Quaternion Rot = CustomCamera.Instance.CameraTarget.transform.rotation;
+
+            Rot.x = 0.0f;
+            Rot.z = 0.0f;
+
+            transform.rotation = Rot;
         }
         public void UpdateOverShoulderMovePosition(Vector3 inputDirection, float movementSpeed)
         {
@@ -425,14 +431,24 @@ namespace CustomGameController
             {
                 m_PlayerDirection = value;
 
-                if (m_PlayerDirection == Vector3.zero)
-                {
-                    CharacterController.Move(m_PlayerDirection);
-                    CurrentyVelocity = m_PlayerDirection;
-                    return;
-                }
+                if (m_PlayerDirection == Vector3.zero) StartCoroutine(SmoothStop());
 
                 OnCharacterMove?.Invoke(PlayerDirection, CurrentSpeed);
+
+                IEnumerator SmoothStop()
+                {
+                    float stopDistance = Vector3.Distance(CurrentyVelocity, Vector3.zero);
+
+                    while (stopDistance > 0)
+                    {
+                        CharacterController.Move(Vector3.MoveTowards(CurrentyVelocity, m_PlayerDirection, 1.0f));
+                        stopDistance -= Time.deltaTime / CurrentSpeed;
+                    }
+
+                    CurrentyVelocity = Vector3.zero;
+
+                    yield return null;
+                }
             }
         }
         public bool SprintInput { get; set; }

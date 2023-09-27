@@ -53,12 +53,12 @@ MonoBehaviour:
   m_maxSlopeAngle: 45
   m_onGroundSpeed: 8
   m_acceleration: 2
-  m_jumpHeight: 1.6
-  m_drag: 1.8
+  m_jumpHeight: 1.8
+  m_drag: 2.2
   CameraCustom: {fileID: 7068005868399241386}
   m_CameraTarget: {fileID: 7068005868295073508}
   m_CameraTargetHeight: 1.88
-  m_cameraSensibility: 1
+  m_cameraSensibility: 1.25
   m_defaultPerspective: 2
 --- !u!1 &7068005867914164206
 GameObject:
