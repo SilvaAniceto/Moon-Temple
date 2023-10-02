@@ -149,7 +149,7 @@ namespace CustomGameController
         {
             bool ground;
 
-            ground = Physics.CheckSphere(transform.position - new Vector3(0.0f, 0.65f, 0.0f), GetComponent<CapsuleCollider>().radius * 0.98f, GroundLayer, QueryTriggerInteraction.Collide);
+            ground = Physics.CheckSphere(transform.position - new Vector3(0.0f, 0.65f, 0.0f), CharacterController.radius * 0.98f, GroundLayer, QueryTriggerInteraction.Collide);
 
             OnGround = ground;
 
@@ -494,6 +494,8 @@ namespace CustomGameController
             {
                 CharacterController = gameObject.AddComponent<CharacterController>();
                 CharacterController.slopeLimit = 0;
+                CharacterController.radius = GetComponent<CapsuleCollider>().radius;
+                CharacterController.height = GetComponent<CapsuleCollider>().height;
             }
 
             StartCoroutine(CheckingUngroundedStates());
