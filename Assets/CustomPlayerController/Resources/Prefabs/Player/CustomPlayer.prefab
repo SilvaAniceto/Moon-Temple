@@ -2089,7 +2089,7 @@ MonoBehaviour:
   m_drag: 2.2
   CameraCustom: {fileID: 7068005868399241386}
   m_CameraTarget: {fileID: 7068005868295073508}
-  m_CameraTargetHeight: 1.88
+  m_CameraTargetHeight: 1.6
   m_cameraSensibility: 1.25
   m_defaultPerspective: 2
 --- !u!1 &7068005867914164206
@@ -2271,7 +2271,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7068005868409815108}
-  - component: {fileID: 7068005868409815114}
   - component: {fileID: 7068005868409815115}
   m_Layer: 0
   m_Name: CharacterController
@@ -2296,29 +2295,6 @@ Transform:
   - {fileID: 238188819029090205}
   m_Father: {fileID: 7068005867661720812}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &7068005868409815114
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7068005868409815109}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7068005868409815115
 MonoBehaviour:
   m_ObjectHideFlags: 0

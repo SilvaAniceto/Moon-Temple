@@ -4,7 +4,6 @@ using UnityEngine.Events;
 
 namespace CustomGameController
 {
-    [RequireComponent(typeof(CapsuleCollider))]
     public class CustomCharacterController : MonoBehaviour, ICustomPlayerController, ICustomGravity
     {
         public static CustomCharacterController Instance { get; private set; }
@@ -18,14 +17,14 @@ namespace CustomGameController
         {
             yield return new WaitForSeconds(0.125f);
 
-            CurrentUngroudedPosition = transform.localPosition;
+            CurrentUngroundedPosition = transform.localPosition;
 
-            if (LastGroundedPosition.y > CurrentUngroudedPosition.y)
+            if (LastGroundedPosition.y > CurrentUngroundedPosition.y)
             {
                 GravityMultiplierFactor = 10f;
                 Falling = true;
             }
-            if (LastGroundedPosition.y < CurrentUngroudedPosition.y)
+            if (LastGroundedPosition.y < CurrentUngroundedPosition.y)
             {
                 GravityMultiplierFactor = 1.85f;
                 Jumping = true;
@@ -45,7 +44,8 @@ namespace CustomGameController
 
         #region SIMULATED PHYSICS PROPERTIES
         public Vector3 LastGroundedPosition { get; set; }
-        public Vector3 CurrentUngroudedPosition { get; set; }
+        public Vector3 CurrentUngroundedPosition { get; set; }
+        public Transform GroundCheckOrigin { get; set; }
         public bool OnGround
         {
             get => onGround;
@@ -149,7 +149,7 @@ namespace CustomGameController
         {
             bool ground;
 
-            ground = Physics.CheckSphere(transform.position - new Vector3(0.0f, 0.65f, 0.0f), CharacterController.radius * 0.98f, GroundLayer, QueryTriggerInteraction.Collide);
+            ground = Physics.CheckSphere(GroundCheckOrigin.position, 0.05f, GroundLayer, QueryTriggerInteraction.Collide);
 
             OnGround = ground;
 
@@ -181,7 +181,7 @@ namespace CustomGameController
         #region PLAYER SLOPE METHODS
         public bool OnSlope()
         {
-            if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius * 1.08f, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, GroundLayer, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height * 0.8f, GroundLayer))
             {
                 float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
                 return slopeAngle != 0;
@@ -190,7 +190,7 @@ namespace CustomGameController
         }
         public float SlopeAngle()
         {
-            if (Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius * 1.08f, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, GroundLayer, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height * 0.8f, GroundLayer))
             {
                 float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
                 return slopeAngle;
@@ -199,7 +199,7 @@ namespace CustomGameController
         }
         public RaycastHit SlopeHit()
         {
-            Physics.SphereCast(transform.position - new Vector3(0, 0.5f, 0), GetComponent<CapsuleCollider>().radius * 1.08f, Vector3.down, out RaycastHit hitInfo, GetComponent<CapsuleCollider>().radius / 2, GroundLayer, QueryTriggerInteraction.Collide);
+            Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height * 0.8f, GroundLayer);
             return hitInfo;
         }
         public Vector3 GetSlopeMoveDirection(Vector3 direction)
@@ -490,12 +490,15 @@ namespace CustomGameController
         {
             if (Instance == null) Instance = this;
 
+            GroundCheckOrigin = new GameObject("~GroundCheckOrigin", typeof(Transform)).transform;
+            GroundCheckOrigin.transform.SetParent(transform);
+
             if (CharacterController == null)
             {
                 CharacterController = gameObject.AddComponent<CharacterController>();
                 CharacterController.slopeLimit = 0;
-                CharacterController.radius = GetComponent<CapsuleCollider>().radius;
-                CharacterController.height = GetComponent<CapsuleCollider>().height;
+                CharacterController.radius = 0.2f;
+                CharacterController.height = 1.8f;
             }
 
             StartCoroutine(CheckingUngroundedStates());
@@ -507,8 +510,12 @@ namespace CustomGameController
         {
             OnCharacterJump.AddListener(Jump);
         }
+        public bool onSlope;
+        public float slopeAngle;
         void Update()
         {
+            onSlope = OnSlope();
+            slopeAngle = SlopeAngle();
             ApplyGravity();
 
             #region NOT IN USE
