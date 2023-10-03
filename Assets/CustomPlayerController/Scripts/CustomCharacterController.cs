@@ -152,7 +152,7 @@ namespace CustomGameController
         {
             bool ground;
 
-            ground = Physics.CheckSphere(GroundCheckOrigin.position, 0.1f, GroundLayer, QueryTriggerInteraction.Collide);
+            ground = Physics.CheckSphere(GroundCheckOrigin.position, 0.15f, GroundLayer, QueryTriggerInteraction.Collide);
 
             OnGround = ground;
 
