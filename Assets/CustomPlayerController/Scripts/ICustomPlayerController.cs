@@ -28,6 +28,7 @@ namespace CustomGameController
 
         #region GAME CONTROLLER METHODS
         void OnGameControllerStateChanged(GameControllerState state);
+        void SetupCharacter();
         #endregion
 
         #region PLAYER CONTROLLER PROPERTIES

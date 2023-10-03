@@ -1,9 +1,12 @@
 using System.Collections;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace CustomGameController
 {
+    [RequireComponent(typeof(CharacterController))]
+
     public class CustomCharacterController : MonoBehaviour, ICustomPlayerController, ICustomGravity
     {
         public static CustomCharacterController Instance { get; private set; }
@@ -149,7 +152,7 @@ namespace CustomGameController
         {
             bool ground;
 
-            ground = Physics.CheckSphere(GroundCheckOrigin.position, 0.05f, GroundLayer, QueryTriggerInteraction.Collide);
+            ground = Physics.CheckSphere(GroundCheckOrigin.position, 0.1f, GroundLayer, QueryTriggerInteraction.Collide);
 
             OnGround = ground;
 
@@ -176,21 +179,41 @@ namespace CustomGameController
             //        break;
             //}
         }
+        public void SetupCharacter()
+        {
+            if (Instance == null) Instance = this;
+
+            if (CharacterController == null)
+            {
+                CharacterController = gameObject.GetComponent<CharacterController>();
+                CharacterController.slopeLimit = MaxSlopeAngle;
+            }
+
+            GameObject t = new GameObject("~GroundCheckOrigin");
+            GroundCheckOrigin = t.transform;
+            GroundCheckOrigin.transform.SetParent(transform);
+
+            OnCharacterJump.AddListener(Jump);
+
+            StartCoroutine(CheckingUngroundedStates());
+            GravityMultiplierFactor = 1.0f;
+
+            OnGameStateChanged.AddListener(OnGameControllerStateChanged);
+        }
         #endregion
 
         #region PLAYER SLOPE METHODS
         public bool OnSlope()
         {
-            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height * 0.8f, GroundLayer))
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 10.0f, GroundLayer, QueryTriggerInteraction.Collide))
             {
-                float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
-                return slopeAngle != 0;
+                return hitInfo.normal != Vector3.up;
             }
             return false;
         }
         public float SlopeAngle()
         {
-            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height * 0.8f, GroundLayer))
+            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 10.0f, GroundLayer, QueryTriggerInteraction.Collide))
             {
                 float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
                 return slopeAngle;
@@ -199,7 +222,7 @@ namespace CustomGameController
         }
         public RaycastHit SlopeHit()
         {
-            Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height * 0.8f, GroundLayer);
+            Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 10.0f, GroundLayer, QueryTriggerInteraction.Collide);
             return hitInfo;
         }
         public Vector3 GetSlopeMoveDirection(Vector3 direction)
@@ -253,7 +276,6 @@ namespace CustomGameController
 
             if (CheckGroundLevel())
             {
-
                 CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
                 if (OnSlope())
@@ -486,36 +508,13 @@ namespace CustomGameController
         #endregion
 
         #region DEFAULT METHODS
-        private void Awake()
-        {
-            if (Instance == null) Instance = this;
-
-            GroundCheckOrigin = new GameObject("~GroundCheckOrigin", typeof(Transform)).transform;
-            GroundCheckOrigin.transform.SetParent(transform);
-
-            if (CharacterController == null)
-            {
-                CharacterController = gameObject.AddComponent<CharacterController>();
-                CharacterController.slopeLimit = 0;
-                CharacterController.radius = 0.2f;
-                CharacterController.height = 1.8f;
-            }
-
-            StartCoroutine(CheckingUngroundedStates());
-            GravityMultiplierFactor = 1.0f;
-
-            OnGameStateChanged.AddListener(OnGameControllerStateChanged);
-        }
-        private void Start()
-        {
-            OnCharacterJump.AddListener(Jump);
-        }
         public bool onSlope;
         public float slopeAngle;
         void Update()
         {
             onSlope = OnSlope();
             slopeAngle = SlopeAngle();
+
             ApplyGravity();
 
             #region NOT IN USE

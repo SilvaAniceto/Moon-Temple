@@ -50,6 +50,8 @@ namespace CustomGameController
             CameraCustom.CameraTarget = m_CameraTarget;
             CameraCustom.CameraTargetHeight = m_CameraTargetHeight;
             CameraCustom.CameraSensibility = m_cameraSensibility;
+
+            CustomController.SetupCharacter();
         }
         void Update()
         {
