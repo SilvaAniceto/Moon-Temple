@@ -1,7 +1,9 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.ProBuilder;
 
 namespace CustomGameController
 {
@@ -152,7 +154,7 @@ namespace CustomGameController
         {
             bool ground;
 
-            ground = Physics.CheckSphere(GroundCheckOrigin.position, 0.1f, GroundLayer, QueryTriggerInteraction.Collide);
+            ground = Physics.CheckSphere(GroundCheckOrigin.position, 0.15f, GroundLayer, QueryTriggerInteraction.Collide);
 
             OnGround = ground;
 
@@ -202,7 +204,18 @@ namespace CustomGameController
         }
         #endregion
 
+        #region PLAYER SLOPE PROPERTIES
+        public int SlopeCheckCount { get; set; }
+        public List<Transform> SlopeCheckList { get; private set; }
+        #endregion
+
         #region PLAYER SLOPE METHODS
+        public void SetSlopeCheckSystem()
+        {
+            SlopeCheckList = new List<Transform>();
+
+
+        }
         public bool OnSlope()
         {
             if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 10.0f, GroundLayer, QueryTriggerInteraction.Collide))
@@ -510,11 +523,12 @@ namespace CustomGameController
         #region DEFAULT METHODS
         public bool onSlope;
         public float slopeAngle;
+        public Transform t;
         void Update()
         {
             onSlope = OnSlope();
             slopeAngle = SlopeAngle();
-
+            t.rotation = Quaternion.FromToRotation(t.up, SlopeHit().normal) * t.rotation;
             ApplyGravity();
 
             #region NOT IN USE
