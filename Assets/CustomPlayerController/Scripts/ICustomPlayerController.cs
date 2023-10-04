@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CustomGameController
@@ -51,7 +52,13 @@ namespace CustomGameController
         float JumpSpeed { get; }
         #endregion
 
+        #region PLAYER SLOPE PROPERTIES
+        int SlopeCheckCount { get; set; }
+        List<Transform> SlopeCheckList { get; set; }
+        #endregion
+
         #region PLAYER SLOPE METHODS
+        void SetSlopeCheckSystem(int checkCount, float radius);
         bool OnSlope();
         float SlopeAngle();
         RaycastHit SlopeHit();

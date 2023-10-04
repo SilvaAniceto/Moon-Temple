@@ -9,6 +9,7 @@ namespace CustomGameController
         [SerializeField] private CustomCharacterController CustomController;
         [SerializeField] private LayerMask m_groundLayer;
         [SerializeField] private float m_maxSlopeAngle = 45f;
+        [SerializeField, Range(2, 6)] private int m_slopeCheckCount = 2;
         [SerializeField] private float m_onGroundSpeed = 8;
         [SerializeField, Range(1.2f, 5)] private float m_acceleration = 2.5f;
         [SerializeField, Range(1.2f, 10)] private float m_jumpHeight = 1.5f;
@@ -40,6 +41,7 @@ namespace CustomGameController
 
             CustomController.GroundLayer = m_groundLayer;
             CustomController.MaxSlopeAngle = m_maxSlopeAngle;
+            CustomController.SlopeCheckCount = m_slopeCheckCount;
             CustomController.OnGroundSpeed = m_onGroundSpeed;
 
             CustomController.OnGroundAcceleration = m_acceleration;

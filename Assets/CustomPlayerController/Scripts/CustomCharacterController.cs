@@ -201,42 +201,82 @@ namespace CustomGameController
             GravityMultiplierFactor = 1.0f;
 
             OnGameStateChanged.AddListener(OnGameControllerStateChanged);
+
+            SetSlopeCheckSystem(SlopeCheckCount,CharacterController.radius);
         }
         #endregion
 
         #region PLAYER SLOPE PROPERTIES
         public int SlopeCheckCount { get; set; }
-        public List<Transform> SlopeCheckList { get; private set; }
+        public List<Transform> SlopeCheckList { get; set; }
         #endregion
 
         #region PLAYER SLOPE METHODS
-        public void SetSlopeCheckSystem()
+        public void SetSlopeCheckSystem(int checkCount, float radius)
         {
             SlopeCheckList = new List<Transform>();
 
+            for (int i = 0; i < checkCount; i++)
+            {
+                GameObject obj = new GameObject("~SlopeOrigin");
+                Transform t = obj.transform;
+                t.SetParent(transform);
 
+                SlopeCheckList.Add(t);
+
+                float circunferenceProgress = (float)i / checkCount;
+
+                float currentRadian = circunferenceProgress * 2 * Mathf.PI;
+
+                float xScaled = Mathf.Cos(currentRadian);
+                float zScaled = Mathf.Sin(currentRadian);
+
+                float x = xScaled * radius;
+                float z = zScaled * radius;
+
+                Vector3 currentPosition = new Vector3(t.position.x + z, CharacterController.height / 2, t.position.z + x);
+
+                t.position = currentPosition;
+            }
         }
         public bool OnSlope()
         {
-            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 10.0f, GroundLayer, QueryTriggerInteraction.Collide))
+            if (!OnGround) return false;
+
+            foreach (Transform t in SlopeCheckList)
             {
-                return hitInfo.normal != Vector3.up;
+                if (Physics.Raycast(t.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height / 2 + 0.5f, GroundLayer, QueryTriggerInteraction.Collide))
+                {
+                    return hitInfo.normal != Vector3.up;
+                }
             }
             return false;
         }
         public float SlopeAngle()
         {
-            if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 10.0f, GroundLayer, QueryTriggerInteraction.Collide))
+            if (!OnGround) return 0;
+
+            foreach (Transform t in SlopeCheckList)
             {
-                float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
-                return slopeAngle;
+                if (Physics.Raycast(t.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height / 2 + 0.5f, GroundLayer, QueryTriggerInteraction.Collide))
+                {
+                    float slopeAngle = Mathf.RoundToInt(Vector3.Angle(Vector3.up, hitInfo.normal));
+                    return slopeAngle;
+                }
             }
             return 0;
         }
         public RaycastHit SlopeHit()
         {
-            Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, 10.0f, GroundLayer, QueryTriggerInteraction.Collide);
-            return hitInfo;
+            if (!OnGround) return new RaycastHit();
+
+            foreach (Transform t in SlopeCheckList)
+            {
+                Physics.Raycast(t.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height / 2 + 0.5f, GroundLayer, QueryTriggerInteraction.Collide);
+
+                if (hitInfo.collider != null) return hitInfo;
+            }
+            return new RaycastHit();
         }
         public Vector3 GetSlopeMoveDirection(Vector3 direction)
         {
@@ -521,14 +561,8 @@ namespace CustomGameController
         #endregion
 
         #region DEFAULT METHODS
-        public bool onSlope;
-        public float slopeAngle;
-        public Transform t;
         void Update()
         {
-            onSlope = OnSlope();
-            slopeAngle = SlopeAngle();
-            t.rotation = Quaternion.FromToRotation(t.up, SlopeHit().normal) * t.rotation;
             ApplyGravity();
 
             #region NOT IN USE

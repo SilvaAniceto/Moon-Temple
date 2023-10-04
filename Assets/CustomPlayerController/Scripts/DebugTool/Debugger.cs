@@ -1,13 +1,17 @@
 using UnityEngine;
+using UnityEngine.Animations;
 
 namespace CustomGameController
 {
     public class Debugger : MonoBehaviour
     {
         public bool enableDebugger = false;
+        public bool debugGroundDetection = false;
+        public bool debugSlopeDetection = false;
+        public bool debugDirection = false;
         public CustomCharacterController controller;
         public CustomCamera customCamera;
-
+        public Transform characterCompass;
         private DebugInput DebugInput;
 
         private void Awake()
@@ -18,7 +22,42 @@ namespace CustomGameController
 
         void Update()
         {
+            characterCompass.gameObject.SetActive(debugDirection);
+
             if (!enableDebugger) return;
+
+            if (debugDirection)
+            {
+                characterCompass.SetParent(controller.transform);
+                characterCompass.transform.localPosition = new Vector3(0.0f, controller.CharacterController.height - 0.25f, controller.CharacterController.radius);
+                characterCompass.rotation = Quaternion.FromToRotation(characterCompass.up, controller.SlopeHit().normal) * characterCompass.rotation;
+            }
+            else
+            {
+                characterCompass.SetParent(transform);
+            }
+        }
+        private void OnDrawGizmos()
+        {
+            if (!enableDebugger) return;
+
+            if (debugGroundDetection)
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawWireSphere(controller.GroundCheckOrigin.position, 0.15f);
+            }
+
+            if (debugSlopeDetection)
+            {
+                foreach (Transform t in controller.SlopeCheckList)
+                {
+                    if (t != null)
+                    {
+                        Gizmos.color = Color.cyan;
+                        Gizmos.DrawLine(t.position, new Vector3(t.position.x, t.position.y - controller.CharacterController.height / 2, t.position.z));
+                    }
+                }
+            }
         }
     }
 }
