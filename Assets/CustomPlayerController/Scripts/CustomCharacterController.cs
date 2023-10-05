@@ -510,6 +510,8 @@ namespace CustomGameController
 
                 OnCharacterMove?.Invoke(PlayerDirection, CurrentSpeed);
 
+                Animate();
+
                 IEnumerator SmoothStop()
                 {
                     float stopDistance = Vector3.Distance(CurrentyVelocity, Vector3.zero);
@@ -625,5 +627,13 @@ namespace CustomGameController
             }
         }
         #endregion
+
+        public Animator animator;
+
+        void Animate()
+        {
+            Vector3 moveSpeed = SprintInput ? PlayerDirection * 2 : PlayerDirection;
+            animator.SetFloat("MoveSpeed", Mathf.Clamp(moveSpeed.magnitude, 0.0f, 2.0f), 0.1f, Time.deltaTime);
+        }
     }
 }
