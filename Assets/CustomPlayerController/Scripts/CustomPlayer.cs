@@ -9,11 +9,11 @@ namespace CustomGameController
         [SerializeField] private CustomCharacterController CustomController;
         [SerializeField] private LayerMask m_groundLayer;
         [SerializeField] private float m_maxSlopeAngle = 45f;
-        [SerializeField, Range(2, 6)] private int m_slopeCheckCount = 2;
-        [SerializeField] private float m_onGroundSpeed = 8;
-        [SerializeField, Range(1.2f, 5)] private float m_acceleration = 2.5f;
-        [SerializeField, Range(1.2f, 10)] private float m_jumpHeight = 1.5f;
-        [SerializeField, Range(0, 100)] private float m_drag = 0.5f;
+        [SerializeField, Range(2.0f, 6.0f)] private int m_slopeCheckCount = 2;
+        [SerializeField, Range(1.0f, 3.6f)] private float m_onGroundSpeed = 8;
+        [SerializeField, Range(1.2f, 5.0f)] private float m_acceleration = 2.5f;
+        [SerializeField, Range(1.2f, 10.0f)] private float m_jumpHeight = 1.5f;
+        [SerializeField, Range(0.0f, 100.0f)] private float m_drag = 0.5f;
 
         [Header("Custom Camera Controller Settings")]
         [SerializeField] private CustomCamera CameraCustom;
@@ -21,6 +21,8 @@ namespace CustomGameController
         [SerializeField, Range(1f, 5)] private float m_CameraTargetHeight = 0.0f;
         [SerializeField, Range(0.5f, 1.5f)] private float m_cameraSensibility = 1.0f;
         [SerializeField] CameraPerspective m_defaultPerspective;
+        [SerializeField] LayerMask m_thirdPersonCollisionFilter;
+        [SerializeField] LayerMask m_isometricCollisionFilter;
         #endregion
 
         #region PRIVATE FIELDS
@@ -36,6 +38,9 @@ namespace CustomGameController
         }
         private void Start()
         {
+            CameraCustom.ThirdPersonCollisionFilter = m_thirdPersonCollisionFilter;
+            CameraCustom.IsometricCollisionFilter = m_isometricCollisionFilter;
+
             CameraCustom.SetCameraPerspective(m_defaultPerspective);
             CustomController.SetCharacterMoveCallBacks(m_defaultPerspective);
 

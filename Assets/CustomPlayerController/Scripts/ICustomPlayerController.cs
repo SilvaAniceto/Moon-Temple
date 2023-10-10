@@ -30,14 +30,17 @@ namespace CustomGameController
         #region GAME CONTROLLER METHODS
         void OnGameControllerStateChanged(GameControllerState state);
         void SetupCharacter();
+        bool CheckWallHit();
         #endregion
 
         #region PLAYER CONTROLLER PROPERTIES
         CharacterController CharacterController { get; set; }
+        Transform WallCheckOrigin {  get; set; }
         Vector3 Forward { get; set; }
         Vector3 Right { get; set; }
         Vector3 CurrentyVelocity { get; set; }
         bool AllowJump { get; set; }
+        float DelayedStopTime { get; set; }
         #endregion
 
         #region PLAYER CONTROLLER SETTINGS
@@ -67,10 +70,8 @@ namespace CustomGameController
 
         #region PLAYER JUMP & MOVEMENT METHODS
         void Jump(bool jumpInput);
-        void UpdateIsometricMovePosition(Vector3 inputDirection, float movementSpeed);
         void UpdateThirdPersonMovePosition(Vector3 inputDirection, float movementSpeed);
         void UpdateFirstPersonMovePosition(Vector3 inputDirection, float movementSpeed);
-        void UpdateOverShoulderMovePosition(Vector3 inputDirection, float movementSpeed);
         #endregion
 
         #region PLAYER INPUT VALUES & METHODS

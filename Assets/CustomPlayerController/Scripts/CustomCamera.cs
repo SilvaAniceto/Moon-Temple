@@ -12,6 +12,8 @@ namespace CustomGameController
 
         #region CAMERA PROPERTIES
         public Camera PlayerCamera { get; set; }
+        public LayerMask ThirdPersonCollisionFilter { get; set; }
+        public LayerMask IsometricCollisionFilter { get; set; }
         public CustomCharacterController CustomController { get; set; }
         public CameraPerspectiveSettings FirstPerson { get => FirstPersonSettings; }
         public CameraPerspectiveSettings Isometric { get => IsometricSettings; }
@@ -67,15 +69,19 @@ namespace CustomGameController
             {
                 case CameraPerspective.Isometric:
                     CurrentSettings = Isometric;
+                    VirtualCameraFollow.CameraCollisionFilter = IsometricCollisionFilter;
                     break;
                 case CameraPerspective.Third_Person:
                     CurrentSettings = ThirdPerson;
+                    VirtualCameraFollow.CameraCollisionFilter = ThirdPersonCollisionFilter;
                     break;
                 case CameraPerspective.Over_Shoulder:
                     CurrentSettings = OverShoulder;
+                    VirtualCameraFollow.CameraCollisionFilter = ThirdPersonCollisionFilter;
                     break;
                 case CameraPerspective.First_Person:
                     CurrentSettings = FirstPerson;
+                    VirtualCameraFollow.CameraCollisionFilter = ThirdPersonCollisionFilter;
                     break;
             }
 
@@ -102,10 +108,10 @@ namespace CustomGameController
         }
         public void SetPerspectiveSettings()
         {
-            FirstPersonSettings = new CameraPerspectiveSettings(new Vector2(-70.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.4f, 0.04f), false, 60.0f, 0.0f);
-            IsometricSettings = new CameraPerspectiveSettings(new Vector2(25.0f, 25.0f), true, new Vector2(15.0f, 15.0f), true, Quaternion.Euler(new Vector3(0.0f, 30.0f, 0.0f)), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), true, 5.0f, 45.0f);
-            ThirdPersonSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.5f, 0.3f), new Vector3(0.0f, 0.5f, 0.0f), false, 60.0f, 4.0f);
-            OverShoulderSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.5f, 0.3f), new Vector3(0.6f, 0.3f, 0.0f), false, 70.0f, 1.6f);
+            FirstPersonSettings = new CameraPerspectiveSettings(new Vector2(-70.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.4f, 0.00f), false, 60.0f, -0.2f);
+            IsometricSettings = new CameraPerspectiveSettings(new Vector2(25.0f, 25.0f), true, new Vector2(15.0f, 15.0f), true, Quaternion.Euler(new Vector3(0.0f, 30.0f, 0.0f)), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), false, 13.0f, 45.0f);
+            ThirdPersonSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.5f, 0.3f), new Vector3(0.2f, 0.35f, 0.6f), false, 60.0f, 3.0f);
+            OverShoulderSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.5f, 0.3f), new Vector3(0.2f, 0.35f, -0.15f), false, 70.0f, 0.8f);
         }
         #endregion
 

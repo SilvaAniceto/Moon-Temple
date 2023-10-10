@@ -44,6 +44,8 @@ namespace CustomGameController
     {
         #region CAMERA PROPERTIES
         Camera PlayerCamera { get; set; }
+        LayerMask ThirdPersonCollisionFilter {  get; set; }
+        LayerMask IsometricCollisionFilter { get; set; }
         CustomCharacterController CustomController { get; set; }
         CameraPerspectiveSettings FirstPerson { get; }
         CameraPerspectiveSettings Isometric { get; }
