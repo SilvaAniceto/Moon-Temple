@@ -35,6 +35,7 @@ namespace CustomGameController
 
         #region PLAYER CONTROLLER PROPERTIES
         CharacterController CharacterController { get; set; }
+        Animator CharacterAnimator { get; }
         Transform WallCheckOrigin {  get; set; }
         Vector3 Forward { get; set; }
         Vector3 Right { get; set; }

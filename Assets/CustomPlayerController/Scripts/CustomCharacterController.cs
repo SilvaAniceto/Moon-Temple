@@ -61,7 +61,7 @@ namespace CustomGameController
                 if (!onGround)
                 {
                     StopCoroutine(CheckingUngroundedStates());
-                    LastGroundedPosition = transform.localPosition;
+                    LastGroundedPosition = transform.position;
                     StartCoroutine(CheckingUngroundedStates());
                 }
             }
@@ -85,6 +85,7 @@ namespace CustomGameController
 
         #region PLAYER CONTROLLER PROPERTIES
         public CharacterController CharacterController { get; set; }
+        public Animator CharacterAnimator { get => GetComponent<Animator>(); }
         public Transform WallCheckOrigin { get; set; }
         public Vector3 Forward { get; set; }
         public Vector3 Right { get; set; }
@@ -425,7 +426,7 @@ namespace CustomGameController
 
                 if (m_PlayerDirection == Vector3.zero) StartCoroutine(SmoothStop());
 
-                OnCharacterMove?.Invoke(PlayerDirection, CurrentSpeed);
+                OnCharacterMove?.Invoke(PlayerDirection.normalized, CurrentSpeed);
 
                 IEnumerator SmoothStop()
                 {
@@ -531,12 +532,12 @@ namespace CustomGameController
         }
         #endregion
 
-        public Animator animator;
-
         void Animate()
         {
-            if (CheckWallHit()) animator.SetFloat("MoveSpeed", 0.0f, 0.1f, Time.deltaTime);
-            else animator.SetFloat("MoveSpeed", Mathf.Clamp(SprintInput ? CurrentyVelocity.magnitude * 2.0f : CurrentyVelocity.magnitude, 0.0f, 2.0f), 0.1f, Time.deltaTime);
+            if (CheckWallHit()) CharacterAnimator.SetFloat("MoveSpeed", 0.0f, 0.1f, Time.deltaTime);
+            else CharacterAnimator.SetFloat("MoveSpeed", Mathf.Clamp(SprintInput ? CurrentyVelocity.magnitude * 2.0f : CurrentyVelocity.magnitude, 0.0f, 2.0f), 0.1f, Time.deltaTime);
+
+            CharacterAnimator.SetBool("Jumping", Jumping);
         }
     }
 }

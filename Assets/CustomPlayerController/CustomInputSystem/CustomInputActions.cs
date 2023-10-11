@@ -200,7 +200,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""id"": ""4bc6381d-1ad6-4dd2-8bd7-5d044e51810e"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": ""ScaleVector2(x=0.8,y=0.8),StickDeadzone(min=0.2)"",
+                    ""processors"": ""ScaleVector2(x=0.8,y=0.8),StickDeadzone(min=1.401298E-45)"",
                     ""groups"": ""Gamepad"",
                     ""action"": ""CameraAxis"",
                     ""isComposite"": false,
