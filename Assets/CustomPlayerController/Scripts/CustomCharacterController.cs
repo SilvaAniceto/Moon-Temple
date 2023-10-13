@@ -199,11 +199,12 @@ namespace CustomGameController
             GameObject t = new GameObject("~GroundCheckOrigin");
             GroundCheckOrigin = t.transform;
             GroundCheckOrigin.transform.SetParent(transform);
+            GroundCheckOrigin.transform.localPosition = Vector3.zero;
 
             t = new GameObject("~WallCheckOrigin");
             WallCheckOrigin = t.transform;
             WallCheckOrigin.transform.SetParent(transform);
-            WallCheckOrigin.transform.position = new Vector3(WallCheckOrigin.transform.position.x, WallCheckOrigin.transform.position.y + CharacterController.height / 2.0f, WallCheckOrigin.transform.position.z);
+            WallCheckOrigin.transform.localPosition = new Vector3(0.0f, CharacterController.height / 2.0f, 0.0f);
 
             OnCharacterJump.AddListener(Jump);
 
@@ -235,6 +236,7 @@ namespace CustomGameController
                 GameObject obj = new GameObject("~SlopeOrigin");
                 Transform t = obj.transform;
                 t.SetParent(transform);
+                t.localPosition = Vector3.zero;
 
                 SlopeCheckList.Add(t);
 
@@ -248,9 +250,9 @@ namespace CustomGameController
                 float x = xScaled * radius;
                 float z = zScaled * radius;
 
-                Vector3 currentPosition = new Vector3(t.position.x + z, (CharacterController.height / 2) - 0.2f, t.position.z + x);
+                Vector3 currentPosition = new Vector3(t.localPosition.x + z, (CharacterController.height / 2) - 0.2f, t.localPosition.z + x);
 
-                t.position = currentPosition;
+                t.localPosition = currentPosition;
             }
         }
         public bool OnSlope()
