@@ -20,18 +20,18 @@ namespace CustomGameController
         [HideInInspector] public UnityEvent<bool> OnCharacterJump = new UnityEvent<bool>();
         IEnumerator CheckingUngroundedStates()
         {
-            yield return new WaitForSeconds(0.125f);
+            yield return new WaitForEndOfFrame();
 
-            CurrentUngroundedPosition = transform.localPosition;
+            CurrentUngroundedPosition = transform.position;
 
-            if (LastGroundedPosition.y > CurrentUngroundedPosition.y)
+            if (Mathf.Round(LastGroundedPosition.y * 100.0f) / 100.0f > Mathf.Round(CurrentUngroundedPosition.y * 100.0f) / 100.0f)
             {
-                GravityMultiplierFactor = 10f;
+                GravityMultiplierFactor = 2.2f;
                 Falling = true;
             }
-            if (LastGroundedPosition.y < CurrentUngroundedPosition.y)
+            if (Mathf.Round(LastGroundedPosition.y * 100.0f) / 100.0f < Mathf.Round(CurrentUngroundedPosition.y * 100.0f) / 100.0f)
             {
-                GravityMultiplierFactor = 1.85f;
+                GravityMultiplierFactor = 1.2f;
                 Jumping = true;
             }
 
@@ -42,11 +42,12 @@ namespace CustomGameController
             Falling = false;
             Jumping = false;
             AllowJump = false;
+            StartJump = false;
 
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.35f);
             AllowJump = true;
         }
-        
+
         #region SIMULATED PHYSICS PROPERTIES
         public Vector3 LastGroundedPosition { get; set; }
         public Vector3 CurrentUngroundedPosition { get; set; }
@@ -57,8 +58,10 @@ namespace CustomGameController
             set
             {
                 if (onGround == value) return;
+
                 onGround = value;
-                if (!onGround)
+
+                if (!onGround && SlopeHit().collider == null)
                 {
                     StopCoroutine(CheckingUngroundedStates());
                     LastGroundedPosition = transform.position;
@@ -91,6 +94,7 @@ namespace CustomGameController
         public Vector3 Right { get; set; }
         public Vector3 CurrentyVelocity { get; set; }
         public bool AllowJump { get; set; }
+        public bool StartJump { get; set; }
         public float DelayedStopTime { get; set; }
         #endregion
 
@@ -99,7 +103,7 @@ namespace CustomGameController
         {
             get
             {
-                if (CheckGroundLevel()) return OnGroundSpeed;
+                if (OnGround) return OnGroundSpeed;
                 else return OnAirSpeed;
             }
         }
@@ -107,7 +111,7 @@ namespace CustomGameController
         {
             get
             {
-                if (CheckGroundLevel()) return OnGroundAcceleration;
+                if (OnGround) return OnGroundAcceleration;
                 else return OnAirAcceleration;
             }
         }
@@ -115,7 +119,7 @@ namespace CustomGameController
         {
             get
             {
-                if (SprintInput) return m_PlayerSpeed * 1.8f;
+                if (SprintInput) return m_PlayerSpeed * 2.0f;
                 else return m_PlayerSpeed;
             }
             set
@@ -131,7 +135,7 @@ namespace CustomGameController
             get
             {
                 return (OnGroundSpeed * 0.8f);
-            } 
+            }
         }
         public float OnAirAcceleration { get => OnGroundAcceleration * 0.8f; }
         public float MaxSlopeAngle { get; set; }
@@ -150,20 +154,18 @@ namespace CustomGameController
 
             if (SlopeAngle() <= MaxSlopeAngle)
                 CharacterController.Move(GravityVelocity * Time.deltaTime);
-            else 
+            else
                 CharacterController.Move(GetSlopeMoveDirection(GravityVelocity + SlopeHit().transform.forward) * Time.deltaTime * OnGroundSpeed);
         }
-        public bool CheckGroundLevel()
+        public void CheckGroundLevel()
         {
             bool ground;
 
-            ground = Physics.CheckSphere(GroundCheckOrigin.position, 0.15f, GroundLayer, QueryTriggerInteraction.Collide);
+            ground = Physics.CheckSphere(GroundCheckOrigin.position, CharacterController.radius, GroundLayer, QueryTriggerInteraction.Collide);
 
             OnGround = ground;
 
-            if (ground && GravityVelocity.y < 0) GravityVelocity = new Vector3(GravityVelocity.x, 0.0f, GravityVelocity.z);
-
-            return ground;
+            if (ground && GravityVelocity.y < -CharacterController.radius) GravityVelocity = new Vector3(GravityVelocity.x, 0.0f, GravityVelocity.z);
         }
         #endregion
 
@@ -210,7 +212,7 @@ namespace CustomGameController
 
             OnGameStateChanged.AddListener(OnGameControllerStateChanged);
 
-            SetSlopeCheckSystem(SlopeCheckCount,CharacterController.radius);
+            SetSlopeCheckSystem(SlopeCheckCount, CharacterController.radius);
         }
         public bool CheckWallHit()
         {
@@ -246,7 +248,7 @@ namespace CustomGameController
                 float x = xScaled * radius;
                 float z = zScaled * radius;
 
-                Vector3 currentPosition = new Vector3(t.position.x + z, CharacterController.height / 2, t.position.z + x);
+                Vector3 currentPosition = new Vector3(t.position.x + z, (CharacterController.height / 2) - 0.2f, t.position.z + x);
 
                 t.position = currentPosition;
             }
@@ -284,7 +286,7 @@ namespace CustomGameController
 
             foreach (Transform t in SlopeCheckList)
             {
-                Physics.Raycast(t.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height / 2 + 0.5f, GroundLayer, QueryTriggerInteraction.Collide);
+                Physics.Raycast(t.position, Vector3.down, out RaycastHit hitInfo, CharacterController.height / 2, GroundLayer, QueryTriggerInteraction.Collide);
 
                 if (hitInfo.collider != null) return hitInfo;
             }
@@ -296,26 +298,24 @@ namespace CustomGameController
         }
         #endregion
 
-        #region PLAYER JUMP & MOVEMENT METHODS
+        #region PLAYER JUMP, MOVEMENT & ANIMATION METHODS
         public void Jump(bool jumpInput)
         {
             if (jumpInput)
             {
                 if (AllowJump)
                 {
+                    StartJump = true;
+
                     float yVelocity = Mathf.Lerp(transform.position.y, JumpSpeed, 0.8f);
 
-                    Vector3 jumpVector = new Vector3(0.0f, yVelocity, 0.0f);
+                    GravityVelocity = new Vector3(0.0f, yVelocity, 0.0f);
 
-                    jumpVector = Vector3.MoveTowards(jumpVector, jumpVector, Time.fixedDeltaTime);
-
-                    CharacterController.Move(jumpVector * Time.deltaTime);
+                    AllowJump = false;
                 }
             }
-            if (!jumpInput && Jumping)
-            {
-                AllowJump = false;
-            }
+
+            CharacterController.Move(GravityVelocity * Time.deltaTime);
         }
         public void UpdateThirdPersonMovePosition(Vector3 inputDirection, float movementSpeed)
         {
@@ -336,7 +336,7 @@ namespace CustomGameController
                 return;
             }
 
-            if (CheckGroundLevel())
+            if (OnGround)
             {
                 CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
@@ -374,7 +374,7 @@ namespace CustomGameController
 
             move = right + forward + Vector3.zero;
 
-            if (CheckGroundLevel())
+            if (OnGround)
             {
                 CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
@@ -410,6 +410,15 @@ namespace CustomGameController
             Rot.z = 0.0f;
 
             transform.rotation = Rot;
+        }
+        public void Animate()
+        {
+            if (CheckWallHit()) CharacterAnimator.SetFloat("MoveSpeed", 0.0f, 0.1f, Time.deltaTime);
+            else CharacterAnimator.SetFloat("MoveSpeed", Mathf.Clamp(SprintInput ? CurrentyVelocity.magnitude * 2.0f : CurrentyVelocity.magnitude, 0.0f, 2.0f), 0.1f, Time.deltaTime);
+
+            CharacterAnimator.SetBool("Jumping", StartJump);
+            CharacterAnimator.SetBool("OnGround", onGround);
+            CharacterAnimator.SetBool("Falling", Falling);
         }
         #endregion
 
@@ -520,6 +529,10 @@ namespace CustomGameController
             //}
             #endregion
         }
+        void FixedUpdate()
+        {
+            CheckGroundLevel();
+        }
         #endregion
 
         #region CALLBACKS
@@ -531,13 +544,5 @@ namespace CustomGameController
             else OnCharacterMove.AddListener(UpdateThirdPersonMovePosition);
         }
         #endregion
-
-        void Animate()
-        {
-            if (CheckWallHit()) CharacterAnimator.SetFloat("MoveSpeed", 0.0f, 0.1f, Time.deltaTime);
-            else CharacterAnimator.SetFloat("MoveSpeed", Mathf.Clamp(SprintInput ? CurrentyVelocity.magnitude * 2.0f : CurrentyVelocity.magnitude, 0.0f, 2.0f), 0.1f, Time.deltaTime);
-
-            CharacterAnimator.SetBool("Jumping", Jumping);
-        }
     }
 }

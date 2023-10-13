@@ -21,7 +21,7 @@ namespace CustomGameController
         #region SIMULATED PHYSICS METHODS
         float ApplyDrag(float velocity, float drag);
         void ApplyGravity();
-        bool CheckGroundLevel();
+        void CheckGroundLevel();
         #endregion
     }
 }

@@ -44,7 +44,7 @@ namespace CustomGameController
             if (debugGroundDetection)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawWireSphere(controller.GroundCheckOrigin.position, 0.15f);
+                Gizmos.DrawWireSphere(controller.GroundCheckOrigin.position, controller.CharacterController.radius);
             }
 
             if (debugSlopeDetection)
@@ -54,7 +54,7 @@ namespace CustomGameController
                     if (t != null)
                     {
                         Gizmos.color = Color.cyan;
-                        Gizmos.DrawLine(t.position, new Vector3(t.position.x, t.position.y - controller.CharacterController.height / 2, t.position.z));
+                        Gizmos.DrawLine(t.position, new Vector3(t.position.x, t.position.y - controller.CharacterController.height / 2.0f, t.position.z));
                     }
                 }
             }

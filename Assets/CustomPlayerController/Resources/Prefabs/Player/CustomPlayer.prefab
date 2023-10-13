@@ -1810,9 +1810,9 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 43714b68324cc2c409d534d9874f2a2b, type: 2}
-  - {fileID: 2100000, guid: 766fd3ff04aab4745a764d33daac86fa, type: 2}
-  - {fileID: 2100000, guid: 8b25e99361ac31d4e9ae83c46aee69ea, type: 2}
+  - {fileID: 2100000, guid: b6d439bb2b4cff94e9b39b83a470dd6c, type: 2}
+  - {fileID: 2100000, guid: 169e4bf3c37df654b8ad162c34b83902, type: 2}
+  - {fileID: 2100000, guid: f4fb4d19933b2b24ebd33ceb3014e4b2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1837,7 +1837,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 4698152120088058464, guid: 36078ab0369161e49a29d349ae3e0739, type: 3}
+  m_Mesh: {fileID: 4698152120088058464, guid: ab9cd89bd3e522d44aea2172d0369f47, type: 3}
   m_Bones:
   - {fileID: 4854528590669181271}
   - {fileID: 5528781981087316673}
@@ -2035,7 +2035,7 @@ MonoBehaviour:
   m_onGroundSpeed: 2.7
   m_acceleration: 2
   m_jumpHeight: 1.8
-  m_drag: 2.2
+  m_drag: 1.4
   CameraCustom: {fileID: 7068005868399241386}
   m_CameraTarget: {fileID: 7068005868295073508}
   m_CameraTargetHeight: 1.8
@@ -2273,7 +2273,6 @@ MonoBehaviour:
   OnCharacterJump:
     m_PersistentCalls:
       m_Calls: []
-  animator: {fileID: 8442657837671598796}
 --- !u!143 &1281126599821335341
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2309,7 +2308,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7068005868409815109}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 36078ab0369161e49a29d349ae3e0739, type: 3}
+  m_Avatar: {fileID: 9000000, guid: ab9cd89bd3e522d44aea2172d0369f47, type: 3}
   m_Controller: {fileID: 9100000, guid: 434403fdfe9be61419b1934924ab4f28, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0

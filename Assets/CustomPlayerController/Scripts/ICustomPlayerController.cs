@@ -41,6 +41,7 @@ namespace CustomGameController
         Vector3 Right { get; set; }
         Vector3 CurrentyVelocity { get; set; }
         bool AllowJump { get; set; }
+        bool StartJump { get; set; }
         float DelayedStopTime { get; set; }
         #endregion
 
@@ -69,10 +70,11 @@ namespace CustomGameController
         Vector3 GetSlopeMoveDirection(Vector3 direction);
         #endregion
 
-        #region PLAYER JUMP & MOVEMENT METHODS
+        #region PLAYER JUMP, MOVEMENT & ANIMATION METHODS
         void Jump(bool jumpInput);
         void UpdateThirdPersonMovePosition(Vector3 inputDirection, float movementSpeed);
         void UpdateFirstPersonMovePosition(Vector3 inputDirection, float movementSpeed);
+        void Animate();
         #endregion
 
         #region PLAYER INPUT VALUES & METHODS
