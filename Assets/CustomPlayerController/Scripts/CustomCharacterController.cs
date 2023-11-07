@@ -490,8 +490,13 @@ namespace CustomGameController
         #endregion
 
         #region DEFAULT METHODS
+        public float frequency = 0.5f;
+        public float magnitude = 1.0f;
+        public float sineValue;
         void Update()
         {
+            sineValue = magnitude * Mathf.Sin(Time.time * frequency);
+
             ApplyGravity();
             Animate();
 
