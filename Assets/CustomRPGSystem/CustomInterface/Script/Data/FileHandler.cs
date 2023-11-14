@@ -92,9 +92,9 @@ public static class JsonHelper
 }
 
     
-public class IdHelper : MonoBehaviour 
+public static class IdHelper
 {
-    public static string GenerateIdD()
+    public static string GenerateID()
     {
         string characters = "0123456789abcdefghijklmnopqrstuvxwyzABCDEFGHIJKLMNOPQRSTUVXWYZ";
         string id = "";

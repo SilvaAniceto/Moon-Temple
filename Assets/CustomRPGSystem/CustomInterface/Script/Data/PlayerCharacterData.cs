@@ -376,7 +376,7 @@ namespace CustomRPGSystem
             List<Skills> m_skills = new List<Skills>();
 
 
-            m_info.id = IdHelper.GenerateIdD();
+            m_info.id = IdHelper.GenerateID();
             m_info.name = p_characterName;
             m_info.level = p_level + 1;
             m_info.race = p_race;

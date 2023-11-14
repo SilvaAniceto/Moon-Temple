@@ -3,42 +3,46 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System.IO;
+using UnityEngine.UIElements;
 
-namespace CustomGameController
+[CustomEditor(typeof(MapCreator))]
+public class MapEditor : Editor
 {
-    [CustomEditor(typeof(MapCreator))]
-    public class MapEditor : Editor
+    MapCreator mapCreator = new MapCreator();
+
+    SerializedProperty propType;
+
+    int selectedIndex;
+    Vector3 position;
+    Vector3 rotation;
+
+    private void OnEnable()
     {
-        MapCreator mapCreator = new MapCreator();
+        propType = serializedObject.FindProperty("propType");
+        mapCreator = (MapCreator)target;
+    }
 
-        SerializedProperty propType;
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
 
-        int selectedIndex;
+        EditorGUILayout.PropertyField(propType);
 
-        private void OnEnable()
-        {
-            propType = serializedObject.FindProperty("propType");
-            mapCreator = (MapCreator)target;
-        }
+        GUILayout.Space(10);
 
-        public override void OnInspectorGUI()
-        {
-            serializedObject.Update();
+        string[] id = mapCreator.CurrentProps.id.Trim().Split(',');
+        selectedIndex = EditorGUILayout.Popup("Prefab", selectedIndex, id);
 
-            EditorGUILayout.PropertyField(propType);
+        GUILayout.Space(10);
 
-            GUILayout.Space(10);
+        position = EditorGUILayout.Vector3Field("Position", position);
+        rotation = EditorGUILayout.Vector3Field("Rotation", rotation);
 
-            string[] id = mapCreator.CurrentProps.id.Trim().Split(',');
-            selectedIndex = EditorGUILayout.Popup("Prefab", selectedIndex, id);
+        GUILayout.Space(10);
 
-            //EditorGUI.DrawPreviewTexture(new Rect(25, 60, 100, 100), mapCreator.texture);
+        if (GUILayout.Button("Create")) mapCreator.InstatiateProp(selectedIndex, position, rotation);
 
-            GUILayout.Space(10);
-
-            if (GUILayout.Button("Create")) mapCreator.InstatiateProp(selectedIndex);
-
-            serializedObject.ApplyModifiedProperties();
-        }
+        serializedObject.ApplyModifiedProperties();
     }
 }
