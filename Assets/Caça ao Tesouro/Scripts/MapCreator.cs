@@ -4,15 +4,17 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 
-[ExecuteInEditMode]
 public class MapCreator : MonoBehaviour
 {
-    [System.Serializable] public class Props
+    #region CLASSES & ENUMS REGION
+    public class Props
     {
         public List<GameObject> propsPrefab = new List<GameObject>();
         public string id = "";
-    }
 
+        public List<GameObject> parentList = new List<GameObject>();
+        public string parentId = "";
+    }
     public enum PropsType
     {
         None,
@@ -22,13 +24,57 @@ public class MapCreator : MonoBehaviour
         Roads,
         Vehicles
     }
+    #endregion
 
-    PropsType _type;
-    PropsType Type 
+    #region SERIALIZED FIELDS
+    [SerializeField] private PropsType propType = PropsType.None;
+    #endregion
+
+    #region PRIVATE FIELDS
+    private static PropsType _type;
+    private static int _selectedPrebabIndex;
+
+    private static string ProjectResourceFolder
     {
         get
         {
-            return propType;
+            return "Assets/Caça ao Tesouro/Resources/";
+        }
+    }
+    private static string PrefabResourceFolder
+    {
+        get
+        {
+            return "Prefab/";
+        }
+    }
+    private static string ThumbResourceFolder
+    {
+        get
+        {
+            return "Textures/Custom/";
+        }
+    }
+    private static string PropFolder
+    {
+        get
+        {
+            return Type.ToString();
+        }
+    }
+    #endregion
+
+    #region PUBLIC FIELDS
+    public static Props CurrentProps = new Props();
+    public static GameObject ThisObject;
+    public static GameObject CurrentPrefab;
+    public static Texture2D thumb;
+
+    public static PropsType Type 
+    {
+        get
+        {
+            return _type;
         }
         set
         {
@@ -39,89 +85,45 @@ public class MapCreator : MonoBehaviour
             GetPropsFromFolder(_type.ToString());
         }
     }
-
-    static PropsType Prop = PropsType.None;
-    static string ProjectResourceFolder
+    public static int SelectedPrebabIndex
     {
         get
         {
-            return "Assets/Caça ao Tesouro/Resources/";
+            return _selectedPrebabIndex;
         }
-    }
-    static string PrefabResourceFolder
-    {
-        get
+
+        set
         {
-            return "Prefab/";
+            if (_selectedPrebabIndex == value) return;
+
+            _selectedPrebabIndex = value;
+
+            GetPropThumb(Type.ToString(), _selectedPrebabIndex);
         }
     }
-    static string ThumbResourceFolder
-    {
-        get
-        {
-            return "Textures/Custom/";
-        }
-    }
-    static string PropFolder
-    {
-        get
-        {
-            return Prop.ToString();
-        }
-    }
+    #endregion
 
-    public Texture2D texture;
-    public Props CurrentProps = new Props();
-
-    [SerializeField] private PropsType propType = PropsType.None;
-
-    private void Update()
-    {
-        Type = propType;
-        Prop = propType;
-    }
-
-    void GetPropsFromFolder(string propFolder)
-    {
-        CurrentProps.propsPrefab.Clear();
-        CurrentProps.id = "";
-
-        GameObject[] prefabs = Resources.LoadAll<GameObject>(PrefabResourceFolder + propFolder);
-            
-        foreach (GameObject prefab in prefabs)
-        {
-            if (!CurrentProps.propsPrefab.Contains(prefab))
-            {
-                CurrentProps.propsPrefab.Add(prefab);
-                CurrentProps.id += prefab.name + ",";
-            }
-        }
-    }
-
-    public void InstatiateProp(int index, Vector3 position, Vector3 rotation)
-    {
-        if (CurrentProps.propsPrefab == null) return;
-
-        GameObject obj = PrefabUtility.InstantiatePrefab(CurrentProps.propsPrefab[index]) as GameObject;
-
-        obj.transform.localPosition = position;
-        obj.transform.localEulerAngles = rotation;
-    }
-
+    #region PUBLIC METHODS
     [MenuItem("Map Creator/Save Thumbnail")]
-    static void SaveThumbnail()
+    public static void SaveThumbnail()
     {
         GameObject target = null;
 
-        if (Selection.activeTransform != null)
+        if (Selection.activeGameObject != null)
         {
-            target = Selection.activeTransform.gameObject;
+            if (Selection.activeGameObject != ThisObject)
+                target = Selection.activeGameObject;
         }
 
         if (target == null)
         {
-            Debug.LogError("You need to select a GameObject in the hierarchy.");
-            return;
+            if (CurrentPrefab != null)
+                target = CurrentPrefab;
+            else
+            { 
+                Debug.LogError("You need to select a GameObject in the hierarchy.");
+                return;
+            }
         }
 
         Texture2D tex = GetPNGTexture(Selection.activeTransform.gameObject);
@@ -130,9 +132,77 @@ public class MapCreator : MonoBehaviour
         string path = Path.Combine(ProjectResourceFolder + ThumbResourceFolder + PropFolder.ToString(), target.name + ".png");
 
         File.WriteAllBytes(path, textureBytes);
-    }
 
-    public static Texture2D GetPNGTexture(GameObject target, int resWidth = 180, int resHeight = 180, bool transparent = true)
+        Debug.Log("Thumbnail '" + target.name + ".png' saved on path: " + path);
+
+        AssetDatabase.Refresh();
+    }
+    public static void InstatiateProp(int index, Vector3 position, Vector3 rotation)
+    {
+        if (index < 0 || index > CurrentProps.propsPrefab.Count || CurrentProps.propsPrefab.Count == 0) return;
+
+        CurrentPrefab = null;
+
+        CurrentPrefab = PrefabUtility.InstantiatePrefab(CurrentProps.propsPrefab[index]) as GameObject;
+
+        CurrentPrefab.transform.localPosition = position;
+        CurrentPrefab.transform.localEulerAngles = rotation;
+        CurrentPrefab.tag = "Environment";
+
+        Selection.activeGameObject = CurrentPrefab;
+    }
+    public static void DestroyProp()
+    {
+        GameObject obj = CurrentPrefab;
+        DestroyImmediate(obj);
+        CurrentPrefab = null;
+    }  
+    public static bool SetParentList()
+    {
+        CurrentProps.parentList.Clear();
+        CurrentProps.parentId = "";
+
+        GameObject[] array = GameObject.FindGameObjectsWithTag("Environment");
+
+        foreach (GameObject obj in array)
+        {
+            if (!CurrentProps.parentList.Contains(obj))
+            {
+                CurrentProps.parentList.Add(obj);
+                CurrentProps.id += obj.name + ",";
+            }
+        }
+
+        return CurrentProps.parentList.Count > 0 ? true : false;
+    }
+    #endregion
+
+    #region PRIVATE METHODS
+    private static void GetPropsFromFolder(string propFolder)
+    {
+        CurrentProps.propsPrefab.Clear();
+        CurrentProps.id = "";
+
+        string propPath = Type == PropsType.Vehicles ? propFolder + "/Vehicle with Separated Wheels" : propFolder;
+
+        GameObject[] prefabs = Resources.LoadAll<GameObject>(PrefabResourceFolder + propPath);
+        foreach (GameObject prefab in prefabs)
+        {
+            if (!CurrentProps.propsPrefab.Contains(prefab))
+            {
+                CurrentProps.propsPrefab.Add(prefab);
+                CurrentProps.id += prefab.name + ",";
+            }
+        }
+        GetPropThumb(Type.ToString(), SelectedPrebabIndex);
+    }
+    private static void GetPropThumb(string propFolder, int selectedIndex)
+    {
+        if (selectedIndex < 0 || selectedIndex > CurrentProps.propsPrefab.Count || CurrentProps.propsPrefab.Count  == 0) return;
+
+        thumb = Resources.Load<Texture2D>(ThumbResourceFolder + propFolder + "/" + CurrentProps.propsPrefab[selectedIndex].name);
+    }
+    private static Texture2D GetPNGTexture(GameObject target, int resWidth = 180, int resHeight = 180, bool transparent = true)
     {
         GameObject o = new GameObject("~TempCam");
         Camera cam = o.AddComponent<Camera>();
@@ -219,4 +289,5 @@ public class MapCreator : MonoBehaviour
         Texture2D.DestroyImmediate(tex_white);
         return tex_final;
     }
+    #endregion
 }

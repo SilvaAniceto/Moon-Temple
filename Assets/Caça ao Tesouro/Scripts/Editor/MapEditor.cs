@@ -9,40 +9,61 @@ using UnityEngine.UIElements;
 [CustomEditor(typeof(MapCreator))]
 public class MapEditor : Editor
 {
-    MapCreator mapCreator = new MapCreator();
-
     SerializedProperty propType;
 
     int selectedIndex;
     Vector3 position;
     Vector3 rotation;
+    bool setParent;
 
     private void OnEnable()
     {
         propType = serializedObject.FindProperty("propType");
-        mapCreator = (MapCreator)target;
+        MapCreator.ThisObject = target.GameObject();
     }
 
     public override void OnInspectorGUI()
     {
-        serializedObject.Update();
-
         EditorGUILayout.PropertyField(propType);
 
+        MapCreator.Type = (MapCreator.PropsType)propType.intValue;
+
         GUILayout.Space(10);
 
-        string[] id = mapCreator.CurrentProps.id.Trim().Split(',');
+        string[] id = MapCreator.CurrentProps.id.Trim().Split(',');
         selectedIndex = EditorGUILayout.Popup("Prefab", selectedIndex, id);
 
+        MapCreator.SelectedPrebabIndex = selectedIndex;
+
         GUILayout.Space(10);
+
+        GUI.DrawTexture(new Rect(100, 80, 180, 180), MapCreator.thumb, ScaleMode.ScaleToFit);
+
+        GUILayout.Space(220);
+
+        //if (MapCreator.SetParentList())
+        //{
+        //    setParent = EditorGUILayout.ToggleLeft("Set Parent", setParent);
+        //    if (setParent)
+        //        if (GUILayout.Button("Set Parent"))
+        //            Debug.Log("Setou");
+        //}
 
         position = EditorGUILayout.Vector3Field("Position", position);
         rotation = EditorGUILayout.Vector3Field("Rotation", rotation);
 
         GUILayout.Space(10);
 
-        if (GUILayout.Button("Create")) mapCreator.InstatiateProp(selectedIndex, position, rotation);
+        if (GUILayout.Button("Create Prop")) MapCreator.InstatiateProp(selectedIndex, position, rotation);
+
+        if (MapCreator.CurrentPrefab != null)
+        {
+            if (GUILayout.Button("Delete Prop")) MapCreator.DestroyProp();
+        }
+
+        //if (GUILayout.Button("Save Thumbnail")) MapCreator.SaveThumbnail();
 
         serializedObject.ApplyModifiedProperties();
+        serializedObject.Update();
     }
 }
