@@ -33,6 +33,7 @@ public class MapCreator : MonoBehaviour
     #region PRIVATE FIELDS
     private static PropsType _type;
     private static int _selectedPrebabIndex;
+    private static int _selectedParentIndex;
 
     private static string ProjectResourceFolder
     {
@@ -137,7 +138,7 @@ public class MapCreator : MonoBehaviour
 
         AssetDatabase.Refresh();
     }
-    public static void InstatiateProp(int index, Vector3 position, Vector3 rotation)
+    public static void InstatiateProp(int index, string propName, Vector3 position, Vector3 rotation, bool newParent, string parentName, bool setParent, int indexParent)
     {
         if (index < 0 || index > CurrentProps.propsPrefab.Count || CurrentProps.propsPrefab.Count == 0) return;
 
@@ -145,9 +146,30 @@ public class MapCreator : MonoBehaviour
 
         CurrentPrefab = PrefabUtility.InstantiatePrefab(CurrentProps.propsPrefab[index]) as GameObject;
 
+        GameObject parent = null;
+
+        if (newParent)
+        {
+            parent = new GameObject(string.IsNullOrEmpty(parentName) ? "GameObject" : parentName);
+            parent.transform.localPosition = Vector3.zero;
+            parent.transform.localEulerAngles = Vector3.zero;
+            parent.tag = "Environment";
+
+            CurrentPrefab.transform.SetParent(parent.transform);
+        }
+
+        if (setParent)
+        {
+            parent = CurrentProps.parentList[indexParent];
+
+            CurrentPrefab.transform.SetParent(parent.transform);
+        }
+
         CurrentPrefab.transform.localPosition = position;
         CurrentPrefab.transform.localEulerAngles = rotation;
         CurrentPrefab.tag = "Environment";
+
+        if (!string.IsNullOrEmpty(propName)) CurrentPrefab.name = propName;
 
         Selection.activeGameObject = CurrentPrefab;
     }
@@ -169,10 +191,9 @@ public class MapCreator : MonoBehaviour
             if (!CurrentProps.parentList.Contains(obj))
             {
                 CurrentProps.parentList.Add(obj);
-                CurrentProps.id += obj.name + ",";
+                CurrentProps.parentId += obj.name + obj.GetInstanceID() + "/";
             }
         }
-
         return CurrentProps.parentList.Count > 0 ? true : false;
     }
     #endregion
@@ -191,7 +212,7 @@ public class MapCreator : MonoBehaviour
             if (!CurrentProps.propsPrefab.Contains(prefab))
             {
                 CurrentProps.propsPrefab.Add(prefab);
-                CurrentProps.id += prefab.name + ",";
+                CurrentProps.id += prefab.name + "/";
             }
         }
         GetPropThumb(Type.ToString(), SelectedPrebabIndex);
