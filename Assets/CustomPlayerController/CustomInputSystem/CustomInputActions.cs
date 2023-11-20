@@ -267,6 +267,17 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""eddbd042-f396-4ea6-9f84-0727585ec4dd"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse&Keyboard"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""ed10c711-bd8e-4fb2-8bf6-679cebc7016e"",
                     ""path"": ""<Gamepad>/leftStick"",
                     ""interactions"": """",
