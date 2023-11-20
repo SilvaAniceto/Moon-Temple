@@ -154,7 +154,7 @@
                 {
                     "name": "",
                     "id": "76f81138-9880-4a76-98ee-695bb7c73d62",
-                    "path": "<Gamepad>/rightShoulder",
+                    "path": "<Gamepad>/leftStickPress",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -198,11 +198,70 @@
                 {
                     "name": "",
                     "id": "6fdb3392-a843-4687-b7e6-4c0eb28427f9",
-                    "path": "<Gamepad>/select",
+                    "path": "<Gamepad>/dpad/down",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "ChangeCameraPerspectiva",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "GameControllerActions",
+            "id": "47375ca4-a452-4715-b85a-77a8241497d2",
+            "actions": [
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "c6e060d4-dd04-4bb4-9a67-3088348e8155",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Navigation",
+                    "type": "Value",
+                    "id": "6a75da69-63a6-4257-9b05-212161477eb5",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "a96c8dd3-fefc-42d4-a837-b30e5e39c5d1",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ed10c711-bd8e-4fb2-8bf6-679cebc7016e",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Navigation",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "87451039-64dc-4630-aef1-f68d857286c2",
+                    "path": "<Gamepad>/dpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Navigation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

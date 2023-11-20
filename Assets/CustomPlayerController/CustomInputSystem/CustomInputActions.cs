@@ -176,7 +176,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""76f81138-9880-4a76-98ee-695bb7c73d62"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -220,11 +220,70 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""6fdb3392-a843-4687-b7e6-4c0eb28427f9"",
-                    ""path"": ""<Gamepad>/select"",
+                    ""path"": ""<Gamepad>/dpad/down"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""ChangeCameraPerspectiva"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""GameControllerActions"",
+            ""id"": ""47375ca4-a452-4715-b85a-77a8241497d2"",
+            ""actions"": [
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""c6e060d4-dd04-4bb4-9a67-3088348e8155"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Navigation"",
+                    ""type"": ""Value"",
+                    ""id"": ""6a75da69-63a6-4257-9b05-212161477eb5"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""a96c8dd3-fefc-42d4-a837-b30e5e39c5d1"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ed10c711-bd8e-4fb2-8bf6-679cebc7016e"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Navigation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""87451039-64dc-4630-aef1-f68d857286c2"",
+                    ""path"": ""<Gamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Navigation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -251,6 +310,10 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         m_PlayerActions_Sprint = m_PlayerActions.FindAction("Sprint", throwIfNotFound: true);
         m_PlayerActions_CameraAxis = m_PlayerActions.FindAction("CameraAxis", throwIfNotFound: true);
         m_PlayerActions_ChangeCameraPerspectiva = m_PlayerActions.FindAction("ChangeCameraPerspectiva", throwIfNotFound: true);
+        // GameControllerActions
+        m_GameControllerActions = asset.FindActionMap("GameControllerActions", throwIfNotFound: true);
+        m_GameControllerActions_Pause = m_GameControllerActions.FindAction("Pause", throwIfNotFound: true);
+        m_GameControllerActions_Navigation = m_GameControllerActions.FindAction("Navigation", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -386,6 +449,60 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActionsActions @PlayerActions => new PlayerActionsActions(this);
+
+    // GameControllerActions
+    private readonly InputActionMap m_GameControllerActions;
+    private List<IGameControllerActionsActions> m_GameControllerActionsActionsCallbackInterfaces = new List<IGameControllerActionsActions>();
+    private readonly InputAction m_GameControllerActions_Pause;
+    private readonly InputAction m_GameControllerActions_Navigation;
+    public struct GameControllerActionsActions
+    {
+        private @CustomInputActions m_Wrapper;
+        public GameControllerActionsActions(@CustomInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Pause => m_Wrapper.m_GameControllerActions_Pause;
+        public InputAction @Navigation => m_Wrapper.m_GameControllerActions_Navigation;
+        public InputActionMap Get() { return m_Wrapper.m_GameControllerActions; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GameControllerActionsActions set) { return set.Get(); }
+        public void AddCallbacks(IGameControllerActionsActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GameControllerActionsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GameControllerActionsActionsCallbackInterfaces.Add(instance);
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
+            @Navigation.started += instance.OnNavigation;
+            @Navigation.performed += instance.OnNavigation;
+            @Navigation.canceled += instance.OnNavigation;
+        }
+
+        private void UnregisterCallbacks(IGameControllerActionsActions instance)
+        {
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
+            @Navigation.started -= instance.OnNavigation;
+            @Navigation.performed -= instance.OnNavigation;
+            @Navigation.canceled -= instance.OnNavigation;
+        }
+
+        public void RemoveCallbacks(IGameControllerActionsActions instance)
+        {
+            if (m_Wrapper.m_GameControllerActionsActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGameControllerActionsActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GameControllerActionsActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GameControllerActionsActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GameControllerActionsActions @GameControllerActions => new GameControllerActionsActions(this);
     private int m_MouseKeyboardSchemeIndex = -1;
     public InputControlScheme MouseKeyboardScheme
     {
@@ -411,5 +528,10 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnCameraAxis(InputAction.CallbackContext context);
         void OnChangeCameraPerspectiva(InputAction.CallbackContext context);
+    }
+    public interface IGameControllerActionsActions
+    {
+        void OnPause(InputAction.CallbackContext context);
+        void OnNavigation(InputAction.CallbackContext context);
     }
 }

@@ -62,7 +62,7 @@ namespace CustomGameController
         }
         void Update()
         {
-            ReadPlayerInput();
+            if (!CustomGameController.Instance.IsPaused) ReadPlayerInput();
         }
         #endregion
 
