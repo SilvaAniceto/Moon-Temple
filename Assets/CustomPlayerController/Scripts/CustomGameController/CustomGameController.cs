@@ -9,31 +9,48 @@ namespace CustomGameController
     {
         public static CustomGameController Instance;
 
-        [SerializeField] private GameObject PauseMenu;
+        #region INSPECTOR FIELDS
+        [SerializeField] GameControllerSettings m_gameControllerSettings;
 
-        private Animator UIAnimator;
+        [SerializeField] private GameObject m_pauseMenu;
+        [SerializeField] private Slider m_sensibilitySlider;
+        [SerializeField] private Slider m_heightSlider;
+
+        [SerializeField] private float s;
+        [SerializeField] private float h;
+        #endregion
+
+        #region PRIVATE FIELDS
+        private static Animator UIAnimator;
+        private bool m_isPaused;
+
         private CustomInputActions InputActions;
+        #endregion
 
+        #region ANIMATION FIELDS
         private const string FADE_IN_TRANSITION = "Fade_In_Transition";
         private const string FADE_OUT_TRANSITION = "Fade_Out_Transition";
-        
-        private bool isPaused;
+        #endregion
+
+        #region PROPERTIES
         public bool IsPaused
         {
             get
             {
-                return isPaused;
+                return m_isPaused;
             }
             set
             {
                 if (value == IsPaused) return;
 
-                isPaused = value;
+                m_isPaused = value;
 
-                ShowPauseMenu(isPaused);
+                ShowPauseMenu(m_isPaused);
             }
         }
+        #endregion
 
+        #region DEFAULT METHODS
         void Awake()
         {
             if (Instance == null) Instance = this;
@@ -43,33 +60,37 @@ namespace CustomGameController
             InputActions = new CustomInputActions();
             InputActions.Enable();
 
+            m_sensibilitySlider.onValueChanged.AddListener(SetCameraSensibility);
+            m_heightSlider.onValueChanged.AddListener(SetCameraHeight);
+
             DontDestroyOnLoad(this);
         }
-
         void Start()
         {
             ShowPauseMenu(false);
         }
-
         void Update()
         {
             if (InputActions.GameControllerActions.Pause.WasPressedThisFrame())
                 IsPaused = !IsPaused;
         }
+        #endregion
 
-        void PlayTrasition(bool state)
-        {
-            if (state)
-                UIAnimator.Play(FADE_OUT_TRANSITION);
-            else
-                UIAnimator.Play(FADE_IN_TRANSITION);
-        }
-
+        #region MENU METHODS
         void ShowPauseMenu(bool state)
         {
-            PauseMenu.SetActive(state);
+            m_pauseMenu.SetActive(state);
 
             Time.timeScale = state ? 0f : 1f;
         }
+        void SetCameraSensibility(float value)
+        {
+            s = value;
+        }
+        void SetCameraHeight(float value)
+        {
+            h = value;
+        }
+        #endregion
     }
 }
