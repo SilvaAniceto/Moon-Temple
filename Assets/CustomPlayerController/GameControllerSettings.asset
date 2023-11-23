@@ -15,3 +15,6 @@ MonoBehaviour:
   characterSettings:
     m_CameraTargetHeight: 1.8
     m_cameraSensibility: 1.25
+  mainTitleScene: CustomTitleScene
+  gameplayScenes:
+  - CustomPlayerScene

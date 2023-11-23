@@ -1,26 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace CustomGameController
 {
+    public enum GameState
+    {
+        None,
+        MainTitle,
+        InGamePlay
+    }
     public class CustomGameController : MonoBehaviour
     {
         public static CustomGameController Instance;
 
         #region INSPECTOR FIELDS
+        [Header("GameSettings")]
         [SerializeField] GameControllerSettings m_gameControllerSettings;
+        [Space(10)]
 
         [SerializeField] private GameObject m_pauseMenu;
-        [SerializeField] private Slider m_sensibilitySlider;
-        [SerializeField] private Slider m_heightSlider;
-
-        [SerializeField] private float s;
-        [SerializeField] private float h;
+        [SerializeField] private GameObject m_mainTitle;
         #endregion
 
         #region PRIVATE FIELDS
+        [SerializeField] private GameState m_gameState;
         private static Animator UIAnimator;
         private bool m_isPaused;
 
@@ -55,41 +61,83 @@ namespace CustomGameController
         {
             if (Instance == null) Instance = this;
 
+            m_gameState = GameState.MainTitle;
+
             UIAnimator = GetComponent<Animator>();
 
             InputActions = new CustomInputActions();
             InputActions.Enable();
 
-            m_sensibilitySlider.onValueChanged.AddListener(SetCameraSensibility);
-            m_heightSlider.onValueChanged.AddListener(SetCameraHeight);
+            m_gameControllerSettings.CurrentScene = m_gameControllerSettings.GameplayScenes[0];
+
+            SceneManager.sceneLoaded += OnLoadedScene;
 
             DontDestroyOnLoad(this);
         }
+
         void Start()
         {
             ShowPauseMenu(false);
         }
         void Update()
         {
-            if (InputActions.GameControllerActions.Pause.WasPressedThisFrame())
-                IsPaused = !IsPaused;
+            //Debug.Log(m_mainTitle);
+            switch (m_gameState)
+            {
+                case GameState.None:
+                    break;
+                case GameState.MainTitle:
+                    break;
+                case GameState.InGamePlay:
+                    if (InputActions.GameControllerActions.Pause.WasPressedThisFrame())
+                        IsPaused = !IsPaused;
+                    break;
+            }
         }
         #endregion
+
+        public void StartFadeInTransition()
+        {
+            UIAnimator.Play(FADE_IN_TRANSITION);
+        }
+
+        public void StartFadeOutTransition()
+        {
+            UIAnimator.Play(FADE_OUT_TRANSITION);
+        }
+
+        public void LoadScene()
+        {
+            SceneManager.LoadSceneAsync(m_gameControllerSettings.CurrentScene);
+        }
+
+        void OnLoadedScene(Scene loadedScene, LoadSceneMode sceneMode)
+        {
+            if (loadedScene.name != m_gameControllerSettings.MainTitleScene)
+            {
+                m_gameState = GameState.InGamePlay;
+                m_mainTitle.SetActive(false);
+            }
+            else
+            {
+                m_gameState = GameState.MainTitle;
+                m_mainTitle.SetActive(true);
+            }
+            StartFadeOutTransition();
+        }
 
         #region MENU METHODS
         void ShowPauseMenu(bool state)
         {
             m_pauseMenu.SetActive(state);
-
-            Time.timeScale = state ? 0f : 1f;
         }
-        void SetCameraSensibility(float value)
+        public void SetCameraSensibility(float value)
         {
-            s = value;
+            m_gameControllerSettings.CharacterSettings.CameraSensibility = value;
         }
-        void SetCameraHeight(float value)
+        public void SetCameraHeight(float value)
         {
-            h = value;
+            m_gameControllerSettings.CharacterSettings.CameraHeight = value;
         }
         #endregion
     }

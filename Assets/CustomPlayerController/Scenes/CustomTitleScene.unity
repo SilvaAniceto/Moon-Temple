@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -131,14 +131,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 634203643952897830, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1349476951840094710, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 2.3491821
-      objectReference: {fileID: 0}
     - target: {fileID: 1401621940057238423, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -222,58 +214,6 @@ PrefabInstance:
     - target: {fileID: 1441883016479683597, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
       propertyPath: m_Name
       value: UIGameController
-      objectReference: {fileID: 0}
-    - target: {fileID: 1846985723509109573, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2822601411601863178, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2822601411601863178, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2822601411601863178, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2822601411601863178, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3708001790835407679, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5138608719002476210, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5184040110938622820, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 2.3491821
-      objectReference: {fileID: 0}
-    - target: {fileID: 5543841125086236720, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5543841125086236720, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5543841125086236720, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5543841125086236720, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6570961054164399255, guid: 3bc0b41d7ae495f4baf9fd9516291554, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
