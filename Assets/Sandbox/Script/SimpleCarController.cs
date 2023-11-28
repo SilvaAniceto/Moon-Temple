@@ -9,13 +9,18 @@ public class SimpleCarController : MonoBehaviour
     public List<AxleInfo> axleInfos; // the information about each individual axle
     public float maxMotorTorque; // maximum torque the motor can apply to wheel
     public float maxSteeringAngle; // maximum steer angle the wheel can have
+    public float maxBrakeTorque;
+    public float gearRatio = 0.1f;
     public Rigidbody body;
     public float velocity;
-    public float rpm;
+    public float maxVelocity;
+    //public float rpm;
+    //public float motorTorque;
+    public AnimationCurve torqueCurve;
 
-    bool accelerator;
-    bool brake;
-    float steering;
+    public float accelerator;
+    public bool brake;
+    public float steering;
 
     private CustomInputActions InputActions;
 
@@ -30,7 +35,8 @@ public class SimpleCarController : MonoBehaviour
         ReadPlayerInput();
 
         velocity = Mathf.Round(Mathf.Abs(body.velocity.z));
-        rpm = axleInfos[0].leftWheel.rpm;
+        //rpm = Mathf.Round(axleInfos[0].leftWheel.rpm * 1000);
+        //motorTorque = Mathf.Round(axleInfos[0].leftWheel.motorTorque);
     }
 
     public void FixedUpdate()
@@ -44,26 +50,28 @@ public class SimpleCarController : MonoBehaviour
             }
             if (axleInfo.motor)
             {
-                if (accelerator)
-                {
-                    axleInfo.leftWheel.motorTorque = Mathf.Pow(maxMotorTorque, 4);
-                    axleInfo.rightWheel.motorTorque = Mathf.Pow(maxMotorTorque, 4);
-                    axleInfo.leftWheel.brakeTorque = 0;
-                    axleInfo.rightWheel.brakeTorque = 0;
-                }
                 if (brake)
                 {
-                    body.velocity = Vector3.Lerp(body.velocity, Vector3.zero, Time.deltaTime );
+                    body.velocity = Vector3.Lerp(body.velocity, Vector3.zero, Time.deltaTime);
                     axleInfo.leftWheel.motorTorque = 0;
                     axleInfo.rightWheel.motorTorque = 0;
-                    axleInfo.leftWheel.brakeTorque = Mathf.Pow(maxMotorTorque, 6);
-                    axleInfo.rightWheel.brakeTorque = Mathf.Pow(maxMotorTorque, 6);
+                    axleInfo.leftWheel.brakeTorque = maxBrakeTorque;
+                    axleInfo.rightWheel.brakeTorque = maxBrakeTorque;
                 }
-                if (!accelerator && !brake)
+                else if (accelerator == 0 && !brake)
                 {
                     body.velocity = Vector3.Lerp(body.velocity, Vector3.zero, Time.deltaTime / 1.5f);
                     axleInfo.leftWheel.motorTorque = 0;
                     axleInfo.rightWheel.motorTorque = 0;
+                    axleInfo.leftWheel.brakeTorque = 0;
+                    axleInfo.rightWheel.brakeTorque = 0;
+                }
+                else
+                {
+                    float appliedTorque = torqueCurve.Evaluate((velocity / maxVelocity) * maxMotorTorque * gearRatio) * accelerator;
+                    
+                    axleInfo.leftWheel.motorTorque = appliedTorque;
+                    axleInfo.rightWheel.motorTorque = appliedTorque;
                     axleInfo.leftWheel.brakeTorque = 0;
                     axleInfo.rightWheel.brakeTorque = 0;
                 }
@@ -94,8 +102,8 @@ public class SimpleCarController : MonoBehaviour
     {
         Vector2 direction = InputActions.PlayerActions.Move.ReadValue<Vector2>();
 
-        accelerator = InputActions.PlayerActions.Sprint.IsPressed();
-        brake = InputActions.PlayerActions.Jump.IsPressed();
+        accelerator = Mathf.Clamp01(direction.y);
+        brake = direction.y < 0.0f ? true : false;
         steering = direction.x;
     }
 }
