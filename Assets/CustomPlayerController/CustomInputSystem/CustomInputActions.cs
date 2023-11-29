@@ -71,6 +71,15 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Zoom"",
+                    ""type"": ""Value"",
+                    ""id"": ""7a49d4e5-522b-49b0-9ef7-cfe806ddbd0d"",
+                    ""expectedControlType"": """",
+                    ""processors"": ""Scale(factor=-0.01),Clamp(min=-1,max=1)"",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -227,6 +236,28 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""action"": ""ChangeCameraPerspectiva"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1aed2020-e479-462d-9ed6-e1f6bde5e85a"",
+                    ""path"": ""<Mouse>/scroll/y"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse&Keyboard"",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""43a753ce-9e33-442f-9f78-34bd208bbd12"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Zoom"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -321,6 +352,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         m_PlayerActions_Sprint = m_PlayerActions.FindAction("Sprint", throwIfNotFound: true);
         m_PlayerActions_CameraAxis = m_PlayerActions.FindAction("CameraAxis", throwIfNotFound: true);
         m_PlayerActions_ChangeCameraPerspectiva = m_PlayerActions.FindAction("ChangeCameraPerspectiva", throwIfNotFound: true);
+        m_PlayerActions_Zoom = m_PlayerActions.FindAction("Zoom", throwIfNotFound: true);
         // GameControllerActions
         m_GameControllerActions = asset.FindActionMap("GameControllerActions", throwIfNotFound: true);
         m_GameControllerActions_Pause = m_GameControllerActions.FindAction("Pause", throwIfNotFound: true);
@@ -391,6 +423,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_Sprint;
     private readonly InputAction m_PlayerActions_CameraAxis;
     private readonly InputAction m_PlayerActions_ChangeCameraPerspectiva;
+    private readonly InputAction m_PlayerActions_Zoom;
     public struct PlayerActionsActions
     {
         private @CustomInputActions m_Wrapper;
@@ -400,6 +433,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         public InputAction @Sprint => m_Wrapper.m_PlayerActions_Sprint;
         public InputAction @CameraAxis => m_Wrapper.m_PlayerActions_CameraAxis;
         public InputAction @ChangeCameraPerspectiva => m_Wrapper.m_PlayerActions_ChangeCameraPerspectiva;
+        public InputAction @Zoom => m_Wrapper.m_PlayerActions_Zoom;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -424,6 +458,9 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
             @ChangeCameraPerspectiva.started += instance.OnChangeCameraPerspectiva;
             @ChangeCameraPerspectiva.performed += instance.OnChangeCameraPerspectiva;
             @ChangeCameraPerspectiva.canceled += instance.OnChangeCameraPerspectiva;
+            @Zoom.started += instance.OnZoom;
+            @Zoom.performed += instance.OnZoom;
+            @Zoom.canceled += instance.OnZoom;
         }
 
         private void UnregisterCallbacks(IPlayerActionsActions instance)
@@ -443,6 +480,9 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
             @ChangeCameraPerspectiva.started -= instance.OnChangeCameraPerspectiva;
             @ChangeCameraPerspectiva.performed -= instance.OnChangeCameraPerspectiva;
             @ChangeCameraPerspectiva.canceled -= instance.OnChangeCameraPerspectiva;
+            @Zoom.started -= instance.OnZoom;
+            @Zoom.performed -= instance.OnZoom;
+            @Zoom.canceled -= instance.OnZoom;
         }
 
         public void RemoveCallbacks(IPlayerActionsActions instance)
@@ -539,6 +579,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         void OnSprint(InputAction.CallbackContext context);
         void OnCameraAxis(InputAction.CallbackContext context);
         void OnChangeCameraPerspectiva(InputAction.CallbackContext context);
+        void OnZoom(InputAction.CallbackContext context);
     }
     public interface IGameControllerActionsActions
     {

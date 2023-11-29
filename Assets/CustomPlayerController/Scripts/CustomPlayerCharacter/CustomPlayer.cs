@@ -62,7 +62,7 @@ namespace CustomGameController
         }
         void Update()
         {
-            if (!CustomGameController.Instance.IsPaused) ReadPlayerInput();
+            ReadPlayerInput();
         }
         #endregion
 
@@ -81,6 +81,7 @@ namespace CustomGameController
             camAxis = new Vector2(camAxis.y, camAxis.x);
 
             inputHandler.CameraAxis = camAxis;
+            inputHandler.CameraZoom = InputActions.PlayerActions.Zoom.ReadValue<float>();
             inputHandler.ChangeCameraPerspective = InputActions.PlayerActions.ChangeCameraPerspectiva.IsPressed();
 
             CustomController.SetInput(inputHandler);

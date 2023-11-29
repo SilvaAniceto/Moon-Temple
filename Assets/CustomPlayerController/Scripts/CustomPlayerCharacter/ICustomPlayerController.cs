@@ -15,6 +15,7 @@ namespace CustomGameController
         public bool SprintInput;
 
         public Vector2 CameraAxis;
+        public float CameraZoom;
         public bool ChangeCameraPerspective;
     }
     public interface ICustomPlayerController

@@ -2046,7 +2046,7 @@ MonoBehaviour:
     m_Bits: 8
   m_isometricCollisionFilter:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!1 &7068005867914164206
 GameObject:
   m_ObjectHideFlags: 0

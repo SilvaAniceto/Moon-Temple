@@ -64,13 +64,14 @@ namespace CustomGameController
         #region CAMERA INPUTS VALUES & METHODS
         float CameraPan { get; set; }
         float CameraTilt { get; set; }
+        float CameraZoom { get; set; }
         bool ChangeCameraPerspective { set; }
         void SetInput(CustomPlayerInputHandler inputs);
         #endregion
 
         #region CAMERA METHODS
         void SetCameraPerspective(CameraPerspective perspective);
-        void UpdateCamera(float cameraTilt, float cameraPan);
+        void UpdateCamera(float cameraTilt, float cameraPan, float cameraZoom);
         void SetPerspectiveSettings();
         #endregion
     }
