@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace CustomGameController
 {
@@ -11,12 +12,16 @@ namespace CustomGameController
     public struct CustomPlayerInputHandler
     {
         public Vector3 MoveDirectionInput;
-        public bool JumpInput;
+        public bool VerticalAscendingInput;
+        public bool VerticalDescendingInput;
         public bool SprintInput;
 
         public Vector2 CameraAxis;
         public float CameraZoom;
         public bool ChangeCameraPerspective;
+
+        public bool AirControlling;
+        public bool StartFlight;
     }
     public interface ICustomPlayerController
     {
@@ -30,6 +35,7 @@ namespace CustomGameController
 
         #region GAME CONTROLLER METHODS
         void OnGameControllerStateChanged(GameControllerState state);
+        void SetCharacterPhysicsSimulation(UnityAction actionSimulated);
         void SetupCharacter();
         bool CheckWallHit();
         #endregion
@@ -81,7 +87,9 @@ namespace CustomGameController
         #region PLAYER INPUT VALUES & METHODS
         Vector3 PlayerDirection { get; set; }
         bool SprintInput { get; set; }
-        bool JumpInput { get; set; }
+        bool VerticalAscendingInput { get; set; }
+        bool VerticalDescendingInput { get; set; }
+        bool FlightControlling { get; set; }
         void SetInput(CustomPlayerInputHandler inputs);
         #endregion
     }

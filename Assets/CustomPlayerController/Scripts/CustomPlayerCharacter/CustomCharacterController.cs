@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,7 +10,7 @@ namespace CustomGameController
 {
     [RequireComponent(typeof(CharacterController))]
 
-    public class CustomCharacterController : MonoBehaviour, ICustomPlayerController, ICustomGravity
+    public class CustomCharacterController : MonoBehaviour, ICustomPlayerController, ICustomGravity, ICustomAirController
     {
         public static CustomCharacterController Instance { get; private set; }
 
@@ -17,25 +18,33 @@ namespace CustomGameController
 
         [HideInInspector] public UnityEvent<Vector3, float> OnCharacterMove = new UnityEvent<Vector3, float>();
 
-        [HideInInspector] public UnityEvent<bool> OnCharacterJump = new UnityEvent<bool>();
+        [HideInInspector] public UnityEvent<bool> OnVerticalControl = new UnityEvent<bool>();
+
+        [HideInInspector] public UnityEvent CharacterPhysicsSimulation = new UnityEvent();
         IEnumerator CheckingUngroundedStates()
         {
             yield return new WaitForEndOfFrame();
 
-            CurrentUngroundedPosition = transform.position;
+            CurrentUngroundedPosition = transform.localPosition;
 
             if (Mathf.Round(LastGroundedPosition.y * 100.0f) / 100.0f > Mathf.Round(CurrentUngroundedPosition.y * 100.0f) / 100.0f)
             {
                 GravityMultiplierFactor = 2.2f;
                 Falling = true;
             }
-            if (Mathf.Round(LastGroundedPosition.y * 100.0f) / 100.0f < Mathf.Round(CurrentUngroundedPosition.y * 100.0f) / 100.0f)
+
+            if (!InFlight && !FlightControlling)
             {
-                GravityMultiplierFactor = 1.2f;
-                Jumping = true;
+                if (Mathf.Round(LastGroundedPosition.y * 100.0f) / 100.0f < Mathf.Round(CurrentUngroundedPosition.y * 100.0f) / 100.0f)
+                {
+                    GravityMultiplierFactor = 1.2f;
+                    Jumping = true;
+                }
             }
 
             yield return new WaitUntil(() => onGround);
+
+            SetCharacterPhysicsSimulation(ApplyGravity);
 
             CurrentyVelocity = CurrentyVelocity / Drag * 0.85f;
             GravityMultiplierFactor = 1.0f;
@@ -43,6 +52,10 @@ namespace CustomGameController
             Jumping = false;
             AllowJump = false;
             StartJump = false;
+            FlightControlling = false;
+            InFlight = false;
+
+            SetCharacterMoveCallBacks(CustomCamera.Instance.CameraPerspective);
 
             yield return new WaitForSeconds(0.35f);
             AllowJump = true;
@@ -63,9 +76,8 @@ namespace CustomGameController
 
                 if (!onGround && SlopeHit().collider == null)
                 {
-                    StopCoroutine(CheckingUngroundedStates());
-                    LastGroundedPosition = transform.position;
-                    StartCoroutine(CheckingUngroundedStates());
+                    StopCoroutine("CheckingUngroundedStates");
+                    StartCoroutine("CheckingUngroundedStates");
                 }
             }
         }
@@ -76,6 +88,25 @@ namespace CustomGameController
         public float Drag { get; set; }
         public LayerMask GroundLayer { get; set; }
         public Vector3 GravityVelocity { get; set; }
+        #endregion
+
+        #region AIR SIMULATION PROPERTIES
+        public bool InFlight { get; set; }
+        public float InFlightSpeed
+        {
+            get
+            {
+                if (SprintInput) return m_InFlightSpeed * 3.0f;
+                else return m_InFlightSpeed;
+            }
+            set
+            {
+                if (m_InFlightSpeed == value) return;
+
+                m_InFlightSpeed = value;
+            }
+        }
+        public float InFlightAcceleration { get; set; }
         #endregion
 
         #region GAME CONTROLLER PROPERTIES
@@ -103,30 +134,32 @@ namespace CustomGameController
         {
             get
             {
-                if (OnGround) return OnGroundSpeed;
-                else return OnAirSpeed;
+                if (OnGround && !InFlight) return OnGroundSpeed;
+                else if (!OnGround && !InFlight) return OnAirSpeed;
+                else return InFlightSpeed;
             }
         }
         public float CurrentAcceleration
         {
             get
             {
-                if (OnGround) return OnGroundAcceleration;
-                else return OnAirAcceleration;
+                if (OnGround && !InFlight) return OnGroundAcceleration;
+                else if (!OnGround && !InFlight) return OnAirAcceleration;
+                else return InFlightAcceleration;
             }
         }
         public float OnGroundSpeed
         {
             get
             {
-                if (SprintInput) return m_PlayerSpeed * 2.0f;
-                else return m_PlayerSpeed;
+                if (SprintInput) return m_OnGroundSpeed * 2.0f;
+                else return m_OnGroundSpeed;
             }
             set
             {
-                if (m_PlayerSpeed == value) return;
+                if (m_OnGroundSpeed == value) return;
 
-                m_PlayerSpeed = value;
+                m_OnGroundSpeed = value;
             }
         }
         public float OnGroundAcceleration { get; set; }
@@ -165,7 +198,12 @@ namespace CustomGameController
 
             OnGround = ground;
 
-            if (ground && GravityVelocity.y < -CharacterController.radius) GravityVelocity = new Vector3(GravityVelocity.x, 0.0f, GravityVelocity.z);
+            if (ground && GravityVelocity.y < -CharacterController.radius)
+            {
+                GravityVelocity = new Vector3(GravityVelocity.x, 0.0f, GravityVelocity.z);
+            }
+            
+            if (ground)LastGroundedPosition = transform.localPosition;
         }
         #endregion
 
@@ -185,6 +223,11 @@ namespace CustomGameController
             //        CharacterController.enabled = false;
             //        break;
             //}
+        }
+        public void SetCharacterPhysicsSimulation(UnityAction actionSimulated)
+        {
+            CharacterPhysicsSimulation.RemoveAllListeners();
+            CharacterPhysicsSimulation.AddListener(actionSimulated);
         }
         public void SetupCharacter()
         {
@@ -206,9 +249,10 @@ namespace CustomGameController
             WallCheckOrigin.transform.SetParent(transform);
             WallCheckOrigin.transform.localPosition = new Vector3(0.0f, CharacterController.height / 2.0f, 0.0f);
 
-            OnCharacterJump.AddListener(Jump);
+            SetCharacterPhysicsSimulation(ApplyGravity);
+            OnVerticalControl.AddListener(Jump);
 
-            StartCoroutine(CheckingUngroundedStates());
+            StartCoroutine("CheckingUngroundedStates");
             GravityMultiplierFactor = 1.0f;
 
             OnGameStateChanged.AddListener(OnGameControllerStateChanged);
@@ -297,6 +341,67 @@ namespace CustomGameController
         public Vector3 GetSlopeMoveDirection(Vector3 direction)
         {
             return Vector3.ProjectOnPlane(new Vector3(direction.x, (int)(direction.y * (int)SlopeAngle()), direction.z), SlopeHit().normal).normalized;
+        }
+        #endregion
+
+        #region AIR SIMULATION METHODS
+        public void EnteringAirState()
+        {
+            float yVelocity = 0.0f;
+            yVelocity = Mathf.Lerp(yVelocity, JumpHeight / 2.0f, Time.deltaTime * 4.0f);
+
+            GravityVelocity = new Vector3(0.0f, yVelocity, 0.0f);
+            CharacterController.Move(GravityVelocity);
+        }
+        public void IdleAirState()
+        {
+            //float y = GravityVelocity.y;
+            //y = 0.25f * Mathf.Sin(Time.time * 9.81f);
+            //GravityVelocity = new Vector3(0.0f, y, 0.0f);
+            //CharacterController.Move(GravityVelocity * Time.deltaTime);
+        }
+        public void UpdateFlightPosition(Vector3 inputDirection, float movementSpeed)
+        {
+            Vector3 move = new Vector3();
+            Vector3 right = inputDirection.x * Right;
+            Vector3 forward = inputDirection.z * Forward;
+
+            move = right + forward + Vector3.zero;
+
+            CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime * CurrentSpeed);
+
+            CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
+
+            Quaternion Rot = CustomCamera.Instance.CameraTarget.transform.rotation;
+
+            Rot.x = 0.0f;
+            Rot.z = 0.0f;
+
+            transform.rotation = Rot;
+
+            UpdateAirHeightPosition();
+            
+        }
+
+        public void UpdateAirHeightPosition()
+        {
+            if (SprintInput)
+            {
+                //float yVelocity = transform.position.y;
+                //yVelocity += 0.01f * CustomCamera.Instance.VerticalCameraDirection;
+                //Debug.Log(yVelocity);
+                //GravityVelocity = new Vector3(0.0f, yVelocity, 0.0f);
+
+                //CharacterController.Move(GravityVelocity * Time.deltaTime);
+
+                GravityVelocity += new Vector3(0.0f,CurrentSpeed * CustomCamera.Instance.VerticalCameraDirection * Time.deltaTime, 0.0f);
+                GravityVelocity = Vector3.Lerp(GravityVelocity, GravityVelocity * CustomCamera.Instance.VerticalCameraDirection, CurrentSpeed * Time.deltaTime);
+                CharacterController.Move(GravityVelocity * Time.deltaTime);
+            }
+            else
+            {
+
+            }
         }
         #endregion
 
@@ -441,6 +546,8 @@ namespace CustomGameController
 
                 IEnumerator SmoothStop()
                 {
+                    SprintInput = false;
+
                     DelayedStopTime = Vector3.Distance(CurrentyVelocity, Vector3.zero);
 
                     while (DelayedStopTime > 0)
@@ -456,17 +563,64 @@ namespace CustomGameController
             }
         }
         public bool SprintInput { get; set; }
-        public bool JumpInput
+        public bool VerticalAscendingInput
         {
             get
             {
-                return m_JumpInput;
+                return m_VerticalAscendingInput;
             }
             set
             {
-                m_JumpInput = value;
+                if (FlightControlling) return;
 
-                OnCharacterJump?.Invoke(m_JumpInput);
+                m_VerticalAscendingInput = value;
+
+                OnVerticalControl?.Invoke(m_VerticalAscendingInput);
+            }
+        }
+        public bool VerticalDescendingInput { get; set; }
+        public bool FlightControlling
+        {
+            get
+            {
+                return m_flightControlling;
+            }
+            set
+            {
+                if (m_flightControlling == value) return;
+
+                m_flightControlling = value;
+
+                if (InFlight)
+                {
+                    if (!m_flightControlling)
+                    {
+                        GravityVelocity = Vector3.zero;
+                        SetCharacterPhysicsSimulation(ApplyGravity);
+                    }
+                    else
+                    {
+                        SetCharacterPhysicsSimulation(IdleAirState);
+                    }
+                }
+                else
+                {
+                    if (m_flightControlling)
+                    {
+                        StopCoroutine(StartFlightDelay());
+                        StartCoroutine(StartFlightDelay());
+                        SetCharacterPhysicsSimulation(EnteringAirState);
+                    }
+                }
+
+                IEnumerator StartFlightDelay()
+                {
+                    yield return new WaitUntil(() => transform.localPosition.y >= LastGroundedPosition.y + JumpHeight / 2.0f);
+
+                    InFlight = true;
+                    SetCharacterPhysicsSimulation(IdleAirState);
+                    SetCharacterMoveCallBacks(CustomCamera.Instance.CameraPerspective);
+                }
             }
         }
         public void SetInput(CustomPlayerInputHandler inputs)
@@ -474,8 +628,11 @@ namespace CustomGameController
             PlayerDirection = inputs.MoveDirectionInput;
             PlayerDirection.Normalize();
 
-            SprintInput = inputs.SprintInput;
-            JumpInput = inputs.JumpInput;
+            if (inputs.SprintInput) SprintInput = !SprintInput;
+            VerticalAscendingInput = inputs.VerticalAscendingInput;
+            VerticalDescendingInput = inputs.VerticalDescendingInput;
+
+            if (inputs.AirControlling) FlightControlling = !FlightControlling;
         }
         #endregion
 
@@ -483,58 +640,21 @@ namespace CustomGameController
         private bool onGround;
         private GameControllerState m_state;
 
-        private float m_PlayerSpeed;
+        private float m_OnGroundSpeed;
+        private float m_InFlightSpeed;
 
         private Vector3 m_PlayerDirection;
-        private bool m_JumpInput;
+        private bool m_VerticalAscendingInput;
+        private bool m_flightControlling;
         #endregion
 
         #region DEFAULT METHODS
-        public float frequency = 0.5f;
-        public float magnitude = 1.0f;
-        public float sineValue;
+        public float yDir;
         void Update()
         {
-            sineValue = magnitude * Mathf.Sin(Time.time * frequency);
-
-            ApplyGravity();
+            CharacterPhysicsSimulation?.Invoke();
+            yDir = CustomCamera.Instance.VerticalCameraDirection;
             Animate();
-
-            #region NOT IN USE
-            //switch (ControllerState)
-            //{
-            //    case GameControllerState.Exploring:
-            //    break;
-
-            //    case GameControllerState.TurnBased:
-            //        if (!TurnBasedMovementStarted)
-            //        {
-            //            TurnBasedTargetPosition = UpdateCursorPosition(m_direction.normalized, speed);
-
-            //            if (m_confirm)
-            //            {
-            //                TurnBasedMovementStarted = true;
-            //                TurnBasedTargetDirection = TurnBasedTargetPosition - transform.position;
-            //            }
-            //        }
-            //        else
-            //        {
-            //            TurnBasedDistanceTravelled = Vector2.Distance(new Vector2(TurnBasedTargetPosition.x, TurnBasedTargetPosition.z), new Vector2(transform.position.x, transform.position.z));
-            //            if (Mathf.RoundToInt(TurnBasedDistanceTravelled) != 0)
-            //            {
-            //                if (!CharacterController.enabled) CharacterController.enabled = true;
-            //                UpdateIsometricMovePosition(TurnBasedTargetDirection.normalized, speed);
-            //            }
-            //            else
-            //            {
-            //                CurrentyVelocity = Vector3.zero;
-            //                CharacterController.enabled = false;
-            //                TurnBasedMovementStarted = false;
-            //            }
-            //        }
-            //    break;
-            //}
-            #endregion
         }
         void FixedUpdate()
         {
@@ -547,8 +667,15 @@ namespace CustomGameController
         {
             OnCharacterMove.RemoveAllListeners();
 
-            if (cameraPerspective == CameraPerspective.First_Person) OnCharacterMove.AddListener(UpdateFirstPersonMovePosition);
-            else OnCharacterMove.AddListener(UpdateThirdPersonMovePosition);
+            if (InFlight)
+            {
+                OnCharacterMove.AddListener(UpdateFlightPosition);
+            }
+            else
+            {
+                if (cameraPerspective == CameraPerspective.First_Person) OnCharacterMove.AddListener(UpdateFirstPersonMovePosition);
+                else OnCharacterMove.AddListener(UpdateThirdPersonMovePosition);
+            }
         }
         #endregion
     }

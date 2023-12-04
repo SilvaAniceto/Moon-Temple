@@ -20,6 +20,15 @@ namespace CustomGameController
         public CameraPerspectiveSettings ThirdPerson { get => ThirdPersonSettings; }
         public CameraPerspectiveSettings OverShoulder { get => OverShoulderSettings; }
         public Vector3 CameraHeightOfftset { get => new Vector3(0.0f, CameraTargetHeight / 2, 0.0f); }
+        public int VerticalCameraDirection
+        {
+            get
+            {
+                if (CameraTarget.rotation.x < -0.02f) return 1;
+                else if (CameraTarget.rotation.x > 0.02f) return -1;
+                else return 0;
+            }
+        }
         #endregion
 
         #region CAMERA SETTINGS
@@ -95,9 +104,6 @@ namespace CustomGameController
             VirtualCameraFollow.ShoulderOffset = CurrentSettings.ShoulderOffset;
             VirtualCameraFollow.CameraDistance = CurrentSettings.CameraDistance;
         }
-        public float rotMag;
-        public float angleVariation;
-        public float anglePercent;
         public void UpdateCamera(float cameraTilt, float cameraPan, float cameraZoom)
         {
             m_xRot += cameraTilt * CameraSensibility;
@@ -113,25 +119,16 @@ namespace CustomGameController
 
             if (CameraPerspective == CameraPerspective.Isometric)
             {
-                rotMag = Mathf.Abs(15.0f) + Mathf.Abs(CurrentSettings.XRotationRange.y);
-                angleVariation += cameraTilt * CameraSensibility;
-                angleVariation = Mathf.Clamp(angleVariation, 0, rotMag);
-
-                anglePercent = (angleVariation * 100 / rotMag) / 100;
-
-                VirtualCameraFollow.ShoulderOffset = Vector3.Lerp(new Vector3(0.2f, 0.35f, 0.6f), Vector3.zero, anglePercent);
-
-                //VirtualCameraFollow.CameraDistance += cameraZoom;
-                //VirtualCameraFollow.CameraDistance = Mathf.Clamp(VirtualCameraFollow.CameraDistance, 15.0f, 45.0f);
-                VirtualCameraFollow.CameraDistance = Mathf.Lerp(25.0f, 45.0f, anglePercent);
+                VirtualCameraFollow.CameraDistance += cameraZoom;
+                VirtualCameraFollow.CameraDistance = Mathf.Clamp(VirtualCameraFollow.CameraDistance, 20.0f, 45.0f);
             }
         }
         public void SetPerspectiveSettings()
         {
             FirstPersonSettings = new CameraPerspectiveSettings(new Vector2(-70.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.4f, 0.00f), false, 60.0f, -0.2f);
-            IsometricSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 30.0f, 0.0f)), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), false, 13.0f, 45.0f);
-            ThirdPersonSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.5f, 0.3f), new Vector3(0.2f, 0.35f, 0.6f), false, 60.0f, 3.0f);
-            OverShoulderSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.5f, 0.3f), new Vector3(0.2f, 0.35f, -0.15f), false, 70.0f, 0.8f);
+            IsometricSettings = new CameraPerspectiveSettings(new Vector2(5.0f, 25.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 30.0f, 0.0f)), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), false, 13.0f, 45.0f);
+            ThirdPersonSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 1.25f, 0.3f), new Vector3(0.35f, 0.35f, 0.6f), false, 60.0f, 3.5f);
+            OverShoulderSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.5f, 0.3f), new Vector3(0.35f, 0.35f, -0.15f), false, 70.0f, 0.8f);
         }
         #endregion
 
@@ -145,9 +142,9 @@ namespace CustomGameController
         private CameraPerspectiveSettings ThirdPersonSettings;
         private CameraPerspectiveSettings OverShoulderSettings;
 
-        [SerializeField] private float m_xRot = 0;
-        [SerializeField] private float m_yRot = 0;
-        [SerializeField] private bool m_changePerspective = false;
+        private float m_xRot = 0;
+        private float m_yRot = 0;
+        private bool m_changePerspective = false;
         #endregion
 
         #region DEFAULT METHODS

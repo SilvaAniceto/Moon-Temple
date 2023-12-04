@@ -52,6 +52,7 @@ namespace CustomGameController
         CameraPerspectiveSettings ThirdPerson { get; }
         CameraPerspectiveSettings OverShoulder { get; }
         Vector3 CameraHeightOfftset { get; }
+        int VerticalCameraDirection { get; }
         #endregion
 
         #region CAMERA SETTINGS

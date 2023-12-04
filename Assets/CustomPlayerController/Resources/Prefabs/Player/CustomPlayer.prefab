@@ -2046,7 +2046,7 @@ MonoBehaviour:
     m_Bits: 8
   m_isometricCollisionFilter:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 0
 --- !u!1 &7068005867914164206
 GameObject:
   m_ObjectHideFlags: 0
@@ -2197,6 +2197,12 @@ MonoBehaviour:
   OnCameraPerspectiveChanged:
     m_PersistentCalls:
       m_Calls: []
+  rotMag: 0
+  angleVariation: 0
+  anglePercent: 0
+  m_xRot: 0
+  m_yRot: 0
+  m_changePerspective: 0
 --- !u!1818360608 &7068005868399241387
 PositionConstraint:
   m_ObjectHideFlags: 0
