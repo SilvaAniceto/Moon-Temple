@@ -203,7 +203,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""76f81138-9880-4a76-98ee-695bb7c73d62"",
-                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",

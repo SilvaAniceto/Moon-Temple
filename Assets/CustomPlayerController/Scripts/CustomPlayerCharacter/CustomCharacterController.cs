@@ -96,7 +96,7 @@ namespace CustomGameController
         {
             get
             {
-                if (SprintInput) return m_InFlightSpeed * 3.0f;
+                if (SprintInput) return m_InFlightSpeed * 4.0f;
                 else return m_InFlightSpeed;
             }
             set
@@ -152,7 +152,7 @@ namespace CustomGameController
         {
             get
             {
-                if (SprintInput) return m_OnGroundSpeed * 2.0f;
+                if (SprintInput) return m_OnGroundSpeed * 2.8f;
                 else return m_OnGroundSpeed;
             }
             set
@@ -380,28 +380,11 @@ namespace CustomGameController
             transform.rotation = Rot;
 
             UpdateAirHeightPosition();
-            
         }
 
         public void UpdateAirHeightPosition()
         {
-            if (SprintInput)
-            {
-                //float yVelocity = transform.position.y;
-                //yVelocity += 0.01f * CustomCamera.Instance.VerticalCameraDirection;
-                //Debug.Log(yVelocity);
-                //GravityVelocity = new Vector3(0.0f, yVelocity, 0.0f);
 
-                //CharacterController.Move(GravityVelocity * Time.deltaTime);
-
-                GravityVelocity += new Vector3(0.0f,CurrentSpeed * CustomCamera.Instance.VerticalCameraDirection * Time.deltaTime, 0.0f);
-                GravityVelocity = Vector3.Lerp(GravityVelocity, GravityVelocity * CustomCamera.Instance.VerticalCameraDirection, CurrentSpeed * Time.deltaTime);
-                CharacterController.Move(GravityVelocity * Time.deltaTime);
-            }
-            else
-            {
-
-            }
         }
         #endregion
 
@@ -628,7 +611,7 @@ namespace CustomGameController
             PlayerDirection = inputs.MoveDirectionInput;
             PlayerDirection.Normalize();
 
-            if (inputs.SprintInput) SprintInput = !SprintInput;
+            SprintInput = inputs.SprintInput;
             VerticalAscendingInput = inputs.VerticalAscendingInput;
             VerticalDescendingInput = inputs.VerticalDescendingInput;
 

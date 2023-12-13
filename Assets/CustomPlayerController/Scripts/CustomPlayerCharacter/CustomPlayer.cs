@@ -83,7 +83,7 @@ namespace CustomGameController
             inputHandler.MoveDirectionInput = new Vector3(direction.x, 0.0f, direction.y);
             inputHandler.VerticalAscendingInput = InputActions.PlayerActions.VerticalAscending.IsPressed();
             inputHandler.VerticalDescendingInput = InputActions.PlayerActions.VerticalDescending.IsPressed();
-            inputHandler.SprintInput = InputActions.PlayerActions.Sprint.WasPerformedThisFrame();
+            inputHandler.SprintInput = InputActions.PlayerActions.Sprint.IsPressed();
 
             Vector2 camAxis = InputActions.PlayerActions.CameraAxis.ReadValue<Vector2>();
             camAxis = new Vector2(camAxis.y, camAxis.x);
