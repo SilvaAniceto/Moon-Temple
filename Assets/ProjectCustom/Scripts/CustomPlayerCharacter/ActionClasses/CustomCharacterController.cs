@@ -4,6 +4,8 @@ using Unity.VisualScripting;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.XR;
 using UnityEngine.ProBuilder;
 
 namespace CustomGameController
@@ -348,6 +350,7 @@ namespace CustomGameController
         public void EnteringAirState()
         {
             float yVelocity = 0.0f;
+
             yVelocity = Mathf.Lerp(yVelocity, JumpHeight / 2.0f, Time.deltaTime * 4.0f);
 
             GravityVelocity = new Vector3(0.0f, yVelocity, 0.0f);
@@ -368,7 +371,8 @@ namespace CustomGameController
 
             move = right + forward + Vector3.zero;
 
-            CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime * CurrentSpeed);
+            CurrentyVelocity = !SprintInput ? Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime * CurrentSpeed) :
+                               Vector3.MoveTowards(CurrentyVelocity, (inputDirection.z * Forward) + right, CurrentAcceleration * Time.deltaTime * CurrentSpeed);
 
             CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
 
@@ -379,7 +383,9 @@ namespace CustomGameController
 
             transform.rotation = Rot;
 
-            UpdateAirHeightPosition();
+            if (move != Vector3.zero && SprintInput) transform.rotation = Quaternion.FromToRotation(transform.up, forward) * transform.rotation;
+
+            //UpdateAirHeightPosition();
         }
 
         public void UpdateAirHeightPosition()
@@ -409,6 +415,8 @@ namespace CustomGameController
         }
         public void UpdateThirdPersonMovePosition(Vector3 inputDirection, float movementSpeed)
         {
+            inputDirection = inputDirection.normalized;
+
             Vector3 move = new Vector3();
             Vector3 right = inputDirection.x * Right;
             Vector3 forward = inputDirection.z * Forward;
@@ -458,6 +466,8 @@ namespace CustomGameController
         }
         public void UpdateFirstPersonMovePosition(Vector3 inputDirection, float movementSpeed)
         {
+            inputDirection = inputDirection.normalized;
+
             Vector3 move = new Vector3();
             Vector3 right = inputDirection.x * Right;
             Vector3 forward = inputDirection.z * Forward;
@@ -525,7 +535,7 @@ namespace CustomGameController
 
                 if (m_PlayerDirection == Vector3.zero) StartCoroutine(SmoothStop());
 
-                OnCharacterMove?.Invoke(PlayerDirection.normalized, CurrentSpeed);
+                OnCharacterMove?.Invoke(PlayerDirection, CurrentSpeed);
 
                 IEnumerator SmoothStop()
                 {

@@ -1,4 +1,3 @@
-using CustomGameController;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,12 +21,12 @@ public class SimpleCarController : MonoBehaviour
     public bool brake;
     public float steering;
 
-    private CustomInputActions InputActions;
+    //private CustomInputActions InputActions;
 
     private void Awake()
     {
-        InputActions = new CustomInputActions();
-        InputActions.Enable();
+        //InputActions = new CustomInputActions();
+        //InputActions.Enable();
     }
 
     private void Update()
@@ -100,7 +99,7 @@ public class SimpleCarController : MonoBehaviour
 
     public void ReadPlayerInput()
     {
-        Vector2 direction = InputActions.PlayerActions.Move.ReadValue<Vector2>();
+        Vector2 direction = Vector2.zero/*InputActions.PlayerActions.Move.ReadValue<Vector2>()*/;
 
         accelerator = Mathf.Clamp01(direction.y);
         brake = direction.y < 0.0f ? true : false;

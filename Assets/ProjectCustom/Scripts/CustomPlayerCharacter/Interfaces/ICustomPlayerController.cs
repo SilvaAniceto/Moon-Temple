@@ -25,16 +25,16 @@ namespace CustomGameController
     }
     public interface ICustomPlayerController
     {
-        #region GAME CONTROLLER PROPERTIES
-        GameControllerState ControllerState { get; set; }
-        Vector3 TurnBasedTargetPosition { get; set; }
-        Vector3 TurnBasedTargetDirection { get; set; }
-        float TurnBasedDistanceTravelled { get; set; }
-        bool TurnBasedMovementStarted { get; set; }
+        #region GAME CONTROLLER PROPERTIES (Deprecated)
+        //GameControllerState ControllerState { get; set; }
+        //Vector3 TurnBasedTargetPosition { get; set; }
+        //Vector3 TurnBasedTargetDirection { get; set; }
+        //float TurnBasedDistanceTravelled { get; set; }
+        //bool TurnBasedMovementStarted { get; set; }
         #endregion
 
         #region GAME CONTROLLER METHODS
-        void OnGameControllerStateChanged(GameControllerState state);
+        //void OnGameControllerStateChanged(GameControllerState state);
         void SetCharacterPhysicsSimulation(UnityAction actionSimulated);
         void SetupCharacter();
         bool CheckWallHit();
