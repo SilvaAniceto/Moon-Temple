@@ -371,8 +371,7 @@ namespace CustomGameController
 
             move = right + forward + Vector3.zero;
 
-            CurrentyVelocity = !SprintInput ? Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime * CurrentSpeed) :
-                               Vector3.MoveTowards(CurrentyVelocity, (inputDirection.z * Forward) + right, CurrentAcceleration * Time.deltaTime * CurrentSpeed);
+            CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime * CurrentSpeed);
 
             CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
 
@@ -383,7 +382,7 @@ namespace CustomGameController
 
             transform.rotation = Rot;
 
-            if (move != Vector3.zero && SprintInput) transform.rotation = Quaternion.FromToRotation(transform.up, forward) * transform.rotation;
+            //if (move != Vector3.zero && SprintInput) transform.rotation = Quaternion.FromToRotation(transform.up, forward) * transform.rotation;
 
             //UpdateAirHeightPosition();
         }

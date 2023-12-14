@@ -290,6 +290,17 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""078b671a-9367-4fb1-b1eb-0889bcd04d1b"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": ""MultiTap(tapDelay=0.1)"",
+                    ""processors"": """",
+                    ""groups"": ""Mouse&Keyboard"",
+                    ""action"": ""FlightControl"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""ab6ef6fb-06c4-42b0-9ac7-cf596084f9ac"",
                     ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
