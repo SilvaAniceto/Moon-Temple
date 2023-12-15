@@ -12,6 +12,7 @@ namespace CustomGameController
     public struct CustomPlayerInputHandler
     {
         public Vector3 MoveDirectionInput;
+        public bool JumpInput;
         public bool VerticalAscendingInput;
         public bool VerticalDescendingInput;
         public bool SprintInput;

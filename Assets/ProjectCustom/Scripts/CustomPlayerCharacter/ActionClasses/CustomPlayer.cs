@@ -81,6 +81,7 @@ namespace CustomGameController
             Vector2 direction = InputActions.PlayerActions.Move.ReadValue<Vector2>();
 
             inputHandler.MoveDirectionInput = new Vector3(direction.x, 0.0f, direction.y);
+            inputHandler.JumpInput = InputActions.PlayerActions.Jump.IsPressed();
             inputHandler.VerticalAscendingInput = InputActions.PlayerActions.VerticalAscending.IsPressed();
             inputHandler.VerticalDescendingInput = InputActions.PlayerActions.VerticalDescending.IsPressed();
             inputHandler.SprintInput = InputActions.PlayerActions.Sprint.IsPressed();
