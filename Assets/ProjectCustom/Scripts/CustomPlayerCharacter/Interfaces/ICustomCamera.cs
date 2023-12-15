@@ -25,12 +25,12 @@ namespace CustomGameController
         public float ViewSize;
         public float CameraDistance;
 
-        public CameraPerspectiveSettings(Vector2 xRotationRange, bool clampXRotation, Vector2 yRotationRange, bool clamYRotation, Quaternion rotation, Vector3 damping, Vector3 shoulderOffset, bool orthographicperspective, float viewSize, float cameradistance)
+        public CameraPerspectiveSettings(Vector2 xRotationRange, bool clampXRotation, Vector2 yRotationRange, bool clampYRotation, Quaternion rotation, Vector3 damping, Vector3 shoulderOffset, bool orthographicperspective, float viewSize, float cameradistance)
         {
             this.XRotationRange = xRotationRange;
             this.ClampXRotation = clampXRotation;
             this.YRotationRange = yRotationRange;
-            this.ClampYRotation = clamYRotation;
+            this.ClampYRotation = clampYRotation;
             this.Rotation = rotation;
             this.Damping = damping;
             this.ShoulderOffset = shoulderOffset;

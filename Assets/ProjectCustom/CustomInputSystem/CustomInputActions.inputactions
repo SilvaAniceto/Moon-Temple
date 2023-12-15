@@ -24,24 +24,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "VerticalAscending",
-                    "type": "Button",
-                    "id": "290b7be8-b3d9-4d9c-a682-0009d5a12cb0",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "VerticalDescending",
-                    "type": "Button",
-                    "id": "85da9e2f-bf8e-4197-8744-7c4c5657fe0a",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Sprint",
                     "type": "Button",
                     "id": "9e002070-7928-42dd-a6a1-f70e35746461",
@@ -81,6 +63,24 @@
                     "name": "FlightControl",
                     "type": "Button",
                     "id": "17670236-78d0-4059-a0c1-5d28f8e6e121",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "VerticalAscending",
+                    "type": "Button",
+                    "id": "290b7be8-b3d9-4d9c-a682-0009d5a12cb0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "VerticalDescending",
+                    "type": "Button",
+                    "id": "85da9e2f-bf8e-4197-8744-7c4c5657fe0a",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -266,17 +266,6 @@
                 },
                 {
                     "name": "",
-                    "id": "3ca511ba-0e14-42f2-aaf4-f2529436a7f3",
-                    "path": "<Gamepad>/buttonSouth",
-                    "interactions": "MultiTap(tapDelay=0.1)",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "FlightControl",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "078b671a-9367-4fb1-b1eb-0889bcd04d1b",
                     "path": "<Keyboard>/space",
                     "interactions": "MultiTap(tapDelay=0.1)",
@@ -288,23 +277,12 @@
                 },
                 {
                     "name": "",
-                    "id": "ab6ef6fb-06c4-42b0-9ac7-cf596084f9ac",
-                    "path": "<Gamepad>/buttonEast",
-                    "interactions": "",
+                    "id": "3ca511ba-0e14-42f2-aaf4-f2529436a7f3",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "MultiTap(tapDelay=0.1)",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "VerticalDescending",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1217da78-fddc-4ad0-8198-43e53cbde8cc",
-                    "path": "<Keyboard>/leftAlt",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse&Keyboard",
-                    "action": "VerticalDescending",
+                    "action": "FlightControl",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -312,7 +290,7 @@
                     "name": "",
                     "id": "948908ca-b4c0-4186-96d0-cf78ff7b9eab",
                     "path": "<Keyboard>/space",
-                    "interactions": "",
+                    "interactions": "Hold(duration=0.6)",
                     "processors": "",
                     "groups": "Mouse&Keyboard",
                     "action": "VerticalAscending",
@@ -323,10 +301,32 @@
                     "name": "",
                     "id": "4ce64e9f-3c7a-4f1f-9780-f9a9ebdf5a2f",
                     "path": "<Gamepad>/buttonSouth",
-                    "interactions": "",
+                    "interactions": "Hold(duration=0.6)",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "VerticalAscending",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1217da78-fddc-4ad0-8198-43e53cbde8cc",
+                    "path": "<Keyboard>/leftAlt",
+                    "interactions": "Hold(duration=0.6)",
+                    "processors": "",
+                    "groups": "Mouse&Keyboard",
+                    "action": "VerticalDescending",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ab6ef6fb-06c4-42b0-9ac7-cf596084f9ac",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "Hold(duration=0.6)",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "VerticalDescending",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

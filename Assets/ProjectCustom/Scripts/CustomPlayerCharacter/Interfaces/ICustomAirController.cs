@@ -10,13 +10,13 @@ namespace CustomGameController
         bool InFlight { get; set; }
         float InFlightSpeed { get; set; }
         float InFlightAcceleration { get; set; }
+        Vector3 FlightVelocity { get; set; }
         #endregion
 
         #region AIR SIMULATION METHODS
-        void EnteringAirState();
-        void IdleAirState();
+        void EnteringFlightState();
         void UpdateFlightPosition(Vector3 inputDirection, float movementSpeed);
-        void UpdateAirHeightPosition();
+        void UpdateFlightHeightPosition(bool ascendingFlight, bool descendingFlight);
         #endregion
     }
 }

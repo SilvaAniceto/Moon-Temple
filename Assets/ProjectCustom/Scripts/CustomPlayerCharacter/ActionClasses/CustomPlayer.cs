@@ -36,7 +36,7 @@ namespace CustomGameController
         {
             InputActions = new CustomInputActions();
             InputActions.Enable();
-            CameraCustom.OnCameraPerspectiveChanged.AddListener(CustomController.SetCharacterMoveCallBacks);
+            CameraCustom.OnCameraPerspectiveChanged.AddListener(CustomController.SetPlayerMovevement);
         }
         private void Start()
         {
@@ -44,7 +44,7 @@ namespace CustomGameController
             CameraCustom.IsometricCollisionFilter = m_isometricCollisionFilter;
 
             CameraCustom.SetCameraPerspective(m_defaultPerspective);
-            CustomController.SetCharacterMoveCallBacks(m_defaultPerspective);
+            CustomController.SetPlayerMovevement(m_defaultPerspective);
 
             CustomController.GroundLayer = m_groundLayer;
 
@@ -65,7 +65,7 @@ namespace CustomGameController
             CameraCustom.CameraTargetHeight = m_CameraTargetHeight;
             CameraCustom.CameraSensibility = m_cameraSensibility;
 
-            CustomController.SetupCharacter();
+            CustomController.SetupPlayer();
         }
         void Update()
         {
