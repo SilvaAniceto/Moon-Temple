@@ -623,29 +623,30 @@ namespace CustomGameController
                 CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
 
                 CharacterController.Move(GravityVelocity * Time.deltaTime);
+
             }
             else
             {
                 Vector3 move = new Vector3();
-                Vector3 forward = 1.0f * Forward;
+                Vector3 forward = 1.0f * transform.forward;
+                Vector3 right = inputDirection.x * transform.right;
+                Vector3 up = -inputDirection.z * Vector3.up;
 
-                move = forward;
-                FlightVelocity = move;
-                FlightVelocity = Vector3.MoveTowards(FlightVelocity, move, CurrentAcceleration * Time.deltaTime);
+                move = right + up + Vector3.zero;
 
-                float y = GravityVelocity.y;
-                y = Mathf.Lerp(y, -inputDirection.z * 9.81f, Time.deltaTime * 4.0f);
-                GravityVelocity = new Vector3(0.0f, y, 0.0f);
+                FlightVelocity = Vector3.MoveTowards(FlightVelocity, forward, CurrentAcceleration * Time.deltaTime);
 
-                CharacterController.Move(FlightVelocity * Time.deltaTime * movementSpeed);
+                if (move != Vector3.zero)
+                {
+                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), Time.deltaTime);
+                }
 
-                CharacterController.Move(GravityVelocity * Time.deltaTime);
+                CharacterController.Move(FlightVelocity * Time.deltaTime * movementSpeed /** 8*/);
 
             }
-
             Quaternion Rot = CustomCamera.Instance.CameraTarget.transform.rotation;
 
-            Rot.x = 0.0f;
+            Rot.x = transform.rotation.x;
             Rot.z = 0.0f;
 
             transform.rotation = Rot;

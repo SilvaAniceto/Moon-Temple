@@ -111,16 +111,22 @@ namespace CustomGameController
 
             m_xRot = CurrentSettings.ClampXRotation ? Mathf.Clamp(m_xRot, CurrentSettings.XRotationRange.x, CurrentSettings.XRotationRange.y) : m_xRot;
             m_yRot = CurrentSettings.ClampYRotation ? Mathf.Clamp(m_yRot, CurrentSettings.YRotationRange.x, CurrentSettings.YRotationRange.y) : m_yRot;
-
-            CameraTarget.transform.localRotation = Quaternion.Euler(m_xRot, m_yRot, 0);
-
-            CustomController.Forward = CustomPerspective.CustomForward;
-            CustomController.Right = CustomPerspective.CustomRight;
-
-            if (CameraPerspective == CameraPerspective.Isometric)
+            if (!CustomCharacterController.Instance.InFlight)
             {
-                VirtualCameraFollow.CameraDistance += cameraZoom;
-                VirtualCameraFollow.CameraDistance = Mathf.Clamp(VirtualCameraFollow.CameraDistance, 20.0f, 45.0f);
+                CameraTarget.transform.localRotation = Quaternion.Euler(m_xRot, m_yRot, 0);
+
+                CustomController.Forward = CustomPerspective.CustomForward;
+                CustomController.Right = CustomPerspective.CustomRight;
+
+                if (CameraPerspective == CameraPerspective.Isometric)
+                {
+                    VirtualCameraFollow.CameraDistance += cameraZoom;
+                    VirtualCameraFollow.CameraDistance = Mathf.Clamp(VirtualCameraFollow.CameraDistance, 20.0f, 45.0f);
+                }
+            }
+            else
+            {
+                CameraTarget.transform.rotation = CustomCharacterController.Instance.transform.rotation;
             }
         }
         public void SetPerspectiveSettings()
