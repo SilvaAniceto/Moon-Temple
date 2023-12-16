@@ -624,15 +624,21 @@ namespace CustomGameController
 
                 CharacterController.Move(GravityVelocity * Time.deltaTime);
 
+                Quaternion Rot = CustomCamera.Instance.CameraTarget.transform.rotation;
+
+                Rot.x = 0.0f;
+                Rot.z = 0.0f;
+
+                transform.rotation = Rot;
             }
             else
             {
                 Vector3 move = new Vector3();
                 Vector3 forward = 1.0f * transform.forward;
-                Vector3 right = inputDirection.x * transform.right;
+                Vector3 right = inputDirection.x * Vector3.right;
                 Vector3 up = -inputDirection.z * Vector3.up;
 
-                move = right + up + Vector3.zero;
+                move = right + up /*+ Vector3.zero*/;
 
                 FlightVelocity = Vector3.MoveTowards(FlightVelocity, forward, CurrentAcceleration * Time.deltaTime);
 
@@ -644,12 +650,7 @@ namespace CustomGameController
                 CharacterController.Move(FlightVelocity * Time.deltaTime * movementSpeed /** 8*/);
 
             }
-            Quaternion Rot = CustomCamera.Instance.CameraTarget.transform.rotation;
-
-            Rot.x = transform.rotation.x;
-            Rot.z = 0.0f;
-
-            transform.rotation = Rot;
+            
         }
         public void UpdateFlightHeightPosition(bool ascendingFlight, bool descendingFlight)
         {
