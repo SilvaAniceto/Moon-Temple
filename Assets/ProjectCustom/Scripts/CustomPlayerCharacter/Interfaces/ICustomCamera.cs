@@ -47,10 +47,6 @@ namespace CustomGameController
         LayerMask ThirdPersonCollisionFilter {  get; set; }
         LayerMask IsometricCollisionFilter { get; set; }
         CustomCharacterController CustomController { get; set; }
-        CameraPerspectiveSettings FirstPerson { get; }
-        CameraPerspectiveSettings Isometric { get; }
-        CameraPerspectiveSettings ThirdPerson { get; }
-        CameraPerspectiveSettings OverShoulder { get; }
         Vector3 CameraHeightOfftset { get; }
         int VerticalCameraDirection { get; }
         #endregion
@@ -59,21 +55,21 @@ namespace CustomGameController
         Transform CameraTarget { get; set; }
         float CameraTargetHeight { get; set; }
         float CameraSensibility { get; set; }
-        CameraPerspective CameraPerspective { get; set; }
+        float CurrentCameraDistance { get; set; }
+        Vector3 CurrentDamping { get; set; }
+        Vector3 CurrentShoulderOffset { get; set; }
         #endregion
 
         #region CAMERA INPUTS VALUES & METHODS
         float CameraPan { get; set; }
         float CameraTilt { get; set; }
         float CameraZoom { get; set; }
-        bool ChangeCameraPerspective { set; }
         void SetInput(CustomPlayerInputHandler inputs);
         #endregion
 
         #region CAMERA METHODS
-        void SetCameraPerspective(CameraPerspective perspective);
         void UpdateCamera(float cameraTilt, float cameraPan, float cameraZoom);
-        void SetPerspectiveSettings();
+        void UpdateCameraFollow(float cameraDistance, Vector3 damping, Vector3 shoulderOffset);
         #endregion
     }
 }

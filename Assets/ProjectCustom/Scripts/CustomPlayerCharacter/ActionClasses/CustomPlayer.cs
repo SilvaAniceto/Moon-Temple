@@ -36,15 +36,11 @@ namespace CustomGameController
         {
             InputActions = new CustomInputActions();
             InputActions.Enable();
-            CameraCustom.OnCameraPerspectiveChanged.AddListener(CustomController.SetPlayerMovevement);
         }
         private void Start()
         {
             CameraCustom.ThirdPersonCollisionFilter = m_thirdPersonCollisionFilter;
             CameraCustom.IsometricCollisionFilter = m_isometricCollisionFilter;
-
-            CameraCustom.SetCameraPerspective(m_defaultPerspective);
-            CustomController.SetPlayerMovevement(m_defaultPerspective);
 
             CustomController.GroundLayer = m_groundLayer;
 
@@ -91,7 +87,7 @@ namespace CustomGameController
 
             inputHandler.CameraAxis = camAxis;
             inputHandler.CameraZoom = InputActions.PlayerActions.Zoom.ReadValue<float>();
-            inputHandler.ChangeCameraPerspective = InputActions.PlayerActions.ChangeCameraPerspectiva.IsPressed();
+            //inputHandler.ChangeCameraPerspective = InputActions.PlayerActions.ChangeCameraPerspectiva.IsPressed();
 
             inputHandler.AirControlling = InputActions.PlayerActions.FlightControl.WasPerformedThisFrame();
 

@@ -2030,10 +2030,12 @@ MonoBehaviour:
   m_groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  m_maxSlopeAngle: 45
+  m_maxSlopeAngle: 30
   m_slopeCheckCount: 4
   m_onGroundSpeed: 2.7
   m_acceleration: 2
+  m_inFlightSpeed: 3.6
+  m_inFlightAcceleration: 2
   m_jumpHeight: 1.8
   m_drag: 1.4
   CameraCustom: {fileID: 7068005868399241386}
@@ -2104,11 +2106,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd6043bde05a7fc4cba197d06915c1e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Damping: {x: 0, y: 0.5, z: 0.3}
-  ShoulderOffset: {x: 0, y: 0, z: 0}
+  Damping: {x: 0, y: 0, z: 0.3}
+  ShoulderOffset: {x: 0.33, y: 0.33, z: -0.33}
   VerticalArmLength: 0.4
   CameraSide: 1
-  CameraDistance: 5
+  CameraDistance: 0.8
   CameraCollisionFilter:
     serializedVersion: 2
     m_Bits: 8
@@ -2194,15 +2196,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfc3c0dcd88369a458d57b38ebe29649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnCameraPerspectiveChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  rotMag: 0
-  angleVariation: 0
-  anglePercent: 0
   m_xRot: 0
   m_yRot: 0
-  m_changePerspective: 0
 --- !u!1818360608 &7068005868399241387
 PositionConstraint:
   m_ObjectHideFlags: 0
@@ -2270,18 +2265,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dcc3bb543fc7bd408556a45e0e20c63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnGameStateChanged:
+  OnPlayerDirection:
     m_PersistentCalls:
       m_Calls: []
-  OnCharacterMove:
+  OnPlayerJump:
     m_PersistentCalls:
       m_Calls: []
-  OnCharacterJump:
+  PlayerPhysicsSimulation:
     m_PersistentCalls:
       m_Calls: []
-  frequency: 0.5
-  magnitude: 1
-  sineValue: 0
 --- !u!143 &1281126599821335341
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2355,7 +2347,7 @@ Transform:
   m_GameObject: {fileID: 7068005868974483060}
   serializedVersion: 2
   m_LocalRotation: {x: 0.28082794, y: -0, z: -0, w: 0.95975816}
-  m_LocalPosition: {x: 0, y: -0.24999997, z: -0.0757575}
+  m_LocalPosition: {x: 0.33, y: 0.73, z: -1.1300011}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2383,16 +2375,16 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 7068005868295073508}
   m_Lens:
-    FieldOfView: 60
-    OrthographicSize: 10
-    NearClipPlane: 0.1
-    FarClipPlane: 300
+    FieldOfView: 90
+    OrthographicSize: 60
+    NearClipPlane: 0.01
+    FarClipPlane: 50000
     Dutch: 0
-    ModeOverride: 0
+    ModeOverride: 3
     LensShift: {x: 0, y: 0}
-    GateFit: 2
+    GateFit: 3
     FocusDistance: 10
-    m_SensorSize: {x: 1, y: 1}
+    m_SensorSize: {x: 1, y: 0.95}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2429,7 +2421,7 @@ Transform:
   m_GameObject: {fileID: 7068005869289075919}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.24999997, z: -0.0757575}
+  m_LocalPosition: {x: 0.33, y: 0.73, z: -1.1300011}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2446,19 +2438,19 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
-  m_projectionMatrixMode: 1
-  m_GateFitMode: 2
+  m_projectionMatrixMode: 2
+  m_GateFitMode: 3
   m_FOVAxisMode: 0
   m_Iso: 200
   m_ShutterSpeed: 0.005
   m_Aperture: 16
   m_FocusDistance: 10
-  m_FocalLength: 50
+  m_FocalLength: 0.475
   m_BladeCount: 5
   m_Curvature: {x: 2, y: 11}
   m_BarrelClipping: 0.25
   m_Anamorphism: 0
-  m_SensorSize: {x: 36, y: 24}
+  m_SensorSize: {x: 1, y: 0.95}
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
@@ -2466,11 +2458,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
-  far clip plane: 300
-  field of view: 60
+  near clip plane: 0.01
+  far clip plane: 50000
+  field of view: 90
   orthographic: 0
-  orthographic size: 10
+  orthographic size: 60
   m_Depth: 10
   m_CullingMask:
     serializedVersion: 2

@@ -19,7 +19,7 @@ namespace CustomGameController
 
         public Vector2 CameraAxis;
         public float CameraZoom;
-        public bool ChangeCameraPerspective;
+        //public bool ChangeCameraPerspective;
 
         public bool AirControlling;
         public bool StartFlight;

@@ -1,4 +1,5 @@
 using Cinemachine;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,17 +9,11 @@ namespace CustomGameController
     {
         public static CustomCamera Instance;
 
-        [HideInInspector] public UnityEvent<CameraPerspective> OnCameraPerspectiveChanged = new UnityEvent<CameraPerspective>();
-
         #region CAMERA PROPERTIES
         public Camera PlayerCamera { get; set; }
         public LayerMask ThirdPersonCollisionFilter { get; set; }
         public LayerMask IsometricCollisionFilter { get; set; }
         public CustomCharacterController CustomController { get; set; }
-        public CameraPerspectiveSettings FirstPerson { get => FirstPersonSettings; }
-        public CameraPerspectiveSettings Isometric { get => IsometricSettings; }
-        public CameraPerspectiveSettings ThirdPerson { get => ThirdPersonSettings; }
-        public CameraPerspectiveSettings OverShoulder { get => OverShoulderSettings; }
         public Vector3 CameraHeightOfftset { get => new Vector3(0.0f, CameraTargetHeight / 2, 0.0f); }
         public int VerticalCameraDirection
         {
@@ -35,121 +30,67 @@ namespace CustomGameController
         public Transform CameraTarget { get; set; }
         public float CameraTargetHeight { get; set; }
         public float CameraSensibility { get; set; }
-        public CameraPerspective CameraPerspective { get; set; }
+        public float CurrentCameraDistance { get; set; }
+        public Vector3 CurrentDamping { get; set; }
+        public Vector3 CurrentShoulderOffset { get; set; }
         #endregion
 
         #region CAMERA INPUTS VALUES & METHODS
         public float CameraPan { get; set; }
         public float CameraTilt { get; set; }
         public float CameraZoom { get; set; }
-        public bool ChangeCameraPerspective
-        {
-            set
-            {
-                if (m_changePerspective == value) return;
-
-                m_changePerspective = value;
-
-                if (m_changePerspective)
-                {
-                    int index = (int)CameraPerspective;
-
-                    index++;
-
-                    if (index > 3) index = 0;
-                    if (index < 0) index = 3;
-
-                    OnCameraPerspectiveChanged?.Invoke((CameraPerspective)index);
-                }
-            }
-        }
         public void SetInput(CustomPlayerInputHandler inputs)
         {
             CameraPan = Mathf.Clamp(inputs.CameraAxis.y, -1, 1);
             CameraTilt = Mathf.Clamp(inputs.CameraAxis.x, -1, 1);
-            ChangeCameraPerspective = inputs.ChangeCameraPerspective;
             CameraZoom = inputs.CameraZoom;
         }
         #endregion
 
         #region CAMERA METHODS
-        public void SetCameraPerspective(CameraPerspective perspective)
-        {
-            CameraPerspective = perspective;
-            switch (CameraPerspective)
-            {
-                case CameraPerspective.Isometric:
-                    CurrentSettings = Isometric;
-                    VirtualCameraFollow.CameraCollisionFilter = IsometricCollisionFilter;
-                    break;
-                case CameraPerspective.Third_Person:
-                    CurrentSettings = ThirdPerson;
-                    VirtualCameraFollow.CameraCollisionFilter = ThirdPersonCollisionFilter;
-                    break;
-                case CameraPerspective.Over_Shoulder:
-                    CurrentSettings = OverShoulder;
-                    VirtualCameraFollow.CameraCollisionFilter = ThirdPersonCollisionFilter;
-                    break;
-                case CameraPerspective.First_Person:
-                    CurrentSettings = FirstPerson;
-                    VirtualCameraFollow.CameraCollisionFilter = ThirdPersonCollisionFilter;
-                    break;
-            }
-
-            transform.rotation = CurrentSettings.Rotation;
-            PlayerCamera.orthographic = CurrentSettings.OrthographicPerspective;
-            VirtualCamera.m_Lens.OrthographicSize = CurrentSettings.ViewSize;
-            VirtualCamera.m_Lens.FieldOfView = CurrentSettings.ViewSize;
-            VirtualCameraFollow.Damping = CurrentSettings.Damping;
-            VirtualCameraFollow.ShoulderOffset = CurrentSettings.ShoulderOffset;
-            VirtualCameraFollow.CameraDistance = CurrentSettings.CameraDistance;
-        }
         public void UpdateCamera(float cameraTilt, float cameraPan, float cameraZoom)
         {
+            Vector3 lookDirection = new Vector3(cameraTilt, cameraPan, cameraZoom);
+
+            if (CustomController.InFlight && CustomController.SprintInput)
+            {
+                CameraTarget.transform.localRotation = Quaternion.Slerp(CameraTarget.transform.localRotation, CustomController.transform.rotation, 4.5f * Time.deltaTime);
+
+                m_xRot = 0.0f;
+                m_yRot = CameraTarget.transform.localEulerAngles.y;
+
+                return;
+            }
+
             m_xRot += cameraTilt * CameraSensibility;
             m_yRot += cameraPan * CameraSensibility;
 
-            m_xRot = CurrentSettings.ClampXRotation ? Mathf.Clamp(m_xRot, CurrentSettings.XRotationRange.x, CurrentSettings.XRotationRange.y) : m_xRot;
-            m_yRot = CurrentSettings.ClampYRotation ? Mathf.Clamp(m_yRot, CurrentSettings.YRotationRange.x, CurrentSettings.YRotationRange.y) : m_yRot;
+            m_xRot = Mathf.Clamp(m_xRot, -50.0f, 70.0f);
 
-            CameraTarget.transform.localRotation = Quaternion.Euler(m_xRot, m_yRot, 0);
+            CameraTarget.transform.localRotation = Quaternion.Slerp(CameraTarget.transform.localRotation, Quaternion.Euler(m_xRot, m_yRot, 0), 4.5f * Time.deltaTime);
 
             CustomController.Forward = CustomPerspective.CustomForward;
             CustomController.Right = CustomPerspective.CustomRight;
 
-            if (CameraPerspective == CameraPerspective.Isometric)
-            {
-                VirtualCameraFollow.CameraDistance += cameraZoom;
-                VirtualCameraFollow.CameraDistance = Mathf.Clamp(VirtualCameraFollow.CameraDistance, 20.0f, 45.0f);
-            }
-
-            if (CustomCharacterController.Instance.InFlight && CustomCharacterController.Instance.SprintInput)
-            {
-                CameraTarget.transform.rotation = CustomCharacterController.Instance.transform.rotation;
-            }
         }
-        public void SetPerspectiveSettings()
+        public void UpdateCameraFollow(float cameraDistance, Vector3 damping, Vector3 shoulderOffset)
         {
-            FirstPersonSettings = new CameraPerspectiveSettings(new Vector2(-70.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 0.4f, 0.00f), false, 60.0f, -0.2f);
-            IsometricSettings = new CameraPerspectiveSettings(new Vector2(5.0f, 25.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 30.0f, 0.0f)), new Vector3(0.0f, 1.0f, 0.0f), new Vector3(0.0f, 0.0f, 0.0f), false, 13.0f, 45.0f);
-            ThirdPersonSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 1.25f, 0.3f), new Vector3(0.35f, 0.35f, 0.6f), false, 60.0f, 3.5f);
-            OverShoulderSettings = new CameraPerspectiveSettings(new Vector2(-50.0f, 70.0f), true, new Vector2(0.0f, 0.0f), false, Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f)), new Vector3(0.0f, 0.5f, 0.3f), new Vector3(0.35f, 0.35f, -0.15f), false, 70.0f, 0.8f);
+            VirtualCameraFollow.ShoulderOffset = Vector3.MoveTowards(CurrentShoulderOffset, shoulderOffset, Time.deltaTime * 4.0f);
+            VirtualCameraFollow.CameraDistance = Mathf.Lerp(CurrentCameraDistance, cameraDistance, Time.deltaTime * 4.0f);
+            VirtualCameraFollow.Damping = damping;
+
+            CurrentCameraDistance = VirtualCameraFollow.CameraDistance;
+            CurrentShoulderOffset = VirtualCameraFollow.ShoulderOffset;
+            CurrentDamping = VirtualCameraFollow.Damping;
         }
         #endregion
 
         #region PRIVATE FIELDS
         private CinemachineVirtualCamera VirtualCamera;
         private Cinemachine3rdPersonFollow VirtualCameraFollow;
-        private CameraPerspectiveSettings CurrentSettings = new CameraPerspectiveSettings();
 
-        private CameraPerspectiveSettings FirstPersonSettings;
-        private CameraPerspectiveSettings IsometricSettings;
-        private CameraPerspectiveSettings ThirdPersonSettings;
-        private CameraPerspectiveSettings OverShoulderSettings;
-
-        private float m_xRot = 0;
-        private float m_yRot = 0;
-        private bool m_changePerspective = false;
+        public float m_xRot = 0;
+        public float m_yRot = 0;
         #endregion
 
         #region DEFAULT METHODS
@@ -157,13 +98,16 @@ namespace CustomGameController
         {
             if (Instance == null) Instance = this;
 
-            SetPerspectiveSettings();
-
             PlayerCamera = Camera.main;
             VirtualCamera = GetComponentInChildren<CinemachineVirtualCamera>();
             VirtualCameraFollow = GetComponentInChildren<Cinemachine3rdPersonFollow>();
+        }
+        private void Start()
+        {
+            CurrentDamping = VirtualCameraFollow.Damping;
+            CurrentShoulderOffset = VirtualCameraFollow.ShoulderOffset;
 
-            OnCameraPerspectiveChanged.AddListener(SetCameraPerspective);
+            CurrentCameraDistance = VirtualCameraFollow.CameraDistance;
         }
         void Update()
         {

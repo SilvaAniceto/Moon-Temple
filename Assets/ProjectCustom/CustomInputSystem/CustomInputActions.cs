@@ -64,15 +64,6 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""ChangeCameraPerspectiva"",
-                    ""type"": ""Button"",
-                    ""id"": ""88e9d148-1a63-4168-a7ad-e19a321727c0"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Zoom"",
                     ""type"": ""Value"",
                     ""id"": ""7a49d4e5-522b-49b0-9ef7-cfe806ddbd0d"",
@@ -239,28 +230,6 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""processors"": ""ScaleVector2(x=0.8,y=0.8),StickDeadzone(min=1.401298E-45)"",
                     ""groups"": ""Gamepad"",
                     ""action"": ""CameraAxis"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""e06605df-99bd-4129-bdb1-01781baa5a89"",
-                    ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""ChangeCameraPerspectiva"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6fdb3392-a843-4687-b7e6-4c0eb28427f9"",
-                    ""path"": ""<Gamepad>/rightStickPress"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""ChangeCameraPerspectiva"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -444,7 +413,6 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         m_PlayerActions_Jump = m_PlayerActions.FindAction("Jump", throwIfNotFound: true);
         m_PlayerActions_Sprint = m_PlayerActions.FindAction("Sprint", throwIfNotFound: true);
         m_PlayerActions_CameraAxis = m_PlayerActions.FindAction("CameraAxis", throwIfNotFound: true);
-        m_PlayerActions_ChangeCameraPerspectiva = m_PlayerActions.FindAction("ChangeCameraPerspectiva", throwIfNotFound: true);
         m_PlayerActions_Zoom = m_PlayerActions.FindAction("Zoom", throwIfNotFound: true);
         m_PlayerActions_FlightControl = m_PlayerActions.FindAction("FlightControl", throwIfNotFound: true);
         m_PlayerActions_VerticalAscending = m_PlayerActions.FindAction("VerticalAscending", throwIfNotFound: true);
@@ -518,7 +486,6 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_Jump;
     private readonly InputAction m_PlayerActions_Sprint;
     private readonly InputAction m_PlayerActions_CameraAxis;
-    private readonly InputAction m_PlayerActions_ChangeCameraPerspectiva;
     private readonly InputAction m_PlayerActions_Zoom;
     private readonly InputAction m_PlayerActions_FlightControl;
     private readonly InputAction m_PlayerActions_VerticalAscending;
@@ -531,7 +498,6 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_PlayerActions_Jump;
         public InputAction @Sprint => m_Wrapper.m_PlayerActions_Sprint;
         public InputAction @CameraAxis => m_Wrapper.m_PlayerActions_CameraAxis;
-        public InputAction @ChangeCameraPerspectiva => m_Wrapper.m_PlayerActions_ChangeCameraPerspectiva;
         public InputAction @Zoom => m_Wrapper.m_PlayerActions_Zoom;
         public InputAction @FlightControl => m_Wrapper.m_PlayerActions_FlightControl;
         public InputAction @VerticalAscending => m_Wrapper.m_PlayerActions_VerticalAscending;
@@ -557,9 +523,6 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
             @CameraAxis.started += instance.OnCameraAxis;
             @CameraAxis.performed += instance.OnCameraAxis;
             @CameraAxis.canceled += instance.OnCameraAxis;
-            @ChangeCameraPerspectiva.started += instance.OnChangeCameraPerspectiva;
-            @ChangeCameraPerspectiva.performed += instance.OnChangeCameraPerspectiva;
-            @ChangeCameraPerspectiva.canceled += instance.OnChangeCameraPerspectiva;
             @Zoom.started += instance.OnZoom;
             @Zoom.performed += instance.OnZoom;
             @Zoom.canceled += instance.OnZoom;
@@ -588,9 +551,6 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
             @CameraAxis.started -= instance.OnCameraAxis;
             @CameraAxis.performed -= instance.OnCameraAxis;
             @CameraAxis.canceled -= instance.OnCameraAxis;
-            @ChangeCameraPerspectiva.started -= instance.OnChangeCameraPerspectiva;
-            @ChangeCameraPerspectiva.performed -= instance.OnChangeCameraPerspectiva;
-            @ChangeCameraPerspectiva.canceled -= instance.OnChangeCameraPerspectiva;
             @Zoom.started -= instance.OnZoom;
             @Zoom.performed -= instance.OnZoom;
             @Zoom.canceled -= instance.OnZoom;
@@ -698,7 +658,6 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnCameraAxis(InputAction.CallbackContext context);
-        void OnChangeCameraPerspectiva(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
         void OnFlightControl(InputAction.CallbackContext context);
         void OnVerticalAscending(InputAction.CallbackContext context);

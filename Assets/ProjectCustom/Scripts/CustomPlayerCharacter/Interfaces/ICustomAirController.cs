@@ -11,6 +11,8 @@ namespace CustomGameController
         float InFlightSpeed { get; set; }
         float InFlightAcceleration { get; set; }
         Vector3 FlightVelocity { get; set; }
+        float FlightHorizontalRotation { get; set; }
+        float FlightVerticalRotation { get; set; }
         #endregion
 
         #region AIR SIMULATION METHODS
