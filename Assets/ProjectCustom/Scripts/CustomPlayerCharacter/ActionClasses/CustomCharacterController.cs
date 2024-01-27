@@ -370,7 +370,7 @@ namespace CustomGameController
         {
             if (InFlight) return;
 
-            CustomCamera.Instance.UpdateCameraFollow(0.8f, new Vector3(0.0f, 0.0f, 0.3f), new Vector3(0.33f, 0.33f, -0.33f));
+            //CustomCamera.Instance.UpdateCameraFollow(0.8f, new Vector3(0.0f, 0.0f, 0.3f), new Vector3(0.33f, 0.33f, -0.33f));
 
             inputDirection = inputDirection.normalized;
 
@@ -403,7 +403,9 @@ namespace CustomGameController
                     }
                     else
                     {
-                        CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
+                        //CharacterController.Move(Vector3.zero * Time.deltaTime * movementSpeed * 0.5f);
+                        CharacterController.Move(Vector3.zero);
+                        return;
                     }
                 }
                 else
@@ -607,7 +609,7 @@ namespace CustomGameController
 
             if (!SprintInput)
             {
-                CustomCamera.Instance.UpdateCameraFollow(1.2f, new Vector3(0.0f, 0.0f, 0.3f), new Vector3(0.33f, 0.33f, -0.33f));
+                //CustomCamera.Instance.UpdateCameraFollow(1.2f, new Vector3(0.0f, 0.0f, 0.3f), new Vector3(0.33f, 0.33f, -0.33f));
 
                 GravityVelocity = Vector3.zero;
                 FlightVelocity = Vector3.zero;
@@ -638,7 +640,7 @@ namespace CustomGameController
             }
             else
             {
-                CustomCamera.Instance.UpdateCameraFollow(2.5f, new Vector3(0.0f, 0.0f, 0.1f), new Vector3(0.0f, 0.8f, -0.33f));
+                //CustomCamera.Instance.UpdateCameraFollow(2.5f, new Vector3(0.0f, 0.0f, 0.1f), new Vector3(0.0f, 0.8f, -0.33f));
 
                 Vector3 move = new Vector3();
                 Vector3 forward = 1.0f * transform.forward;

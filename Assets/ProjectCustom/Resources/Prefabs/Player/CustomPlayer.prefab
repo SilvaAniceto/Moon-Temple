@@ -2030,7 +2030,7 @@ MonoBehaviour:
   m_groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  m_maxSlopeAngle: 30
+  m_maxSlopeAngle: 45
   m_slopeCheckCount: 4
   m_onGroundSpeed: 2.7
   m_acceleration: 2
@@ -2110,7 +2110,7 @@ MonoBehaviour:
   ShoulderOffset: {x: 0.33, y: 0.33, z: -0.33}
   VerticalArmLength: 0.4
   CameraSide: 1
-  CameraDistance: 0.8
+  CameraDistance: 1.200001
   CameraCollisionFilter:
     serializedVersion: 2
     m_Bits: 8
@@ -2196,8 +2196,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfc3c0dcd88369a458d57b38ebe29649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_xRot: 0
-  m_yRot: 0
 --- !u!1818360608 &7068005868399241387
 PositionConstraint:
   m_ObjectHideFlags: 0
@@ -2347,7 +2345,7 @@ Transform:
   m_GameObject: {fileID: 7068005868974483060}
   serializedVersion: 2
   m_LocalRotation: {x: 0.28082794, y: -0, z: -0, w: 0.95975816}
-  m_LocalPosition: {x: 0.33, y: 0.73, z: -1.1300011}
+  m_LocalPosition: {x: 0.33, y: 0.73, z: -1.530001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2375,16 +2373,16 @@ MonoBehaviour:
   m_LookAt: {fileID: 0}
   m_Follow: {fileID: 7068005868295073508}
   m_Lens:
-    FieldOfView: 90
+    FieldOfView: 45
     OrthographicSize: 60
     NearClipPlane: 0.01
     FarClipPlane: 50000
     Dutch: 0
-    ModeOverride: 3
+    ModeOverride: 2
     LensShift: {x: 0, y: 0}
     GateFit: 3
     FocusDistance: 10
-    m_SensorSize: {x: 1, y: 0.95}
+    m_SensorSize: {x: 1, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2421,7 +2419,7 @@ Transform:
   m_GameObject: {fileID: 7068005869289075919}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.33, y: 0.73, z: -1.1300011}
+  m_LocalPosition: {x: 0.33, y: 0.73, z: -1.530001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2438,14 +2436,14 @@ Camera:
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
-  m_projectionMatrixMode: 2
+  m_projectionMatrixMode: 1
   m_GateFitMode: 3
   m_FOVAxisMode: 0
   m_Iso: 200
   m_ShutterSpeed: 0.005
   m_Aperture: 16
   m_FocusDistance: 10
-  m_FocalLength: 0.475
+  m_FocalLength: 1.1467514
   m_BladeCount: 5
   m_Curvature: {x: 2, y: 11}
   m_BarrelClipping: 0.25
@@ -2460,7 +2458,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 50000
-  field of view: 90
+  field of view: 45
   orthographic: 0
   orthographic size: 60
   m_Depth: 10
