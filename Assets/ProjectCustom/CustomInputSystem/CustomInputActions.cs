@@ -392,6 +392,74 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""DriverActions"",
+            ""id"": ""d2c0972f-4298-46f6-b765-fa361d98b8cb"",
+            ""actions"": [
+                {
+                    ""name"": ""Accelerator"",
+                    ""type"": ""Value"",
+                    ""id"": ""f40f9e27-1cd2-40c2-a23b-aab69b53bab3"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Steer"",
+                    ""type"": ""Value"",
+                    ""id"": ""7ed4bb8a-5e30-4491-8e25-aff5fbf9eceb"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Brake"",
+                    ""type"": ""Value"",
+                    ""id"": ""9f3f5850-92d3-4d5a-a2cc-c8f86553ef32"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""4f49bbbf-4432-4ae1-b60d-c596852d9a39"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Accelerator"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2d99a907-87c1-4871-9d44-e5c14b68a28b"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Steer"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7704b82d-c10f-4b88-a5b2-444bec915118"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Brake"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -421,6 +489,11 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         m_GameControllerActions = asset.FindActionMap("GameControllerActions", throwIfNotFound: true);
         m_GameControllerActions_Pause = m_GameControllerActions.FindAction("Pause", throwIfNotFound: true);
         m_GameControllerActions_Navigation = m_GameControllerActions.FindAction("Navigation", throwIfNotFound: true);
+        // DriverActions
+        m_DriverActions = asset.FindActionMap("DriverActions", throwIfNotFound: true);
+        m_DriverActions_Accelerator = m_DriverActions.FindAction("Accelerator", throwIfNotFound: true);
+        m_DriverActions_Steer = m_DriverActions.FindAction("Steer", throwIfNotFound: true);
+        m_DriverActions_Brake = m_DriverActions.FindAction("Brake", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -634,6 +707,68 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         }
     }
     public GameControllerActionsActions @GameControllerActions => new GameControllerActionsActions(this);
+
+    // DriverActions
+    private readonly InputActionMap m_DriverActions;
+    private List<IDriverActionsActions> m_DriverActionsActionsCallbackInterfaces = new List<IDriverActionsActions>();
+    private readonly InputAction m_DriverActions_Accelerator;
+    private readonly InputAction m_DriverActions_Steer;
+    private readonly InputAction m_DriverActions_Brake;
+    public struct DriverActionsActions
+    {
+        private @CustomInputActions m_Wrapper;
+        public DriverActionsActions(@CustomInputActions wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Accelerator => m_Wrapper.m_DriverActions_Accelerator;
+        public InputAction @Steer => m_Wrapper.m_DriverActions_Steer;
+        public InputAction @Brake => m_Wrapper.m_DriverActions_Brake;
+        public InputActionMap Get() { return m_Wrapper.m_DriverActions; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(DriverActionsActions set) { return set.Get(); }
+        public void AddCallbacks(IDriverActionsActions instance)
+        {
+            if (instance == null || m_Wrapper.m_DriverActionsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_DriverActionsActionsCallbackInterfaces.Add(instance);
+            @Accelerator.started += instance.OnAccelerator;
+            @Accelerator.performed += instance.OnAccelerator;
+            @Accelerator.canceled += instance.OnAccelerator;
+            @Steer.started += instance.OnSteer;
+            @Steer.performed += instance.OnSteer;
+            @Steer.canceled += instance.OnSteer;
+            @Brake.started += instance.OnBrake;
+            @Brake.performed += instance.OnBrake;
+            @Brake.canceled += instance.OnBrake;
+        }
+
+        private void UnregisterCallbacks(IDriverActionsActions instance)
+        {
+            @Accelerator.started -= instance.OnAccelerator;
+            @Accelerator.performed -= instance.OnAccelerator;
+            @Accelerator.canceled -= instance.OnAccelerator;
+            @Steer.started -= instance.OnSteer;
+            @Steer.performed -= instance.OnSteer;
+            @Steer.canceled -= instance.OnSteer;
+            @Brake.started -= instance.OnBrake;
+            @Brake.performed -= instance.OnBrake;
+            @Brake.canceled -= instance.OnBrake;
+        }
+
+        public void RemoveCallbacks(IDriverActionsActions instance)
+        {
+            if (m_Wrapper.m_DriverActionsActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IDriverActionsActions instance)
+        {
+            foreach (var item in m_Wrapper.m_DriverActionsActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_DriverActionsActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public DriverActionsActions @DriverActions => new DriverActionsActions(this);
     private int m_MouseKeyboardSchemeIndex = -1;
     public InputControlScheme MouseKeyboardScheme
     {
@@ -667,5 +802,11 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
     {
         void OnPause(InputAction.CallbackContext context);
         void OnNavigation(InputAction.CallbackContext context);
+    }
+    public interface IDriverActionsActions
+    {
+        void OnAccelerator(InputAction.CallbackContext context);
+        void OnSteer(InputAction.CallbackContext context);
+        void OnBrake(InputAction.CallbackContext context);
     }
 }

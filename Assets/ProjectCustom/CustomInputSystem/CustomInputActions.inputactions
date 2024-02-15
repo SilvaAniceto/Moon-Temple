@@ -370,6 +370,74 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "DriverActions",
+            "id": "d2c0972f-4298-46f6-b765-fa361d98b8cb",
+            "actions": [
+                {
+                    "name": "Accelerator",
+                    "type": "Value",
+                    "id": "f40f9e27-1cd2-40c2-a23b-aab69b53bab3",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Steer",
+                    "type": "Value",
+                    "id": "7ed4bb8a-5e30-4491-8e25-aff5fbf9eceb",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Brake",
+                    "type": "Value",
+                    "id": "9f3f5850-92d3-4d5a-a2cc-c8f86553ef32",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4f49bbbf-4432-4ae1-b60d-c596852d9a39",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Accelerator",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2d99a907-87c1-4871-9d44-e5c14b68a28b",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Steer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7704b82d-c10f-4b88-a5b2-444bec915118",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Brake",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
