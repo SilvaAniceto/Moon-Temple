@@ -86,11 +86,11 @@ namespace CustomGameController
         #endregion
 
         #region PRIVATE FIELDS
-        //private CinemachineVirtualCamera VirtualCamera;
+        private CinemachineVirtualCamera VirtualCamera;
         private Cinemachine3rdPersonFollow VirtualCameraFollow;
 
-        private float m_xRot = 0;
-        private float m_yRot = 0;
+        public float m_xRot = 0;
+        public float m_yRot = 0;
         #endregion
 
         #region DEFAULT METHODS
@@ -99,7 +99,7 @@ namespace CustomGameController
             if (Instance == null) Instance = this;
 
             PlayerCamera = Camera.main;
-            //VirtualCamera = GetComponentInChildren<CinemachineVirtualCamera>();
+            VirtualCamera = GetComponentInChildren<CinemachineVirtualCamera>();
             VirtualCameraFollow = GetComponentInChildren<Cinemachine3rdPersonFollow>();
         }
         private void Start()
