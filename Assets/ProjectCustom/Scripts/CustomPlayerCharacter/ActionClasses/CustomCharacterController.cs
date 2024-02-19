@@ -50,6 +50,9 @@ namespace CustomGameController
             FlightControlling = false;
             InFlight = false;
 
+            OnPlayerDirection.RemoveAllListeners();
+            OnPlayerDirection.AddListener(UpdateThirdPersonMovePosition);
+
             yield return new WaitForSeconds(0.35f);
             AllowJump = true;
         }
@@ -71,9 +74,9 @@ namespace CustomGameController
         {
             PlayerPhysicsSimulation?.Invoke();
 
-            Animate();
+            SetCheckersLocation();
 
-            UpdateFlightPosition(PlayerDirection, CurrentSpeed);
+            Animate();
         }
         void FixedUpdate()
         {
@@ -100,14 +103,11 @@ namespace CustomGameController
             GameObject t = new GameObject("~GroundCheckOrigin");
             GroundCheckOrigin = t.transform;
             GroundCheckOrigin.transform.SetParent(transform);
-            GroundCheckOrigin.transform.localPosition = Vector3.zero;
 
             t = new GameObject("~WallCheckOrigin");
             WallCheckOrigin = t.transform;
             WallCheckOrigin.transform.SetParent(transform);
             WallCheckOrigin.transform.localPosition = new Vector3(0.0f, CharacterController.height / 2.0f, 0.0f);
-
-            OnPlayerDirection.AddListener(UpdateThirdPersonMovePosition);
 
             SetPlayerPhysicsSimulation(ApplyGravity);
             OnPlayerJump.AddListener(Jump);
@@ -121,6 +121,12 @@ namespace CustomGameController
         {
             PlayerPhysicsSimulation.RemoveAllListeners();
             if (actionSimulated != null) PlayerPhysicsSimulation.AddListener(actionSimulated);
+        }
+        public void SetCheckersLocation()
+        {
+            GroundCheckOrigin.transform.position = new Vector3(CharacterController.bounds.center.x, CharacterController.bounds.center.y - CharacterController.bounds.extents.y, CharacterController.bounds.center.z);
+
+            WallCheckOrigin.transform.position = CharacterController.bounds.center;
         }
         #endregion
 
@@ -275,7 +281,15 @@ namespace CustomGameController
             VerticalAscendingInput = inputs.VerticalAscendingInput;
             VerticalDescendingInput = inputs.VerticalDescendingInput;
 
-            if (inputs.AirControlling) FlightControlling = !FlightControlling;
+            if (inputs.AirControlling && inputs.JumpInput)
+            {
+                FlightControlling = !FlightControlling;
+
+                if (!FlightControlling)
+                {
+                    inputs.AirControlling = false;
+                }
+            }
         }
         #endregion
 
@@ -291,9 +305,7 @@ namespace CustomGameController
             {
                 m_PlayerDirection = value;
 
-                if (m_PlayerDirection == Vector3.zero) StartCoroutine(SmoothStop());
-
-                if (InFlight) return;
+                if (m_PlayerDirection == Vector3.zero && !InFlight) StartCoroutine(SmoothStop());
 
                 OnPlayerDirection?.Invoke(PlayerDirection, CurrentSpeed);
 
@@ -512,6 +524,7 @@ namespace CustomGameController
         #endregion
 
         #region PLAYER FLIGHT
+        public bool AllowFlight { get; set; }
         public bool InFlight { get; set; }
         public float InFlightSpeed
         {
@@ -583,6 +596,8 @@ namespace CustomGameController
                     CurrentUngroundedPosition = Vector3.zero;
                     LastGroundedPosition = Vector3.zero;
                     SetPlayerPhysicsSimulation(null);
+                    OnPlayerDirection.RemoveAllListeners();
+                    OnPlayerDirection.AddListener(UpdateFlightPosition);
                 }
             }
         }
@@ -638,7 +653,7 @@ namespace CustomGameController
             }
             else
             {
-                CustomCamera.Instance.UpdateCameraFollow(2.5f, new Vector3(0.0f, 0.0f, 0.1f), new Vector3(0.0f, 0.8f, -0.33f));
+                CustomCamera.Instance.UpdateCameraFollow(2.8f, new Vector3(0.0f, 0.0f, 0.1f), new Vector3(0.0f, 0.8f, -0.33f));
 
                 Vector3 move = new Vector3();
                 Vector3 forward = 1.0f * transform.forward;
@@ -695,6 +710,13 @@ namespace CustomGameController
             CharacterAnimator.SetBool("OnGround", onGround);
             CharacterAnimator.SetBool("Falling", Falling);
             CharacterAnimator.SetBool("InFlight", InFlight);
+
+            if (!InFlight)
+            {
+                CharacterAnimator.SetBool("SpeedFlight", false);
+                return;
+            }
+
             CharacterAnimator.SetBool("SpeedFlight", SprintInput);
         }
         #endregion 

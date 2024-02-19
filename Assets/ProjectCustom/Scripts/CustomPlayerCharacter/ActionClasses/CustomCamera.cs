@@ -52,18 +52,27 @@ namespace CustomGameController
         {
             Vector3 lookDirection = new Vector3(cameraTilt, cameraPan, cameraZoom);
 
+            m_xRot += cameraTilt * CameraSensibility;
+            m_yRot += cameraPan * CameraSensibility;
+
             if (CustomController.InFlight && CustomController.SprintInput)
             {
-                CameraTarget.transform.localRotation = Quaternion.Slerp(CameraTarget.transform.localRotation, CustomController.transform.rotation, 4.5f * Time.deltaTime);
+                if (lookDirection != Vector3.zero)
+                {
+                    m_xRot = Mathf.Clamp(m_xRot, -15.0f, 30.0f);
 
-                m_xRot = 0.0f;
-                m_yRot = CameraTarget.transform.localEulerAngles.y;
+                    CameraTarget.transform.localRotation = Quaternion.Slerp(CameraTarget.transform.localRotation, Quaternion.Euler(m_xRot, m_yRot, 0), 4.5f * Time.deltaTime);
+                }
+                else
+                {
+                    CameraTarget.transform.localRotation = Quaternion.Slerp(CameraTarget.transform.localRotation, CustomController.transform.rotation, 4.5f * Time.deltaTime);
+
+                    m_xRot = 0.0f;
+                    m_yRot = CameraTarget.transform.localEulerAngles.y;
+                }
 
                 return;
             }
-
-            m_xRot += cameraTilt * CameraSensibility;
-            m_yRot += cameraPan * CameraSensibility;
 
             m_xRot = Mathf.Clamp(m_xRot, -50.0f, 70.0f);
 
@@ -75,13 +84,9 @@ namespace CustomGameController
         }
         public void UpdateCameraFollow(float cameraDistance, Vector3 damping, Vector3 shoulderOffset)
         {
-            VirtualCameraFollow.ShoulderOffset = Vector3.MoveTowards(CurrentShoulderOffset, shoulderOffset, Time.deltaTime * 4.0f);
-            VirtualCameraFollow.CameraDistance = Mathf.Lerp(CurrentCameraDistance, cameraDistance, Time.deltaTime * 4.0f);
+            VirtualCameraFollow.ShoulderOffset = Vector3.MoveTowards(VirtualCameraFollow.ShoulderOffset, shoulderOffset, Time.deltaTime * 4.0f);
+            VirtualCameraFollow.CameraDistance = Mathf.Lerp(VirtualCameraFollow.CameraDistance, cameraDistance, Time.deltaTime * 4.0f);
             VirtualCameraFollow.Damping = damping;
-
-            CurrentCameraDistance = VirtualCameraFollow.CameraDistance;
-            CurrentShoulderOffset = VirtualCameraFollow.ShoulderOffset;
-            CurrentDamping = VirtualCameraFollow.Damping;
         }
         #endregion
 
@@ -89,8 +94,8 @@ namespace CustomGameController
         private CinemachineVirtualCamera VirtualCamera;
         private Cinemachine3rdPersonFollow VirtualCameraFollow;
 
-        public float m_xRot = 0;
-        public float m_yRot = 0;
+        private float m_xRot = 0;
+        private float m_yRot = 0;
         #endregion
 
         #region DEFAULT METHODS

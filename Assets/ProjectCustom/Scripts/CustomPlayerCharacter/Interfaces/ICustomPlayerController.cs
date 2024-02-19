@@ -30,6 +30,7 @@ namespace CustomGameController
         void SetPlayerPhysicsSimulation(UnityAction actionSimulated);
         void SetupPlayer();
         bool CheckWallHit();
+        void SetCheckersLocation();
         #endregion
 
         #region PLAYER CONTROLLER PROPERTIES
@@ -42,6 +43,7 @@ namespace CustomGameController
         bool AllowJump { get; set; }
         bool StartJump { get; set; }
         float DelayedStopTime { get; set; }
+        bool AllowFlight { get; set; }
         #endregion
 
         #region PLAYER CONTROLLER SETTINGS

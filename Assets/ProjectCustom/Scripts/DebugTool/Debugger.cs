@@ -41,7 +41,7 @@ namespace CustomGameController
         {
             if (!enableDebugger) return;
 
-            if (debugGroundDetection)
+            if (debugGroundDetection && controller.GroundCheckOrigin != null)
             {
                 Gizmos.color = Color.red;
                 Gizmos.DrawWireSphere(controller.GroundCheckOrigin.position, controller.CharacterController.radius);

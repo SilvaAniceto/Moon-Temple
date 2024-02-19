@@ -2031,7 +2031,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   m_maxSlopeAngle: 30
-  m_slopeCheckCount: 4
+  m_slopeCheckCount: 6
   m_onGroundSpeed: 2.7
   m_acceleration: 2
   m_inFlightSpeed: 3.6
@@ -2196,8 +2196,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfc3c0dcd88369a458d57b38ebe29649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_xRot: 0
-  m_yRot: 0
 --- !u!1818360608 &7068005868399241387
 PositionConstraint:
   m_ObjectHideFlags: 0
@@ -2347,7 +2345,7 @@ Transform:
   m_GameObject: {fileID: 7068005868974483060}
   serializedVersion: 2
   m_LocalRotation: {x: 0.28082794, y: -0, z: -0, w: 0.95975816}
-  m_LocalPosition: {x: 0.33, y: 0.73, z: -1.1300011}
+  m_LocalPosition: {x: 0.33, y: 0.73, z: -1.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2385,6 +2383,13 @@ MonoBehaviour:
     GateFit: 3
     FocusDistance: 10
     m_SensorSize: {x: 1, y: 0.95}
+    Iso: 200
+    ShutterSpeed: 0.005
+    Aperture: 16
+    BladeCount: 5
+    Curvature: {x: 2, y: 11}
+    BarrelClipping: 0.25
+    Anamorphism: 0
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -2421,7 +2426,7 @@ Transform:
   m_GameObject: {fileID: 7068005869289075919}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.33, y: 0.73, z: -1.1300011}
+  m_LocalPosition: {x: 0.33, y: 0.73, z: -1.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -258,7 +258,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""078b671a-9367-4fb1-b1eb-0889bcd04d1b"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
                     ""interactions"": ""MultiTap(tapDelay=0.1)"",
                     ""processors"": """",
                     ""groups"": ""Mouse&Keyboard"",
@@ -269,8 +269,8 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""3ca511ba-0e14-42f2-aaf4-f2529436a7f3"",
-                    ""path"": ""<Gamepad>/buttonSouth"",
-                    ""interactions"": ""MultiTap(tapDelay=0.1)"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""FlightControl"",
