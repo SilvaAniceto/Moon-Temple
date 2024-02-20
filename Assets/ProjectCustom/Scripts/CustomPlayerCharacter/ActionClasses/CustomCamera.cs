@@ -14,7 +14,11 @@ namespace CustomGameController
         public LayerMask ThirdPersonCollisionFilter { get; set; }
         public LayerMask IsometricCollisionFilter { get; set; }
         public CustomCharacterController CustomController { get; set; }
-        public Vector3 CameraHeightOfftset { get => new Vector3(0.0f, CameraTargetHeight / 2, 0.0f); }
+        public Vector3 CameraOfftset { get; set; }
+        public Vector3 WalkOfftset { get; set; }
+        public Vector3 SprintOfftset { get; set; }
+        public Vector3 HoverFlightOfftset { get; set; }
+        public Vector3 SpeedFlightOfftset { get; set;  }
         public int VerticalCameraDirection
         {
             get
@@ -46,37 +50,51 @@ namespace CustomGameController
             CameraZoom = inputs.CameraZoom;
         }
         #endregion
-
+        private void OnGUI()
+        {
+            GUI.Box(new Rect(0, 0, 250, 250), "");
+            GUILayout.Label("   Rotação: " + transform.localRotation);
+            GUILayout.Label("   Rotação: " + transform.localEulerAngles.x);
+        }
         #region CAMERA METHODS
         public void UpdateCamera(float cameraTilt, float cameraPan, float cameraZoom)
         {
             Vector3 lookDirection = new Vector3(cameraTilt, cameraPan, cameraZoom);
 
-            m_xRot += cameraTilt * CameraSensibility;
-            m_yRot += cameraPan * CameraSensibility;
+            m_xRot += lookDirection.x * CameraSensibility;
+            m_yRot += lookDirection.y * CameraSensibility;
 
             if (CustomController.InFlight && CustomController.SprintInput)
             {
-                if (lookDirection != Vector3.zero)
+                CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime);
+                float xRot = (CustomController.transform.eulerAngles.x > 180 ? CustomController.transform.eulerAngles.x - 360 : CustomController.transform.eulerAngles.x);
+                if (/*lookDirection != Vector3.zero &&*/ xRot > -65.0f && xRot < -15.0f/* || xRot < -25.0f && xRot > 25.0f*/)
                 {
-                    m_xRot = Mathf.Clamp(m_xRot, -15.0f, 30.0f);
+                    //m_xRot -= xRot * lookDirection.x;
+                    //m_xRot = Mathf.Clamp(m_xRot, -60.0f, 60.0f);
+                    Vector3 targetEuler = new Vector3(xRot, CustomController.transform.localEulerAngles.y, 0.0f);
 
-                    CameraTarget.transform.localRotation = Quaternion.Slerp(CameraTarget.transform.localRotation, Quaternion.Euler(m_xRot, m_yRot, 0), 4.5f * Time.deltaTime);
+                    targetEuler.x = transform.localEulerAngles.x > 0 ? Mathf.Lerp(targetEuler.x, xRot + 30, Time.deltaTime) : Mathf.Lerp(targetEuler.x, targetEuler.x + 30, Time.deltaTime);
+                    Debug.Log(targetEuler);
+                    transform.localRotation = /*Quaternion.Slerp(transform.localRotation, */Quaternion.Euler(targetEuler)/*, 4.5f * Time.deltaTime)*/;
+                    return;
                 }
                 else
                 {
-                    CameraTarget.transform.localRotation = Quaternion.Slerp(CameraTarget.transform.localRotation, CustomController.transform.rotation, 4.5f * Time.deltaTime);
+                    xRot = Mathf.Clamp(xRot, -65.0f, 80.0f);
+                    transform.localRotation = /*Quaternion.Slerp(transform.localRotation, */Quaternion.Euler(xRot, CustomController.transform.eulerAngles.y, 0)/*, 4.5f * Time.deltaTime)*/;
 
                     m_xRot = 0.0f;
-                    m_yRot = CameraTarget.transform.localEulerAngles.y;
+                    m_yRot = transform.localEulerAngles.y;
                 }
-
                 return;
             }
 
+            CameraOfftset = CustomController.SprintInput ? Vector3.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime) : Vector3.Lerp(CameraOfftset, WalkOfftset, Time.deltaTime);
+
             m_xRot = Mathf.Clamp(m_xRot, -50.0f, 70.0f);
 
-            CameraTarget.transform.localRotation = Quaternion.Slerp(CameraTarget.transform.localRotation, Quaternion.Euler(m_xRot, m_yRot, 0), 4.5f * Time.deltaTime);
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(m_xRot, m_yRot, 0), 4.5f * Time.deltaTime);
 
             CustomController.Forward = CustomPerspective.CustomForward;
             CustomController.Right = CustomPerspective.CustomRight;
@@ -84,9 +102,9 @@ namespace CustomGameController
         }
         public void UpdateCameraFollow(float cameraDistance, Vector3 damping, Vector3 shoulderOffset)
         {
-            VirtualCameraFollow.ShoulderOffset = Vector3.MoveTowards(VirtualCameraFollow.ShoulderOffset, shoulderOffset, Time.deltaTime * 4.0f);
-            VirtualCameraFollow.CameraDistance = Mathf.Lerp(VirtualCameraFollow.CameraDistance, cameraDistance, Time.deltaTime * 4.0f);
-            VirtualCameraFollow.Damping = damping;
+            //VirtualCameraFollow.ShoulderOffset = Vector3.MoveTowards(VirtualCameraFollow.ShoulderOffset, shoulderOffset, Time.deltaTime * 4.0f);
+            //VirtualCameraFollow.CameraDistance = Mathf.Lerp(VirtualCameraFollow.CameraDistance, cameraDistance, Time.deltaTime * 4.0f);
+            //VirtualCameraFollow.Damping = damping;
         }
         #endregion
 
@@ -117,10 +135,11 @@ namespace CustomGameController
         void Update()
         {
             UpdateCamera(CameraTilt, CameraPan, CameraZoom);
+            transform.localPosition = new Vector3(CustomController.CharacterController.bounds.center.x, CustomController.CharacterController.bounds.center.y - CustomController.CharacterController.bounds.extents.y, CustomController.CharacterController.bounds.center.z);
+            CameraTarget.localPosition = Vector3.zero + CameraOfftset;
         }
         private void LateUpdate()
         {
-            CameraTarget.position = CustomController.transform.position + CameraHeightOfftset;
         }
         #endregion
     }

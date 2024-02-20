@@ -47,7 +47,11 @@ namespace CustomGameController
         LayerMask ThirdPersonCollisionFilter {  get; set; }
         LayerMask IsometricCollisionFilter { get; set; }
         CustomCharacterController CustomController { get; set; }
-        Vector3 CameraHeightOfftset { get; }
+        Vector3 CameraOfftset { get; set; }
+        Vector3 WalkOfftset { get; set; }
+        Vector3 SprintOfftset { get; set; }
+        Vector3 HoverFlightOfftset { get; set; }
+        Vector3 SpeedFlightOfftset { get; set; }
         int VerticalCameraDirection { get; }
         #endregion
 

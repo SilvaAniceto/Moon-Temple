@@ -25,6 +25,10 @@ namespace CustomGameController
         [SerializeField] CameraPerspective m_defaultPerspective;
         [SerializeField] LayerMask m_thirdPersonCollisionFilter;
         [SerializeField] LayerMask m_isometricCollisionFilter;
+        [SerializeField] Vector3 m_walkOfftset = Vector3.zero;
+        [SerializeField] Vector3 m_sprintOfftset = Vector3.zero;
+        [SerializeField] Vector3 m_hoverFlightOfftset = Vector3.zero;
+        [SerializeField] Vector3 m_speedFlightOfftset = Vector3.zero;
         #endregion
 
         #region PRIVATE FIELDS
@@ -66,6 +70,10 @@ namespace CustomGameController
         void Update()
         {
             ReadPlayerInput();
+            CameraCustom.WalkOfftset = m_walkOfftset;
+            CameraCustom.SprintOfftset = m_sprintOfftset;
+            CameraCustom.HoverFlightOfftset = m_hoverFlightOfftset;
+            CameraCustom.SpeedFlightOfftset = m_speedFlightOfftset;
         }
         #endregion
 

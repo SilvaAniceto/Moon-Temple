@@ -641,12 +641,12 @@ namespace CustomGameController
 
                 CharacterController.Move(GravityVelocity * Time.deltaTime);
 
-                Quaternion Rot = CustomCamera.Instance.CameraTarget.transform.rotation;
+                Quaternion Rot = CustomCamera.Instance.transform.localRotation;
 
                 Rot.x = 0.0f;
                 Rot.z = 0.0f;
 
-                transform.rotation = Rot;
+                transform.localRotation = Rot;
 
                 FlightHorizontalRotation = 0.0f;
                 FlightVerticalRotation = transform.eulerAngles.y;
