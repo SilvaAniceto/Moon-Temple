@@ -52,10 +52,16 @@ namespace CustomGameController
         #endregion
         private void OnGUI()
         {
-            GUI.Box(new Rect(0, 0, 250, 250), "");
-            GUILayout.Label("   Rotação: " + transform.localRotation);
-            GUILayout.Label("   Rotação: " + transform.localEulerAngles.x);
+            GUI.Box(new Rect(0, 0, 300, 250), "");
+            GUILayout.Label("   Diferença de Angulo: " + angle);
+            GUILayout.Label("   Camera Tilt Input: " + CameraTilt);
         }
+        float longitudinalOrientation;
+        float latitudinalOrientation;
+        float angle;
+
+        [SerializeField] private float longitudinalThreshold;
+        [SerializeField] private float latitudinalThreshold;
         #region CAMERA METHODS
         public void UpdateCamera(float cameraTilt, float cameraPan, float cameraZoom)
         {
@@ -67,25 +73,51 @@ namespace CustomGameController
             if (CustomController.InFlight && CustomController.SprintInput)
             {
                 CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime);
-                float xRot = (CustomController.transform.eulerAngles.x > 180 ? CustomController.transform.eulerAngles.x - 360 : CustomController.transform.eulerAngles.x);
-                if (/*lookDirection != Vector3.zero &&*/ xRot > -65.0f && xRot < -15.0f/* || xRot < -25.0f && xRot > 25.0f*/)
-                {
-                    //m_xRot -= xRot * lookDirection.x;
-                    //m_xRot = Mathf.Clamp(m_xRot, -60.0f, 60.0f);
-                    Vector3 targetEuler = new Vector3(xRot, CustomController.transform.localEulerAngles.y, 0.0f);
 
-                    targetEuler.x = transform.localEulerAngles.x > 0 ? Mathf.Lerp(targetEuler.x, xRot + 30, Time.deltaTime) : Mathf.Lerp(targetEuler.x, targetEuler.x + 30, Time.deltaTime);
-                    Debug.Log(targetEuler);
-                    transform.localRotation = /*Quaternion.Slerp(transform.localRotation, */Quaternion.Euler(targetEuler)/*, 4.5f * Time.deltaTime)*/;
+                float latitudinalOrientation = CustomController.transform.eulerAngles.x > 180 ? CustomController.transform.eulerAngles.x - 360 : CustomController.transform.eulerAngles.x;
+                float longitudinalOrientation = transform.localEulerAngles.y;
+
+                angle = (transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x) - latitudinalOrientation;
+                if (lookDirection != Vector3.zero)
+                {
+                    if (lookDirection.x < 0)
+                    {
+                        latitudinalThreshold -= Mathf.Abs(lookDirection.x);
+                    }
+                    if (lookDirection.y > 0)
+                    {
+                        latitudinalThreshold += Mathf.Abs(lookDirection.x);
+                    }
+
+                    //latitudinalThreshold = Mathf.Clamp(latitudinalThreshold, -65.0f, 70.0f);
+
+                    //longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, longitudinalOrientation + lookDirection.x, Time.deltaTime * 2.0f);
+                    //longitudinalThreshold = Mathf.Clamp(longitudinalThreshold, -30.0f, 30.0f);
+
+                    latitudinalOrientation += latitudinalThreshold;
+                    //longitudinalOrientation = longitudinalOrientation + longitudinalThreshold;
+
+                    transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(latitudinalOrientation, longitudinalOrientation, 0), 4.5f * Time.deltaTime);
+
                     return;
                 }
                 else
                 {
-                    xRot = Mathf.Clamp(xRot, -65.0f, 80.0f);
-                    transform.localRotation = /*Quaternion.Slerp(transform.localRotation, */Quaternion.Euler(xRot, CustomController.transform.eulerAngles.y, 0)/*, 4.5f * Time.deltaTime)*/;
+                    if (latitudinalOrientation < -35.0f)
+                    {
+                        latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 0, Time.deltaTime * 2.0f);
+                        latitudinalOrientation = Mathf.Clamp(latitudinalOrientation, -45.0f, 80.0f);
+                    }
+                    else
+                    {
+                        latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 15.0f, Time.deltaTime * 2.0f);
+                        latitudinalOrientation += latitudinalThreshold;
+                    }
+
+                    transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(latitudinalOrientation, CustomController.transform.localEulerAngles.y, 0), 4.5f * Time.deltaTime);
 
                     m_xRot = 0.0f;
-                    m_yRot = transform.localEulerAngles.y;
+                    m_yRot = longitudinalOrientation;
                 }
                 return;
             }

@@ -667,7 +667,7 @@ namespace CustomGameController
                 if (move != Vector3.zero)
                 {
                     FlightHorizontalRotation += up.y * 1.2f;
-                    FlightHorizontalRotation = Mathf.Clamp(FlightHorizontalRotation, -85f, 50f);
+                    FlightHorizontalRotation = Mathf.Clamp(FlightHorizontalRotation, -85f, 70f);
 
                     FlightVerticalRotation += right.x * 1.8f;
 

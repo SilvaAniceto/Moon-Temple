@@ -247,7 +247,7 @@ MonoBehaviour:
   m_walkOfftset: {x: 0, y: 0, z: 0}
   m_sprintOfftset: {x: 0, y: 0, z: -0.8}
   m_hoverFlightOfftset: {x: 0, y: 0, z: 0}
-  m_speedFlightOfftset: {x: -0.35, y: -0.3, z: -1.5}
+  m_speedFlightOfftset: {x: -0.35, y: 0.15, z: -1.5}
 --- !u!4 &349381199
 Transform:
   m_ObjectHideFlags: 0
