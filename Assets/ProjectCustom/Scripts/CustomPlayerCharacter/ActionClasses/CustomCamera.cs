@@ -62,44 +62,31 @@ namespace CustomGameController
 
         [SerializeField] private float longitudinalThreshold;
         [SerializeField] private float latitudinalThreshold;
+        [SerializeField] private Transform archorOrientation;
         #region CAMERA METHODS
         public void UpdateCamera(float cameraTilt, float cameraPan, float cameraZoom)
         {
             Vector3 lookDirection = new Vector3(cameraTilt, cameraPan, cameraZoom);
 
+            lookDirection = lookDirection.normalized;
+
             m_xRot += lookDirection.x * CameraSensibility;
             m_yRot += lookDirection.y * CameraSensibility;
+
+            angle = Vector3.SignedAngle(transform.forward, archorOrientation.forward, Vector3.right);
 
             if (CustomController.InFlight && CustomController.SprintInput)
             {
                 CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime);
 
-                float latitudinalOrientation = CustomController.transform.eulerAngles.x > 180 ? CustomController.transform.eulerAngles.x - 360 : CustomController.transform.eulerAngles.x;
+                float latitudinalOrientation = CustomController.transform.localEulerAngles.x > 180 ? CustomController.transform.localEulerAngles.x - 360 : CustomController.transform.localEulerAngles.x;
                 float longitudinalOrientation = transform.localEulerAngles.y;
 
-                angle = (transform.eulerAngles.x > 180 ? transform.eulerAngles.x - 360 : transform.eulerAngles.x) - latitudinalOrientation;
+
                 if (lookDirection != Vector3.zero)
                 {
-                    if (lookDirection.x < 0)
-                    {
-                        latitudinalThreshold -= Mathf.Abs(lookDirection.x);
-                    }
-                    if (lookDirection.y > 0)
-                    {
-                        latitudinalThreshold += Mathf.Abs(lookDirection.x);
-                    }
-
-                    //latitudinalThreshold = Mathf.Clamp(latitudinalThreshold, -65.0f, 70.0f);
-
-                    //longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, longitudinalOrientation + lookDirection.x, Time.deltaTime * 2.0f);
-                    //longitudinalThreshold = Mathf.Clamp(longitudinalThreshold, -30.0f, 30.0f);
-
-                    latitudinalOrientation += latitudinalThreshold;
-                    //longitudinalOrientation = longitudinalOrientation + longitudinalThreshold;
-
-                    transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(latitudinalOrientation, longitudinalOrientation, 0), 4.5f * Time.deltaTime);
-
-                    return;
+                    m_xRot = 0.0f;
+                    m_yRot = longitudinalOrientation;
                 }
                 else
                 {
@@ -119,6 +106,7 @@ namespace CustomGameController
                     m_xRot = 0.0f;
                     m_yRot = longitudinalOrientation;
                 }
+
                 return;
             }
 
@@ -130,7 +118,6 @@ namespace CustomGameController
 
             CustomController.Forward = CustomPerspective.CustomForward;
             CustomController.Right = CustomPerspective.CustomRight;
-
         }
         public void UpdateCameraFollow(float cameraDistance, Vector3 damping, Vector3 shoulderOffset)
         {
@@ -169,6 +156,8 @@ namespace CustomGameController
             UpdateCamera(CameraTilt, CameraPan, CameraZoom);
             transform.localPosition = new Vector3(CustomController.CharacterController.bounds.center.x, CustomController.CharacterController.bounds.center.y - CustomController.CharacterController.bounds.extents.y, CustomController.CharacterController.bounds.center.z);
             CameraTarget.localPosition = Vector3.zero + CameraOfftset;
+            archorOrientation.localPosition = transform.localPosition;
+            archorOrientation.localRotation = CustomController.transform.localRotation;
         }
         private void LateUpdate()
         {

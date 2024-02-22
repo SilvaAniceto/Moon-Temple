@@ -622,8 +622,6 @@ namespace CustomGameController
 
             if (!SprintInput)
             {
-                CustomCamera.Instance.UpdateCameraFollow(1.2f, new Vector3(0.0f, 0.0f, 0.3f), new Vector3(0.33f, 0.33f, -0.33f));
-
                 GravityVelocity = Vector3.zero;
                 FlightVelocity = Vector3.zero;
 
@@ -641,20 +639,15 @@ namespace CustomGameController
 
                 CharacterController.Move(GravityVelocity * Time.deltaTime);
 
-                Quaternion Rot = CustomCamera.Instance.transform.localRotation;
-
-                Rot.x = 0.0f;
-                Rot.z = 0.0f;
-
-                transform.localRotation = Rot;
-
                 FlightHorizontalRotation = 0.0f;
-                FlightVerticalRotation = transform.eulerAngles.y;
+                FlightVerticalRotation = CustomCamera.Instance.transform.transform.eulerAngles.y;
+
+                Vector3 flightDirection = new Vector3(FlightHorizontalRotation, FlightVerticalRotation, 0.0f);
+
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(flightDirection), CurrentAcceleration * Time.deltaTime);
             }
             else
             {
-                CustomCamera.Instance.UpdateCameraFollow(2.8f, new Vector3(0.0f, 0.0f, 0.1f), new Vector3(0.0f, 0.8f, -0.33f));
-
                 Vector3 move = new Vector3();
                 Vector3 forward = 1.0f * transform.forward;
                 Vector3 right = inputDirection.x * Vector3.right;
@@ -662,7 +655,7 @@ namespace CustomGameController
 
                 move = right + up + Vector3.zero;
 
-                FlightVelocity = Vector3.MoveTowards(FlightVelocity, forward, CurrentAcceleration * Time.deltaTime);
+                FlightVelocity = Vector3.MoveTowards(FlightVelocity, transform.forward, CurrentAcceleration * Time.deltaTime);
 
                 if (move != Vector3.zero)
                 {
