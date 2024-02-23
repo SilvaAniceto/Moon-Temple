@@ -18,7 +18,7 @@ namespace CustomGameController
         public Vector3 WalkOfftset { get; set; }
         public Vector3 SprintOfftset { get; set; }
         public Vector3 HoverFlightOfftset { get; set; }
-        public Vector3 SpeedFlightOfftset { get; set;  }
+        public Vector3 SpeedFlightOfftset { get; set; }
         public int VerticalCameraDirection
         {
             get
@@ -50,19 +50,7 @@ namespace CustomGameController
             CameraZoom = inputs.CameraZoom;
         }
         #endregion
-        private void OnGUI()
-        {
-            GUI.Box(new Rect(0, 0, 300, 250), "");
-            GUILayout.Label("   Diferença de Angulo: " + angle);
-            GUILayout.Label("   Camera Tilt Input: " + CameraTilt);
-        }
-        float longitudinalOrientation;
-        float latitudinalOrientation;
-        float angle;
 
-        [SerializeField] private float longitudinalThreshold;
-        [SerializeField] private float latitudinalThreshold;
-        [SerializeField] private Transform archorOrientation;
         #region CAMERA METHODS
         public void UpdateCamera(float cameraTilt, float cameraPan, float cameraZoom)
         {
@@ -80,33 +68,69 @@ namespace CustomGameController
                 CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime);
 
                 float latitudinalOrientation = CustomController.transform.localEulerAngles.x > 180 ? CustomController.transform.localEulerAngles.x - 360 : CustomController.transform.localEulerAngles.x;
-                float longitudinalOrientation = transform.localEulerAngles.y;
+                float longitudinalOrientation = CustomController.transform.localEulerAngles.y > 180 ? CustomController.transform.localEulerAngles.y - 360 : CustomController.transform.localEulerAngles.y;
 
-
-                if (lookDirection != Vector3.zero)
+                if (latitudinalOrientation < -35.0f)
                 {
-                    m_xRot = 0.0f;
-                    m_yRot = longitudinalOrientation;
+                    if (lookDirection != Vector3.zero)
+                    {
+                        if (lookDirection.x > 0.2f)
+                        {
+                            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 125f, Time.deltaTime * 2.0f);
+                        }
+                        if (lookDirection.x < -0.2f)
+                        {
+                            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 15.0f, Time.deltaTime * 2.0f);
+                        }
+                    }
+                    else
+                    {
+                        latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 40.0f, Time.deltaTime * 2.0f);
+                    }
+                    latitudinalOrientation += latitudinalThreshold;
+
                 }
                 else
                 {
-                    if (latitudinalOrientation < -35.0f)
+                    if (lookDirection != Vector3.zero)
                     {
-                        latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 0, Time.deltaTime * 2.0f);
-                        latitudinalOrientation = Mathf.Clamp(latitudinalOrientation, -45.0f, 80.0f);
+                        if (lookDirection.x > 0.2f)
+                        {
+                            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, -2.5f, Time.deltaTime * 2.0f);
+                        }
+                        if (lookDirection.x < -0.2f)
+                        {
+                            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 20.0f, Time.deltaTime * 2.0f);
+                        }
                     }
                     else
                     {
                         latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 15.0f, Time.deltaTime * 2.0f);
-                        latitudinalOrientation += latitudinalThreshold;
                     }
-
-                    transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(latitudinalOrientation, CustomController.transform.localEulerAngles.y, 0), 4.5f * Time.deltaTime);
-
-                    m_xRot = 0.0f;
-                    m_yRot = longitudinalOrientation;
+                    latitudinalOrientation += latitudinalThreshold;
                 }
 
+                if (lookDirection != Vector3.zero)
+                {
+                    if (lookDirection.y > 0.2f)
+                    {
+                        longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, -20.0f, Time.deltaTime * 2.0f);
+                    }
+                    if (lookDirection.y < -0.2f)
+                    {
+                        longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, Mathf.Clamp(longitudinalThreshold, 20.0f, 20.0f), Time.deltaTime * 2.0f);
+                    }
+                }
+                else
+                {
+                    longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, 0, Time.deltaTime * 2.0f);
+                }
+
+                longitudinalOrientation += longitudinalThreshold;
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(latitudinalOrientation, longitudinalOrientation, 0.0f), 4.5f * Time.deltaTime);
+
+                m_xRot = 0.0f;
+                m_yRot = CustomController.transform.localEulerAngles.y;
                 return;
             }
 
@@ -133,6 +157,11 @@ namespace CustomGameController
 
         private float m_xRot = 0;
         private float m_yRot = 0;
+
+        private float angle;
+        private float longitudinalThreshold;
+        private float latitudinalThreshold;
+        [SerializeField] private Transform archorOrientation;
         #endregion
 
         #region DEFAULT METHODS
@@ -154,7 +183,7 @@ namespace CustomGameController
         void Update()
         {
             UpdateCamera(CameraTilt, CameraPan, CameraZoom);
-            transform.localPosition = new Vector3(CustomController.CharacterController.bounds.center.x, CustomController.CharacterController.bounds.center.y - CustomController.CharacterController.bounds.extents.y, CustomController.CharacterController.bounds.center.z);
+            transform.localPosition = CustomController.transform.localPosition;
             CameraTarget.localPosition = Vector3.zero + CameraOfftset;
             archorOrientation.localPosition = transform.localPosition;
             archorOrientation.localRotation = CustomController.transform.localRotation;
