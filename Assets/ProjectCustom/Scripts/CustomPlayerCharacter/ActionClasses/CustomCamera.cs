@@ -183,10 +183,10 @@ namespace CustomGameController
         void Update()
         {
             UpdateCamera(CameraTilt, CameraPan, CameraZoom);
-            transform.localPosition = CustomController.transform.localPosition;
-            CameraTarget.localPosition = Vector3.zero + CameraOfftset;
-            archorOrientation.localPosition = transform.localPosition;
+            archorOrientation.position = new Vector3(CustomController.CharacterController.bounds.center.x, CustomController.CharacterController.bounds.center.y - CustomController.CharacterController.bounds.extents.y, CustomController.CharacterController.bounds.center.z);
             archorOrientation.localRotation = CustomController.transform.localRotation;
+            transform.position = archorOrientation.position;
+            CameraTarget.localPosition = Vector3.zero + CameraOfftset;
         }
         private void LateUpdate()
         {

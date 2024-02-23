@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 997
   m_ShowMode: 4
-  m_Title: Hierarchy
+  m_Title: Inspector
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -118,7 +118,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 0
-  controlID: 1639
+  controlID: 31
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 1640
+  controlID: 32
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 1583
+  controlID: 33
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -246,7 +246,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 1641
+  controlID: 68
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -462,7 +462,7 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: 0, y: 0}
+      snapOffset: {x: 0, y: 25}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0
       id: unity-scene-view-toolbar
@@ -488,7 +488,7 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: 0, y: 0}
+      snapOffset: {x: 0, y: 25}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0
       id: unity-transform-toolbar
@@ -858,9 +858,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 221.40308, y: 1000.0573, z: 423.10385}
+    m_Target: {x: 250, y: 0.02000004, z: 250}
     speed: 2
-    m_Value: {x: -804.01, y: 940.7587, z: -802.08}
+    m_Value: {x: 250, y: 0.02000004, z: 250}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -885,7 +885,7 @@ MonoBehaviour:
         m_Value: 0
       m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.4}
       m_Pivot: {x: 0, y: 0, z: 0}
-      m_Size: {x: 0.01, y: 0.01}
+      m_Size: {x: 0.5, y: 0.5}
     yGrid:
       m_Fade:
         m_Target: 1
@@ -893,7 +893,7 @@ MonoBehaviour:
         m_Value: 1
       m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.4}
       m_Pivot: {x: 0, y: 0, z: 0}
-      m_Size: {x: 0.01, y: 0.01}
+      m_Size: {x: 0.5, y: 0.5}
     zGrid:
       m_Fade:
         m_Target: 0
@@ -906,17 +906,17 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.058150314, y: 0.9234744, z: -0.15519534, w: 0.34601793}
+    m_Target: {x: 0.21890661, y: -0.70393807, z: 0.24466127, w: 0.62983763}
     speed: 2
-    m_Value: {x: 0.058150306, y: 0.92347425, z: -0.15519533, w: 0.3460179}
+    m_Value: {x: 0.21890624, y: -0.7039369, z: 0.24466087, w: 0.62983656}
   m_Size:
-    m_Target: 2.7548273
+    m_Target: 0.8660254
     speed: 2
-    m_Value: 2.884636
+    m_Value: 0.8660254
   m_Ortho:
-    m_Target: 0
+    m_Target: 1
     speed: 2
-    m_Value: 0
+    m_Value: 1
   m_CameraSettings:
     m_Speed: 1
     m_SpeedNormalized: 0.5
@@ -1021,9 +1021,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 7c19fcff
-      m_LastClickedID: -255620
-      m_ExpandedIDs: 9019fcff9219fcff06bafcffa63dffffcccbffff84f9ffff88f9ffffe4faffffe6faffff
+      m_SelectedIDs: d8f0ffff
+      m_LastClickedID: -3880
+      m_ExpandedIDs: c4f0ffffd8f0ffff52faffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1126,7 +1126,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/ProjectCustom/Scenes
+    - Assets/ProjectCustom/Scripts/CustomPlayerCharacter/ActionClasses
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1134,16 +1134,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/ProjectCustom/Scenes
+  - Assets/ProjectCustom/Scripts/CustomPlayerCharacter/ActionClasses
   m_LastFoldersGridSize: 16
-  m_LastProjectPath: C:\Users\silva\OneDrive\Documentos\Unity Projects\RPG-Experience
+  m_LastProjectPath: D:\PERSONAL\RPG Experience
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 79}
-    m_SelectedIDs: 0a0a0400
-    m_LastClickedID: 264714
-    m_ExpandedIDs: 000000001405040016050400180504001a0504001c0504001e05040020050400220504002405040026050400280504002a0504002c0504002e05040030050400320504003405040036050400380504003a0504003c0504003e05040040050400420504004405040046050400480504004a0504004c0504004e05040050050400520504005405040056050400580504005a0504005c0504005e05040060050400620504006405040066050400680504006a0504006c0504006e05040070050400720504007405040076050400780504007a0504007c0504007e05040080050400820504008405040086050400880504008a0504008c0504008e05040090050400920504009405040096050400980504009a0504009c0504009e050400a0050400a2050400a4050400a6050400a8050400aa050400ac050400ae050400b0050400b2050400b4050400b6050400b8050400ba050400bc050400be050400c0050400c2050400c4050400c6050400c8050400ca050400cc050400ce050400d0050400d2050400d4050400d6050400d8050400da050400dc050400de050400e0050400e2050400e4050400e6050400e8050400ea050400ec050400ee050400f0050400f2050400f4050400f6050400f8050400fa050400fc050400fe05040000060400020604000406040006060400080604000a0604000c0604000e06040010060400120604001406040016060400180604001a0604001c0604001e0604002006040022060400ea0904000a0a0400d85d0700dc5d070000ca9a3b
+    scrollPos: {x: 0, y: 0}
+    m_SelectedIDs: defd0300
+    m_LastClickedID: 261598
+    m_ExpandedIDs: 00000000a0a20000a2a20000a4a20000a6a20000b4a5000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1171,7 +1171,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 000000001405040016050400180504001a0504001c0504001e05040020050400220504002405040026050400280504002a0504002c0504002e05040030050400320504003405040036050400380504003a0504003c0504003e05040040050400420504004405040046050400480504004a0504004c0504004e05040050050400520504005405040056050400580504005a0504005c0504005e05040060050400620504006405040066050400680504006a0504006c0504006e05040070050400720504007405040076050400780504007a0504007c0504007e05040080050400820504008405040086050400880504008a0504008c0504008e05040090050400920504009405040096050400980504009a0504009c0504009e050400a0050400a2050400a4050400a6050400a8050400aa050400ac050400ae050400b0050400b2050400b4050400b6050400b8050400ba050400bc050400be050400c0050400c2050400c4050400c6050400c8050400ca050400cc050400ce050400d0050400d2050400d4050400d6050400d8050400da050400dc050400de050400e0050400e2050400e4050400e6050400e8050400ea050400ec050400ee050400f0050400f2050400f4050400f6050400f8050400fa050400fc050400fe05040000060400020604000406040006060400080604000a0604000c0604000e06040010060400120604001406040016060400180604001a0604001c0604001e0604002006040022060400ea090400ee090400d85d0700dc5d070000ca9a3b
+    m_ExpandedIDs: 00000000a0a20000a2a20000a4a20000a6a20000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
