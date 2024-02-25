@@ -1,45 +1,12 @@
-using Cinemachine;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace CustomGameController
 {
-    public class CustomCamera : MonoBehaviour, ICustomCamera
+    public class CustomCamera : MonoBehaviour
     {
         public static CustomCamera Instance;
 
-        #region CAMERA PROPERTIES
-        public Camera PlayerCamera { get; set; }
-        public LayerMask ThirdPersonCollisionFilter { get; set; }
-        public LayerMask IsometricCollisionFilter { get; set; }
-        public CustomCharacterController CustomController { get; set; }
-        public Vector3 CameraOfftset { get; set; }
-        public Vector3 WalkOfftset { get; set; }
-        public Vector3 SprintOfftset { get; set; }
-        public Vector3 HoverFlightOfftset { get; set; }
-        public Vector3 SpeedFlightOfftset { get; set; }
-        public int VerticalCameraDirection
-        {
-            get
-            {
-                if (CameraTarget.rotation.x < -0.02f) return 1;
-                else if (CameraTarget.rotation.x > 0.02f) return -1;
-                else return 0;
-            }
-        }
-        #endregion
-
-        #region CAMERA SETTINGS
-        public Transform CameraTarget { get; set; }
-        public float CameraTargetHeight { get; set; }
-        public float CameraSensibility { get; set; }
-        public float CurrentCameraDistance { get; set; }
-        public Vector3 CurrentDamping { get; set; }
-        public Vector3 CurrentShoulderOffset { get; set; }
-        #endregion
-
-        #region CAMERA INPUTS VALUES & METHODS
+        #region PLAYER INPUTS SECTION
         public float CameraPan { get; set; }
         public float CameraTilt { get; set; }
         public float CameraZoom { get; set; }
@@ -51,7 +18,53 @@ namespace CustomGameController
         }
         #endregion
 
+        #region CAMERA PROPERTIES
+        public Transform CameraTarget { get; set; }
+        public float CameraTargetHeight { get; set; }
+        public float CameraSensibility { get; set; }
+        public LayerMask ThirdPersonCollisionFilter { get; set; }
+        public CustomCharacterController CustomController { get; set; }
+        public Vector3 CameraOfftset { get; set; }
+        public Vector3 DefaultOfftset { get => Vector3.forward * -0.2f; }
+        public Vector3 SprintOfftset { get => Vector3.forward * -0.8f; }
+        public Vector3 SpeedFlightOfftset { get => new Vector3(-0.35f, 0.15f, -0.95f); }
+        #endregion
+
+        #region PRIVATE FIELDS
+        private float m_xRot = 0;
+        private float m_yRot = 0;
+
+        private float angle;
+        private float longitudinalThreshold;
+        private float latitudinalThreshold;
+        #endregion
+
+        #region DEFAULT METHODS
+        private void Awake()
+        {
+            if (Instance == null) Instance = this;
+        }
+        void Update()
+        {
+            UpdateCamera(CameraTilt, CameraPan, CameraZoom);
+        }
+        private void LateUpdate()
+        {
+            transform.position = CustomController.ArchorReference.position;
+            CameraTarget.localPosition = Vector3.zero + CameraOfftset;            
+        }
+        #endregion
+
         #region CAMERA METHODS
+        public void SetupCamera(LayerMask thirdPersonCollisionFilter, CustomCharacterController customController, Transform cameraTarget, float targetHeight, float sensibility)
+        {
+            ThirdPersonCollisionFilter = thirdPersonCollisionFilter;
+
+            CustomController = customController;
+            CameraTarget = cameraTarget;
+            CameraTargetHeight = targetHeight;
+            CameraSensibility = sensibility;
+        }
         public void UpdateCamera(float cameraTilt, float cameraPan, float cameraZoom)
         {
             Vector3 lookDirection = new Vector3(cameraTilt, cameraPan, cameraZoom);
@@ -61,7 +74,7 @@ namespace CustomGameController
             m_xRot += lookDirection.x * CameraSensibility;
             m_yRot += lookDirection.y * CameraSensibility;
 
-            angle = Vector3.SignedAngle(transform.forward, archorOrientation.forward, Vector3.right);
+            angle = Vector3.SignedAngle(transform.forward, CustomController.ArchorReference.forward, Vector3.right);
 
             if (CustomController.InFlight && CustomController.SprintInput)
             {
@@ -134,7 +147,7 @@ namespace CustomGameController
                 return;
             }
 
-            CameraOfftset = CustomController.SprintInput ? Vector3.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime) : Vector3.Lerp(CameraOfftset, WalkOfftset, Time.deltaTime);
+            CameraOfftset = CustomController.SprintInput ? Vector3.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime) : Vector3.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
 
             m_xRot = Mathf.Clamp(m_xRot, -50.0f, 70.0f);
 
@@ -143,54 +156,7 @@ namespace CustomGameController
             CustomController.Forward = CustomPerspective.CustomForward;
             CustomController.Right = CustomPerspective.CustomRight;
         }
-        public void UpdateCameraFollow(float cameraDistance, Vector3 damping, Vector3 shoulderOffset)
-        {
-            //VirtualCameraFollow.ShoulderOffset = Vector3.MoveTowards(VirtualCameraFollow.ShoulderOffset, shoulderOffset, Time.deltaTime * 4.0f);
-            //VirtualCameraFollow.CameraDistance = Mathf.Lerp(VirtualCameraFollow.CameraDistance, cameraDistance, Time.deltaTime * 4.0f);
-            //VirtualCameraFollow.Damping = damping;
-        }
         #endregion
 
-        #region PRIVATE FIELDS
-        private CinemachineVirtualCamera VirtualCamera;
-        private Cinemachine3rdPersonFollow VirtualCameraFollow;
-
-        private float m_xRot = 0;
-        private float m_yRot = 0;
-
-        private float angle;
-        private float longitudinalThreshold;
-        private float latitudinalThreshold;
-        [SerializeField] private Transform archorOrientation;
-        #endregion
-
-        #region DEFAULT METHODS
-        private void Awake()
-        {
-            if (Instance == null) Instance = this;
-
-            PlayerCamera = Camera.main;
-            VirtualCamera = GetComponentInChildren<CinemachineVirtualCamera>();
-            VirtualCameraFollow = GetComponentInChildren<Cinemachine3rdPersonFollow>();
-        }
-        private void Start()
-        {
-            CurrentDamping = VirtualCameraFollow.Damping;
-            CurrentShoulderOffset = VirtualCameraFollow.ShoulderOffset;
-
-            CurrentCameraDistance = VirtualCameraFollow.CameraDistance;
-        }
-        void Update()
-        {
-            UpdateCamera(CameraTilt, CameraPan, CameraZoom);
-            archorOrientation.position = new Vector3(CustomController.CharacterController.bounds.center.x, CustomController.CharacterController.bounds.center.y - CustomController.CharacterController.bounds.extents.y, CustomController.CharacterController.bounds.center.z);
-            archorOrientation.localRotation = CustomController.transform.localRotation;
-            transform.position = archorOrientation.position;
-            CameraTarget.localPosition = Vector3.zero + CameraOfftset;
-        }
-        private void LateUpdate()
-        {
-        }
-        #endregion
     }
 }

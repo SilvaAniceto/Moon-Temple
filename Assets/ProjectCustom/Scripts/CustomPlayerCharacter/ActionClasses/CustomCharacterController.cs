@@ -5,68 +5,174 @@ using UnityEngine.Events;
 
 namespace CustomGameController
 {
+    public struct CustomPlayerInputHandler
+    {
+        public Vector3 MoveDirectionInput;
+        public bool JumpInput;
+        public bool VerticalAscendingInput;
+        public bool VerticalDescendingInput;
+        public bool SprintInput;
+
+        public Vector2 CameraAxis;
+        public float CameraZoom;
+
+        public bool AirControlling;
+        public bool StartFlight;
+    }
+
     [RequireComponent(typeof(CharacterController))]
 
-    public class CustomCharacterController : MonoBehaviour, ICustomPlayerController, ICustomGravity, ICustomAirController
+    public class CustomCharacterController : MonoBehaviour
     {
-        public static CustomCharacterController Instance { get; private set; }
-
         [HideInInspector] public UnityEvent<Vector3, float> OnPlayerDirection = new UnityEvent<Vector3, float>();
 
         [HideInInspector] public UnityEvent<bool> OnPlayerJump = new UnityEvent<bool>();
 
         [HideInInspector] public UnityEvent PlayerPhysicsSimulation = new UnityEvent();
-        IEnumerator CheckingUngroundedStates()
+
+        #region PLAYER INPUTS SECTION
+        public Vector3 PlayerDirection
         {
-            yield return new WaitForEndOfFrame();
-
-            CurrentUngroundedPosition = transform.localPosition;
-
-            if (Mathf.Round(LastGroundedPosition.y * 100.0f) / 100.0f > Mathf.Round(CurrentUngroundedPosition.y * 100.0f) / 100.0f)
+            set
             {
-                GravityMultiplierFactor = 2.2f;
-                Falling = true;
-            }
+                if (value == Vector3.zero && !InFlight) StartCoroutine(SmoothStop());
 
-            if (!InFlight && !FlightControlling)
-            {
-                if (Mathf.Round(LastGroundedPosition.y * 100.0f) / 100.0f < Mathf.Round(CurrentUngroundedPosition.y * 100.0f) / 100.0f)
+                OnPlayerDirection?.Invoke(value.normalized, CurrentSpeed);
+
+                IEnumerator SmoothStop()
                 {
-                    GravityMultiplierFactor = 1.2f;
-                    Jumping = true;
+                    SprintInput = false;
+
+                    float delayedStopTime = Vector3.Distance(CurrentyVelocity, Vector3.zero);
+
+                    while (delayedStopTime > 0)
+                    {
+                        CharacterController.Move(Vector3.MoveTowards(CurrentyVelocity, value, 1.0f));
+                        delayedStopTime -= Time.deltaTime / CurrentSpeed;
+                    }
+
+                    CurrentyVelocity = Vector3.zero;
+
+                    yield return null;
                 }
             }
-
-            yield return new WaitUntil(() => onGround);
-
-            SetPlayerPhysicsSimulation(ApplyGravity);
-
-            CurrentyVelocity = CurrentyVelocity / Drag * 0.85f;
-            GravityMultiplierFactor = 1.0f;
-            Falling = false;
-            Jumping = false;
-            AllowJump = false;
-            StartJump = false;
-            FlightControlling = false;
-            InFlight = false;
-
-            OnPlayerDirection.RemoveAllListeners();
-            OnPlayerDirection.AddListener(UpdateThirdPersonMovePosition);
-
-            yield return new WaitForSeconds(0.35f);
-            AllowJump = true;
         }
+        public bool SprintInput { get; set; }
+        public bool JumpInput
+        {
+            set
+            {
+                if (InFlight) return;
 
-        #region PRIVATE FIELDS
-        private bool onGround;
+                OnPlayerJump?.Invoke(value);
+            }
+        }
+        public bool FlightControlling
+        {
+            get
+            {
+                return m_flightControlling;
+            }
+            set
+            {
+                if (m_flightControlling == value) return;
 
-        private float m_OnGroundSpeed;
-        private float m_InFlightSpeed;
+                m_flightControlling = value;
 
-        private Vector3 m_PlayerDirection;
-        private bool m_JumpInput;
-        private bool m_VerticalAscendingInput;
+                if (InFlight)
+                {
+                    if (!m_flightControlling)
+                    {
+                        InFlight = false;
+                        GravityVelocity = Vector3.zero;
+                        SetPlayerPhysicsSimulation(ApplyGravity);
+                    }
+                }
+                else
+                {
+                    if (m_flightControlling)
+                    {
+                        StopCoroutine("StartFlightDelay");
+                        StartCoroutine("StartFlightDelay");
+                        SetPlayerPhysicsSimulation(EnteringFlightState);
+                    }
+                }
+
+
+            }
+        }
         private bool m_flightControlling;
+        public bool VerticalAscendingInput { get; set; }
+        public bool VerticalDescendingInput { get; set; }
+
+        public void SetInput(CustomPlayerInputHandler inputs)
+        {
+            PlayerDirection = inputs.MoveDirectionInput;
+
+            SprintInput = inputs.SprintInput;
+            JumpInput = inputs.JumpInput;
+            VerticalAscendingInput = inputs.VerticalAscendingInput;
+            VerticalDescendingInput = inputs.VerticalDescendingInput;
+
+            if (inputs.AirControlling && inputs.JumpInput)
+            {
+                FlightControlling = !FlightControlling;
+
+                if (!FlightControlling)
+                {
+                    inputs.AirControlling = false;
+                }
+            }
+        }
+        #endregion
+
+        #region PRIVATE CHARACTER PROPERTIES
+        private CharacterController CharacterController { get => GetComponent<CharacterController>(); }
+        private Vector3 CharacterAnchorPosition { get => new Vector3(CharacterController.bounds.center.x, CharacterController.bounds.center.y - CharacterController.bounds.extents.y, CharacterController.bounds.center.z); }
+        private Vector3 CharacterCenterPosition {  get =>  CharacterController.bounds.center; }
+        public Transform ArchorReference { get; private set; }
+        private Animator CharacterAnimator { get => GetComponent<Animator>(); }
+        #endregion
+
+        #region CHARACTER MOVEMENT PROPERTIES
+        public float BaseSpeed
+        {
+            get
+            {
+                if (SprintInput) return 3.6f * 2.5f;
+                else return 3.6f;
+            }
+        }
+        public float BaseAcceleration { get => 2.0f; }
+        public float UngroundSpeed { get => BaseSpeed * 0.8f; }
+        public float UngroundAcceleration { get => BaseAcceleration * 0.8f; }
+        public float InFlightSpeed
+        {
+            get
+            {
+                if (SprintInput) return BaseSpeed * 1.8f;
+                else return BaseSpeed;
+            }
+        }
+        public float InFlightAcceleration { get => BaseAcceleration * 2.5f; }
+        public float CurrentSpeed
+        {
+            get
+            {
+                if (OnGround && !InFlight) return BaseSpeed;
+                else if (!OnGround && !InFlight) return UngroundSpeed;
+                else return InFlightSpeed;
+            }
+        }
+        public float CurrentAcceleration
+        {
+            get
+            {
+                if (OnGround && !InFlight) return BaseAcceleration;
+                else if (!OnGround && !InFlight) return UngroundAcceleration;
+                else return InFlightAcceleration;
+            }
+        }
         #endregion
 
         #region DEFAULT METHODS
@@ -84,21 +190,15 @@ namespace CustomGameController
         }
         #endregion
 
-        #region PLAYER PROPERTIES
-        public CharacterController CharacterController { get; set; }
-        public Animator CharacterAnimator { get => GetComponent<Animator>(); }
-        #endregion
-
-        #region PLAYER SETUPS
-        public void SetupPlayer()
+        #region CHARACTER SETUPS
+        public void SetupCharacter(LayerMask groundLayer)
         {
-            if (Instance == null) Instance = this;
-
             if (CharacterController == null)
-            {
-                CharacterController = gameObject.GetComponent<CharacterController>();
+            { 
                 CharacterController.slopeLimit = MaxSlopeAngle;
             }
+
+            GroundLayer = groundLayer;
 
             GameObject t = new GameObject("~GroundCheckOrigin");
             GroundCheckOrigin = t.transform;
@@ -107,13 +207,15 @@ namespace CustomGameController
             t = new GameObject("~WallCheckOrigin");
             WallCheckOrigin = t.transform;
             WallCheckOrigin.transform.SetParent(transform);
-            WallCheckOrigin.transform.localPosition = new Vector3(0.0f, CharacterController.height / 2.0f, 0.0f);
+
+            t = new GameObject("~ArchorReference");
+            ArchorReference = t.transform;
+            ArchorReference.transform.SetParent(transform);
 
             SetPlayerPhysicsSimulation(ApplyGravity);
             OnPlayerJump.AddListener(Jump);
 
             StartCoroutine("CheckingUngroundedStates");
-            GravityMultiplierFactor = 1.0f;
 
             SetSlopeCheckSystem(SlopeCheckCount, CharacterController.radius);
         }
@@ -124,16 +226,32 @@ namespace CustomGameController
         }
         public void SetCheckersLocation()
         {
-            GroundCheckOrigin.transform.position = new Vector3(CharacterController.bounds.center.x, CharacterController.bounds.center.y - CharacterController.bounds.extents.y, CharacterController.bounds.center.z);
+            GroundCheckOrigin.position = CharacterAnchorPosition;
 
-            WallCheckOrigin.transform.position = CharacterController.bounds.center;
+            ArchorReference.position = CharacterAnchorPosition;
+            ArchorReference.localRotation = transform.localRotation;
+
+            WallCheckOrigin.position = CharacterCenterPosition;
         }
         #endregion
 
-        #region PLAYER GRAVITY
+        #region CHARACTER GRAVITY
         public float Gravity { get => 9.81f; }
-        public float GravityMultiplierFactor { get; set; }
-        public float Drag { get; set; }
+        public float GravityMultiplierFactor 
+        { 
+            get
+            {
+                if (OnGround) return 1.0f;
+                else if (!OnGround && !InFlight)
+                {
+                    if (Jumping) return 1.2f;
+                    else return 2.2f;
+                }
+
+                return 0.0f;
+            }
+        }
+        public float Drag { get => 1.4f; }
         public Vector3 GravityVelocity { get; set; }
 
         public float ApplyDrag(float velocity, float drag)
@@ -147,13 +265,13 @@ namespace CustomGameController
             if (SlopeAngle() <= MaxSlopeAngle)
                 CharacterController.Move(GravityVelocity * Time.deltaTime);
             else
-                CharacterController.Move(GetSlopeMoveDirection(GravityVelocity + SlopeHit().transform.forward) * Time.deltaTime * OnGroundSpeed);
+                CharacterController.Move(GetSlopeMoveDirection(GravityVelocity + SlopeHit().transform.forward) * Time.deltaTime * BaseSpeed);
         }
         #endregion
 
-        #region PLAYER GROUND DETECTION
-        public Vector3 LastGroundedPosition { get; set; }
-        public Vector3 CurrentUngroundedPosition { get; set; }
+        #region CHARACTER GROUND DETECTION
+        public Vector3 LastPosition { get; set; }
+        public Vector3 CurrentPosition { get; set; }
         public Transform GroundCheckOrigin { get; set; }
         public bool OnGround
         {
@@ -171,6 +289,7 @@ namespace CustomGameController
                 }
             }
         }
+        private bool onGround;
         public bool Jumping { get; set; }
         public bool Falling { get; set; }
         public LayerMask GroundLayer { get; set; }
@@ -188,13 +307,50 @@ namespace CustomGameController
                 GravityVelocity = new Vector3(GravityVelocity.x, 0.0f, GravityVelocity.z);
             }
 
-            if (ground) LastGroundedPosition = transform.localPosition;
+            if (ground) LastPosition = transform.localPosition;
+        }
+        IEnumerator CheckingUngroundedStates()
+        {
+            yield return new WaitForEndOfFrame();
+
+            CurrentPosition = transform.localPosition;
+
+            if (Mathf.Round(LastPosition.y * 100.0f) / 100.0f > Mathf.Round(CurrentPosition.y * 100.0f) / 100.0f)
+            {
+                Falling = true;
+            }
+
+            if (!InFlight && !FlightControlling)
+            {
+                if (Mathf.Round(LastPosition.y * 100.0f) / 100.0f < Mathf.Round(CurrentPosition.y * 100.0f) / 100.0f)
+                {
+                    Jumping = true;
+                }
+            }
+
+            yield return new WaitUntil(() => onGround);
+
+            SetPlayerPhysicsSimulation(ApplyGravity);
+
+            CurrentyVelocity = CurrentyVelocity / Drag * 0.85f;
+            Falling = false;
+            Jumping = false;
+            AllowJump = false;
+            StartJump = false;
+            FlightControlling = false;
+            InFlight = false;
+
+            OnPlayerDirection.RemoveAllListeners();
+            OnPlayerDirection.AddListener(UpdateThirdPersonMovePosition);
+
+            yield return new WaitForSeconds(0.35f);
+            AllowJump = true;
         }
         #endregion
 
-        #region PLAYER SLOPE DETECTION
-        public float MaxSlopeAngle { get; set; }
-        public int SlopeCheckCount { get; set; }
+        #region CHARACTER SLOPE DETECTION
+        public float MaxSlopeAngle { get => 45.0f; }
+        public int SlopeCheckCount { get => 6; }
         public List<Transform> SlopeCheckList { get; set; }
 
         public void SetSlopeCheckSystem(int checkCount, float radius)
@@ -270,119 +426,23 @@ namespace CustomGameController
         }
         #endregion
 
-        #region PLAYER INPUT HANDLER
-        public void SetInput(CustomPlayerInputHandler inputs)
-        {
-            PlayerDirection = inputs.MoveDirectionInput;
-            PlayerDirection.Normalize();
-
-            SprintInput = inputs.SprintInput;
-            JumpInput = inputs.JumpInput;
-            VerticalAscendingInput = inputs.VerticalAscendingInput;
-            VerticalDescendingInput = inputs.VerticalDescendingInput;
-
-            if (inputs.AirControlling && inputs.JumpInput)
-            {
-                FlightControlling = !FlightControlling;
-
-                if (!FlightControlling)
-                {
-                    inputs.AirControlling = false;
-                }
-            }
-        }
-        #endregion
-
-        #region PLAYER MOVEMENT
+        #region CHARACTER WALL DETECTION
         public Transform WallCheckOrigin { get; set; }
-        public Vector3 PlayerDirection
-        {
-            get
-            {
-                return m_PlayerDirection;
-            }
-            set
-            {
-                m_PlayerDirection = value;
-
-                if (m_PlayerDirection == Vector3.zero && !InFlight) StartCoroutine(SmoothStop());
-
-                OnPlayerDirection?.Invoke(PlayerDirection, CurrentSpeed);
-
-                IEnumerator SmoothStop()
-                {
-                    SprintInput = false;
-
-                    DelayedStopTime = Vector3.Distance(CurrentyVelocity, Vector3.zero);
-
-                    while (DelayedStopTime > 0)
-                    {
-                        CharacterController.Move(Vector3.MoveTowards(CurrentyVelocity, m_PlayerDirection, 1.0f));
-                        DelayedStopTime -= Time.deltaTime / CurrentSpeed;
-                    }
-
-                    CurrentyVelocity = Vector3.zero;
-
-                    yield return null;
-                }
-            }
-        }
-        public Vector3 Forward { get; set; }
-        public Vector3 Right { get; set; }
-        public Vector3 CurrentyVelocity { get; set; }
-        public float DelayedStopTime { get; set; }
-        public float CurrentSpeed
-        {
-            get
-            {
-                if (OnGround && !InFlight) return OnGroundSpeed;
-                else if (!OnGround && !InFlight) return UngroundSpeed;
-                else return InFlightSpeed;
-            }
-        }
-        public float CurrentAcceleration
-        {
-            get
-            {
-                if (OnGround && !InFlight) return OnGroundAcceleration;
-                else if (!OnGround && !InFlight) return UngroundAcceleration;
-                else return InFlightAcceleration;
-            }
-        }
-        public float OnGroundSpeed
-        {
-            get
-            {
-                if (SprintInput) return m_OnGroundSpeed * 2.8f;
-                else return m_OnGroundSpeed;
-            }
-            set
-            {
-                if (m_OnGroundSpeed == value) return;
-
-                m_OnGroundSpeed = value;
-            }
-        }
-        public float OnGroundAcceleration { get; set; }
-        public float UngroundSpeed
-        {
-            get
-            {
-                return (OnGroundSpeed * 0.8f);
-            }
-        }
-        public float UngroundAcceleration { get => OnGroundAcceleration * 0.8f; }
-        public bool SprintInput { get; set; }
 
         public bool CheckWallHit()
         {
             return Physics.Raycast(WallCheckOrigin.position, transform.forward, CharacterController.radius + 0.1f, GroundLayer, QueryTriggerInteraction.Collide);
         }
+        #endregion
+
+        #region CHARACTER MOVEMENT
+        public Vector3 Forward { get; set; }
+        public Vector3 Right { get; set; }
+        public Vector3 CurrentyVelocity { get; set; }
+        
         public void UpdateThirdPersonMovePosition(Vector3 inputDirection, float movementSpeed)
         {
             if (InFlight) return;
-
-            CustomCamera.Instance.UpdateCameraFollow(0.8f, new Vector3(0.0f, 0.0f, 0.3f), new Vector3(0.33f, 0.33f, -0.33f));
 
             inputDirection = inputDirection.normalized;
 
@@ -482,24 +542,10 @@ namespace CustomGameController
         }
         #endregion
 
-        #region PLAYER JUMP
-        public float JumpHeight { get; set; }
+        #region CHARACTER JUMP
+        public float JumpHeight { get => CharacterController.height * 0.6f; }
         public float JumpSpeed { get => Mathf.Sqrt(2.0f * JumpHeight * Gravity); }
-        public bool JumpInput
-        {
-            get
-            {
-                return m_JumpInput;
-            }
-            set
-            {
-                if (InFlight) return;
-
-                m_JumpInput = value;
-
-                OnPlayerJump?.Invoke(m_JumpInput);
-            }
-        }
+        
         public bool AllowJump { get; set; }
         public bool StartJump { get; set; }
 
@@ -523,92 +569,32 @@ namespace CustomGameController
         }
         #endregion
 
-        #region PLAYER FLIGHT
-        public bool AllowFlight { get; set; }
+        #region CHARACTER FLIGHT
         public bool InFlight { get; set; }
-        public float InFlightSpeed
-        {
-            get
-            {
-                if (SprintInput) return m_InFlightSpeed * 4.0f;
-                else return m_InFlightSpeed;
-            }
-            set
-            {
-                if (m_InFlightSpeed == value) return;
-
-                m_InFlightSpeed = value;
-            }
-        }
-        public float InFlightAcceleration { get; set; }
         public Vector3 FlightVelocity { get; set; }
-        public bool VerticalAscendingInput
-        {
-            get
-            {
-                return m_VerticalAscendingInput;
-            }
-            set
-            {
-                m_VerticalAscendingInput = value;
-            }
-        }
-        public bool VerticalDescendingInput { get; set; }
-        public bool FlightControlling
-        {
-            get
-            {
-                return m_flightControlling;
-            }
-            set
-            {
-                if (m_flightControlling == value) return;
-
-                m_flightControlling = value;
-
-                if (InFlight)
-                {
-                    if (!m_flightControlling)
-                    {
-                        InFlight = false;
-                        GravityVelocity = Vector3.zero;
-                        SetPlayerPhysicsSimulation(ApplyGravity);
-                    }
-                }
-                else
-                {
-                    if (m_flightControlling)
-                    {
-                        StopCoroutine(StartFlightDelay());
-                        StartCoroutine(StartFlightDelay());
-                        SetPlayerPhysicsSimulation(EnteringFlightState);
-                    }
-                }
-
-                IEnumerator StartFlightDelay()
-                {
-                    yield return new WaitUntil(() => transform.localPosition.y >= LastGroundedPosition.y + JumpHeight / 2.0f);
-
-                    InFlight = true;
-                    StartJump = false;
-                    Jumping = false;
-                    Falling = false;
-                    CurrentUngroundedPosition = Vector3.zero;
-                    LastGroundedPosition = Vector3.zero;
-                    SetPlayerPhysicsSimulation(null);
-                    OnPlayerDirection.RemoveAllListeners();
-                    OnPlayerDirection.AddListener(UpdateFlightPosition);
-                }
-            }
-        }
+       
         public float FlightHorizontalRotation { get; set; }
         public float FlightVerticalRotation { get; set; }
 
+        IEnumerator StartFlightDelay()
+        {
+            yield return new WaitUntil(() => transform.localPosition.y >= LastPosition.y + JumpSpeed);
+
+            InFlight = true;
+            StartJump = false;
+            Jumping = false;
+            Falling = false;
+            CurrentPosition = Vector3.zero;
+            LastPosition = Vector3.zero;
+            SetPlayerPhysicsSimulation(null);
+            OnPlayerDirection.RemoveAllListeners();
+            OnPlayerDirection.AddListener(UpdateFlightPosition);
+        }
         public void EnteringFlightState()
         {
             float yVelocity = 0.0f;
 
-            yVelocity = Mathf.Lerp(yVelocity, JumpHeight / 2.0f, Time.deltaTime * 4.0f);
+            yVelocity = Mathf.Lerp(yVelocity, JumpSpeed, Time.deltaTime * 4.0f);
 
             GravityVelocity = new Vector3(0.0f, yVelocity, 0.0f);
             CharacterController.Move(GravityVelocity);
