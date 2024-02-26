@@ -6,7 +6,7 @@
             "id": "5e83f50d-ba6e-4dc1-a1a2-c86455784de1",
             "actions": [
                 {
-                    "name": "Move",
+                    "name": "MoveDirection",
                     "type": "Value",
                     "id": "b355359e-3ee1-45e9-a826-66c83388c7f5",
                     "expectedControlType": "Vector2",
@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Jump",
+                    "name": "VerticalAction",
                     "type": "Button",
                     "id": "8fd132bd-ed36-4b1f-80c3-c9a7dceb54df",
                     "expectedControlType": "Button",
@@ -24,7 +24,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Sprint",
+                    "name": "SpeedUp",
                     "type": "Button",
                     "id": "9e002070-7928-42dd-a6a1-f70e35746461",
                     "expectedControlType": "Button",
@@ -33,7 +33,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "CameraAxis",
+                    "name": "CameraMove",
                     "type": "Value",
                     "id": "e5d67788-fd8d-4a3f-92a8-336696ee5243",
                     "expectedControlType": "Vector2",
@@ -42,16 +42,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Zoom",
-                    "type": "Value",
-                    "id": "7a49d4e5-522b-49b0-9ef7-cfe806ddbd0d",
-                    "expectedControlType": "",
-                    "processors": "Clamp(min=-1,max=1),Scale(factor=-1)",
-                    "interactions": "",
-                    "initialStateCheck": true
-                },
-                {
-                    "name": "FlightControl",
+                    "name": "ActionType",
                     "type": "Button",
                     "id": "17670236-78d0-4059-a0c1-5d28f8e6e121",
                     "expectedControlType": "Button",
@@ -86,7 +77,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "MoveDirection",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -97,7 +88,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse&Keyboard",
-                    "action": "Move",
+                    "action": "MoveDirection",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -108,7 +99,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse&Keyboard",
-                    "action": "Move",
+                    "action": "MoveDirection",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -119,7 +110,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse&Keyboard",
-                    "action": "Move",
+                    "action": "MoveDirection",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -130,7 +121,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse&Keyboard",
-                    "action": "Move",
+                    "action": "MoveDirection",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -141,7 +132,7 @@
                     "interactions": "",
                     "processors": "StickDeadzone(min=0.2)",
                     "groups": "Gamepad",
-                    "action": "Move",
+                    "action": "MoveDirection",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -152,7 +143,7 @@
                     "interactions": "Tap(duration=0.1)",
                     "processors": "",
                     "groups": "Mouse&Keyboard",
-                    "action": "Jump",
+                    "action": "VerticalAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -163,7 +154,7 @@
                     "interactions": "Tap(duration=0.1)",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Jump",
+                    "action": "VerticalAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -174,7 +165,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse&Keyboard",
-                    "action": "Sprint",
+                    "action": "SpeedUp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -185,7 +176,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Sprint",
+                    "action": "SpeedUp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -196,7 +187,7 @@
                     "interactions": "",
                     "processors": "ScaleVector2(y=-1),StickDeadzone(min=0.2)",
                     "groups": "Mouse&Keyboard",
-                    "action": "CameraAxis",
+                    "action": "CameraMove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -207,29 +198,7 @@
                     "interactions": "",
                     "processors": "ScaleVector2(x=0.8,y=0.8),StickDeadzone(min=0.09)",
                     "groups": "Gamepad",
-                    "action": "CameraAxis",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1aed2020-e479-462d-9ed6-e1f6bde5e85a",
-                    "path": "<Mouse>/scroll/y",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Mouse&Keyboard",
-                    "action": "Zoom",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "43a753ce-9e33-442f-9f78-34bd208bbd12",
-                    "path": "<Gamepad>/dpad/y",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Zoom",
+                    "action": "CameraMove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -240,7 +209,7 @@
                     "interactions": "MultiTap(tapDelay=0.1)",
                     "processors": "",
                     "groups": "Mouse&Keyboard",
-                    "action": "FlightControl",
+                    "action": "ActionType",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -251,7 +220,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "FlightControl",
+                    "action": "ActionType",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

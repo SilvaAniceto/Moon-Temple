@@ -44,11 +44,11 @@ namespace SunTemple{
 
 
 		void FixedUpdate(){
-			moveFB = InputActions.PlayerActions.Move.ReadValue<Vector2>().x * speed;
-			moveLR = InputActions.PlayerActions.Move.ReadValue<Vector2>().y * speed;
+			moveFB = InputActions.PlayerActions.MoveDirection.ReadValue<Vector2>().x * speed;
+			moveLR = InputActions.PlayerActions.MoveDirection.ReadValue<Vector2>().y * speed;
 
-			rotHorizontal = InputActions.PlayerActions.CameraAxis.ReadValue<Vector2>().x * sensitivity;
-			rotVertical = -InputActions.PlayerActions.CameraAxis.ReadValue<Vector2>().y * sensitivity;
+			rotHorizontal = InputActions.PlayerActions.CameraMove.ReadValue<Vector2>().x * sensitivity;
+			rotVertical = -InputActions.PlayerActions.CameraMove.ReadValue<Vector2>().y * sensitivity;
 
 
 			Vector3 movement = new Vector3 (moveFB, gravity, moveLR);

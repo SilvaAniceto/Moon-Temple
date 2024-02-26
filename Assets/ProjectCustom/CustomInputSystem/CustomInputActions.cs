@@ -28,7 +28,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
             ""id"": ""5e83f50d-ba6e-4dc1-a1a2-c86455784de1"",
             ""actions"": [
                 {
-                    ""name"": ""Move"",
+                    ""name"": ""MoveDirection"",
                     ""type"": ""Value"",
                     ""id"": ""b355359e-3ee1-45e9-a826-66c83388c7f5"",
                     ""expectedControlType"": ""Vector2"",
@@ -37,7 +37,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Jump"",
+                    ""name"": ""VerticalAction"",
                     ""type"": ""Button"",
                     ""id"": ""8fd132bd-ed36-4b1f-80c3-c9a7dceb54df"",
                     ""expectedControlType"": ""Button"",
@@ -46,7 +46,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Sprint"",
+                    ""name"": ""SpeedUp"",
                     ""type"": ""Button"",
                     ""id"": ""9e002070-7928-42dd-a6a1-f70e35746461"",
                     ""expectedControlType"": ""Button"",
@@ -55,7 +55,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""CameraAxis"",
+                    ""name"": ""CameraMove"",
                     ""type"": ""Value"",
                     ""id"": ""e5d67788-fd8d-4a3f-92a8-336696ee5243"",
                     ""expectedControlType"": ""Vector2"",
@@ -64,16 +64,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Zoom"",
-                    ""type"": ""Value"",
-                    ""id"": ""7a49d4e5-522b-49b0-9ef7-cfe806ddbd0d"",
-                    ""expectedControlType"": """",
-                    ""processors"": ""Clamp(min=-1,max=1),Scale(factor=-1)"",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""FlightControl"",
+                    ""name"": ""ActionType"",
                     ""type"": ""Button"",
                     ""id"": ""17670236-78d0-4059-a0c1-5d28f8e6e121"",
                     ""expectedControlType"": ""Button"",
@@ -108,7 +99,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveDirection"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -119,7 +110,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveDirection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -130,7 +121,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveDirection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -141,7 +132,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveDirection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -152,7 +143,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveDirection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -163,7 +154,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": ""StickDeadzone(min=0.2)"",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Move"",
+                    ""action"": ""MoveDirection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -174,7 +165,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": ""Tap(duration=0.1)"",
                     ""processors"": """",
                     ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""Jump"",
+                    ""action"": ""VerticalAction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -185,7 +176,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": ""Tap(duration=0.1)"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Jump"",
+                    ""action"": ""VerticalAction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -196,7 +187,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""Sprint"",
+                    ""action"": ""SpeedUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -207,7 +198,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""Sprint"",
+                    ""action"": ""SpeedUp"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -218,7 +209,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": ""ScaleVector2(y=-1),StickDeadzone(min=0.2)"",
                     ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""CameraAxis"",
+                    ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -229,29 +220,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": ""ScaleVector2(x=0.8,y=0.8),StickDeadzone(min=0.09)"",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""CameraAxis"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""1aed2020-e479-462d-9ed6-e1f6bde5e85a"",
-                    ""path"": ""<Mouse>/scroll/y"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""Zoom"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""43a753ce-9e33-442f-9f78-34bd208bbd12"",
-                    ""path"": ""<Gamepad>/dpad/y"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""Zoom"",
+                    ""action"": ""CameraMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -262,7 +231,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": ""MultiTap(tapDelay=0.1)"",
                     ""processors"": """",
                     ""groups"": ""Mouse&Keyboard"",
-                    ""action"": ""FlightControl"",
+                    ""action"": ""ActionType"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -273,7 +242,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
-                    ""action"": ""FlightControl"",
+                    ""action"": ""ActionType"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -477,12 +446,11 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
 }");
         // PlayerActions
         m_PlayerActions = asset.FindActionMap("PlayerActions", throwIfNotFound: true);
-        m_PlayerActions_Move = m_PlayerActions.FindAction("Move", throwIfNotFound: true);
-        m_PlayerActions_Jump = m_PlayerActions.FindAction("Jump", throwIfNotFound: true);
-        m_PlayerActions_Sprint = m_PlayerActions.FindAction("Sprint", throwIfNotFound: true);
-        m_PlayerActions_CameraAxis = m_PlayerActions.FindAction("CameraAxis", throwIfNotFound: true);
-        m_PlayerActions_Zoom = m_PlayerActions.FindAction("Zoom", throwIfNotFound: true);
-        m_PlayerActions_FlightControl = m_PlayerActions.FindAction("FlightControl", throwIfNotFound: true);
+        m_PlayerActions_MoveDirection = m_PlayerActions.FindAction("MoveDirection", throwIfNotFound: true);
+        m_PlayerActions_VerticalAction = m_PlayerActions.FindAction("VerticalAction", throwIfNotFound: true);
+        m_PlayerActions_SpeedUp = m_PlayerActions.FindAction("SpeedUp", throwIfNotFound: true);
+        m_PlayerActions_CameraMove = m_PlayerActions.FindAction("CameraMove", throwIfNotFound: true);
+        m_PlayerActions_ActionType = m_PlayerActions.FindAction("ActionType", throwIfNotFound: true);
         m_PlayerActions_VerticalAscending = m_PlayerActions.FindAction("VerticalAscending", throwIfNotFound: true);
         m_PlayerActions_VerticalDescending = m_PlayerActions.FindAction("VerticalDescending", throwIfNotFound: true);
         // GameControllerActions
@@ -555,24 +523,22 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
     // PlayerActions
     private readonly InputActionMap m_PlayerActions;
     private List<IPlayerActionsActions> m_PlayerActionsActionsCallbackInterfaces = new List<IPlayerActionsActions>();
-    private readonly InputAction m_PlayerActions_Move;
-    private readonly InputAction m_PlayerActions_Jump;
-    private readonly InputAction m_PlayerActions_Sprint;
-    private readonly InputAction m_PlayerActions_CameraAxis;
-    private readonly InputAction m_PlayerActions_Zoom;
-    private readonly InputAction m_PlayerActions_FlightControl;
+    private readonly InputAction m_PlayerActions_MoveDirection;
+    private readonly InputAction m_PlayerActions_VerticalAction;
+    private readonly InputAction m_PlayerActions_SpeedUp;
+    private readonly InputAction m_PlayerActions_CameraMove;
+    private readonly InputAction m_PlayerActions_ActionType;
     private readonly InputAction m_PlayerActions_VerticalAscending;
     private readonly InputAction m_PlayerActions_VerticalDescending;
     public struct PlayerActionsActions
     {
         private @CustomInputActions m_Wrapper;
         public PlayerActionsActions(@CustomInputActions wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Move => m_Wrapper.m_PlayerActions_Move;
-        public InputAction @Jump => m_Wrapper.m_PlayerActions_Jump;
-        public InputAction @Sprint => m_Wrapper.m_PlayerActions_Sprint;
-        public InputAction @CameraAxis => m_Wrapper.m_PlayerActions_CameraAxis;
-        public InputAction @Zoom => m_Wrapper.m_PlayerActions_Zoom;
-        public InputAction @FlightControl => m_Wrapper.m_PlayerActions_FlightControl;
+        public InputAction @MoveDirection => m_Wrapper.m_PlayerActions_MoveDirection;
+        public InputAction @VerticalAction => m_Wrapper.m_PlayerActions_VerticalAction;
+        public InputAction @SpeedUp => m_Wrapper.m_PlayerActions_SpeedUp;
+        public InputAction @CameraMove => m_Wrapper.m_PlayerActions_CameraMove;
+        public InputAction @ActionType => m_Wrapper.m_PlayerActions_ActionType;
         public InputAction @VerticalAscending => m_Wrapper.m_PlayerActions_VerticalAscending;
         public InputAction @VerticalDescending => m_Wrapper.m_PlayerActions_VerticalDescending;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
@@ -584,24 +550,21 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerActionsActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerActionsActionsCallbackInterfaces.Add(instance);
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
-            @Jump.started += instance.OnJump;
-            @Jump.performed += instance.OnJump;
-            @Jump.canceled += instance.OnJump;
-            @Sprint.started += instance.OnSprint;
-            @Sprint.performed += instance.OnSprint;
-            @Sprint.canceled += instance.OnSprint;
-            @CameraAxis.started += instance.OnCameraAxis;
-            @CameraAxis.performed += instance.OnCameraAxis;
-            @CameraAxis.canceled += instance.OnCameraAxis;
-            @Zoom.started += instance.OnZoom;
-            @Zoom.performed += instance.OnZoom;
-            @Zoom.canceled += instance.OnZoom;
-            @FlightControl.started += instance.OnFlightControl;
-            @FlightControl.performed += instance.OnFlightControl;
-            @FlightControl.canceled += instance.OnFlightControl;
+            @MoveDirection.started += instance.OnMoveDirection;
+            @MoveDirection.performed += instance.OnMoveDirection;
+            @MoveDirection.canceled += instance.OnMoveDirection;
+            @VerticalAction.started += instance.OnVerticalAction;
+            @VerticalAction.performed += instance.OnVerticalAction;
+            @VerticalAction.canceled += instance.OnVerticalAction;
+            @SpeedUp.started += instance.OnSpeedUp;
+            @SpeedUp.performed += instance.OnSpeedUp;
+            @SpeedUp.canceled += instance.OnSpeedUp;
+            @CameraMove.started += instance.OnCameraMove;
+            @CameraMove.performed += instance.OnCameraMove;
+            @CameraMove.canceled += instance.OnCameraMove;
+            @ActionType.started += instance.OnActionType;
+            @ActionType.performed += instance.OnActionType;
+            @ActionType.canceled += instance.OnActionType;
             @VerticalAscending.started += instance.OnVerticalAscending;
             @VerticalAscending.performed += instance.OnVerticalAscending;
             @VerticalAscending.canceled += instance.OnVerticalAscending;
@@ -612,24 +575,21 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
 
         private void UnregisterCallbacks(IPlayerActionsActions instance)
         {
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
-            @Jump.started -= instance.OnJump;
-            @Jump.performed -= instance.OnJump;
-            @Jump.canceled -= instance.OnJump;
-            @Sprint.started -= instance.OnSprint;
-            @Sprint.performed -= instance.OnSprint;
-            @Sprint.canceled -= instance.OnSprint;
-            @CameraAxis.started -= instance.OnCameraAxis;
-            @CameraAxis.performed -= instance.OnCameraAxis;
-            @CameraAxis.canceled -= instance.OnCameraAxis;
-            @Zoom.started -= instance.OnZoom;
-            @Zoom.performed -= instance.OnZoom;
-            @Zoom.canceled -= instance.OnZoom;
-            @FlightControl.started -= instance.OnFlightControl;
-            @FlightControl.performed -= instance.OnFlightControl;
-            @FlightControl.canceled -= instance.OnFlightControl;
+            @MoveDirection.started -= instance.OnMoveDirection;
+            @MoveDirection.performed -= instance.OnMoveDirection;
+            @MoveDirection.canceled -= instance.OnMoveDirection;
+            @VerticalAction.started -= instance.OnVerticalAction;
+            @VerticalAction.performed -= instance.OnVerticalAction;
+            @VerticalAction.canceled -= instance.OnVerticalAction;
+            @SpeedUp.started -= instance.OnSpeedUp;
+            @SpeedUp.performed -= instance.OnSpeedUp;
+            @SpeedUp.canceled -= instance.OnSpeedUp;
+            @CameraMove.started -= instance.OnCameraMove;
+            @CameraMove.performed -= instance.OnCameraMove;
+            @CameraMove.canceled -= instance.OnCameraMove;
+            @ActionType.started -= instance.OnActionType;
+            @ActionType.performed -= instance.OnActionType;
+            @ActionType.canceled -= instance.OnActionType;
             @VerticalAscending.started -= instance.OnVerticalAscending;
             @VerticalAscending.performed -= instance.OnVerticalAscending;
             @VerticalAscending.canceled -= instance.OnVerticalAscending;
@@ -789,12 +749,11 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
     }
     public interface IPlayerActionsActions
     {
-        void OnMove(InputAction.CallbackContext context);
-        void OnJump(InputAction.CallbackContext context);
-        void OnSprint(InputAction.CallbackContext context);
-        void OnCameraAxis(InputAction.CallbackContext context);
-        void OnZoom(InputAction.CallbackContext context);
-        void OnFlightControl(InputAction.CallbackContext context);
+        void OnMoveDirection(InputAction.CallbackContext context);
+        void OnVerticalAction(InputAction.CallbackContext context);
+        void OnSpeedUp(InputAction.CallbackContext context);
+        void OnCameraMove(InputAction.CallbackContext context);
+        void OnActionType(InputAction.CallbackContext context);
         void OnVerticalAscending(InputAction.CallbackContext context);
         void OnVerticalDescending(InputAction.CallbackContext context);
     }

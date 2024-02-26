@@ -24,27 +24,35 @@ namespace CustomGameController
         {
             CustomPlayerInputHandler inputHandler = new CustomPlayerInputHandler();
 
-            Vector2 direction = InputActions.PlayerActions.Move.ReadValue<Vector2>();
+            Vector2 direction = InputActions.PlayerActions.MoveDirection.ReadValue<Vector2>();
 
             inputHandler.MoveDirectionInput = new Vector3(direction.x, 0.0f, direction.y);
-            if (!InputActions.PlayerActions.FlightControl.IsPressed()) inputHandler.JumpInput = InputActions.PlayerActions.Jump.IsPressed();
-            else inputHandler.JumpInput = InputActions.PlayerActions.Jump.WasPressedThisFrame();
 
-            if (CustomController.InFlight)
+            inputHandler.ActionTypeInput = InputActions.PlayerActions.ActionType.IsPressed();
+
+            if (inputHandler.ActionTypeInput)
+            {
+                if (InputActions.PlayerActions.VerticalAction.WasPressedThisFrame())
+                {
+                    inputHandler.VerticalActionInput = !inputHandler.VerticalActionInput;
+                    inputHandler.ActionTypeInput = false;
+                }
+            }
+            else inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.IsPressed();
+
+            if (CustomController.CurrentInputState == PlayerInputState.FlightControll)
             {
                 inputHandler.VerticalAscendingInput = InputActions.PlayerActions.VerticalAscending.IsPressed();
                 inputHandler.VerticalDescendingInput = InputActions.PlayerActions.VerticalDescending.IsPressed();
             }
 
-            inputHandler.SprintInput = InputActions.PlayerActions.Sprint.IsPressed();
+            inputHandler.SprintInput = InputActions.PlayerActions.SpeedUp.IsPressed();
 
-            Vector2 camAxis = InputActions.PlayerActions.CameraAxis.ReadValue<Vector2>();
+            Vector2 camAxis = InputActions.PlayerActions.CameraMove.ReadValue<Vector2>();
             camAxis = new Vector2(camAxis.y, camAxis.x);
 
             inputHandler.CameraAxis = camAxis;
-            inputHandler.CameraZoom = InputActions.PlayerActions.Zoom.ReadValue<float>();
 
-            inputHandler.AirControlling = InputActions.PlayerActions.FlightControl.IsPressed();
 
             CustomController.SetInput(inputHandler);
             CameraCustom.SetInput(inputHandler);

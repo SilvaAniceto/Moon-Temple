@@ -9,12 +9,10 @@ namespace CustomGameController
         #region PLAYER INPUTS SECTION
         public float CameraPan { get; set; }
         public float CameraTilt { get; set; }
-        public float CameraZoom { get; set; }
         public void SetInput(CustomPlayerInputHandler inputs)
         {
             CameraPan = Mathf.Clamp(inputs.CameraAxis.y, -1, 1);
             CameraTilt = Mathf.Clamp(inputs.CameraAxis.x, -1, 1);
-            CameraZoom = inputs.CameraZoom;
         }
         #endregion
 
@@ -46,7 +44,7 @@ namespace CustomGameController
         }
         void Update()
         {
-            UpdateCamera(CameraTilt, CameraPan, CameraZoom);
+            UpdateCamera(CameraTilt, CameraPan);
         }
         private void LateUpdate()
         {
@@ -65,9 +63,9 @@ namespace CustomGameController
             CameraTargetHeight = targetHeight;
             CameraSensibility = sensibility;
         }
-        public void UpdateCamera(float cameraTilt, float cameraPan, float cameraZoom)
+        public void UpdateCamera(float cameraTilt, float cameraPan)
         {
-            Vector3 lookDirection = new Vector3(cameraTilt, cameraPan, cameraZoom);
+            Vector2 lookDirection = new Vector3(cameraTilt, cameraPan);
 
             lookDirection = lookDirection.normalized;
 
@@ -76,7 +74,7 @@ namespace CustomGameController
 
             angle = Vector3.SignedAngle(transform.forward, CustomController.ArchorReference.forward, Vector3.right);
 
-            if (CustomController.InFlight && CustomController.SprintInput)
+            if (CustomController.CurrentInputState == PlayerInputState.FlightControll && CustomController.SprintInput)
             {
                 CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime);
 
@@ -85,7 +83,7 @@ namespace CustomGameController
 
                 if (latitudinalOrientation < -35.0f)
                 {
-                    if (lookDirection != Vector3.zero)
+                    if (lookDirection != Vector2.zero)
                     {
                         if (lookDirection.x > 0.2f)
                         {
@@ -105,7 +103,7 @@ namespace CustomGameController
                 }
                 else
                 {
-                    if (lookDirection != Vector3.zero)
+                    if (lookDirection != Vector2.zero)
                     {
                         if (lookDirection.x > 0.2f)
                         {
@@ -123,7 +121,7 @@ namespace CustomGameController
                     latitudinalOrientation += latitudinalThreshold;
                 }
 
-                if (lookDirection != Vector3.zero)
+                if (lookDirection != Vector2.zero)
                 {
                     if (lookDirection.y > 0.2f)
                     {
@@ -147,7 +145,7 @@ namespace CustomGameController
                 return;
             }
 
-            CameraOfftset = CustomController.SprintInput ? Vector3.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime) : Vector3.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
+            CameraOfftset = CustomController.SprintInput ? Vector2.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime) : Vector2.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
 
             m_xRot = Mathf.Clamp(m_xRot, -50.0f, 70.0f);
 
