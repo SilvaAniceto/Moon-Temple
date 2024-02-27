@@ -74,7 +74,7 @@ namespace CustomGameController
 
             angle = Vector3.SignedAngle(transform.forward, CustomController.ArchorReference.forward, Vector3.right);
 
-            if (CustomController.CurrentInputState == PlayerInputState.FlightControll && CustomController.SprintInput)
+            if (CustomController.CurrentInputState == PlayerInputState.FlightControll /*&& CustomController.SprintInput*/)
             {
                 CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime);
 
@@ -145,7 +145,7 @@ namespace CustomGameController
                 return;
             }
 
-            CameraOfftset = CustomController.SprintInput ? Vector2.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime) : Vector2.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
+            CameraOfftset = /*CustomController.SprintInput ? Vector2.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime) :*/ Vector2.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
 
             m_xRot = Mathf.Clamp(m_xRot, -50.0f, 70.0f);
 

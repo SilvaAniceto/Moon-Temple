@@ -34,25 +34,18 @@ namespace CustomGameController
             {
                 if (InputActions.PlayerActions.VerticalAction.WasPressedThisFrame())
                 {
-                    inputHandler.VerticalActionInput = !inputHandler.VerticalActionInput;
+                    inputHandler.ChooseFlightInput = !inputHandler.ChooseFlightInput;
                     inputHandler.ActionTypeInput = false;
                 }
             }
             else inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.IsPressed();
 
-            if (CustomController.CurrentInputState == PlayerInputState.FlightControll)
-            {
-                inputHandler.VerticalAscendingInput = InputActions.PlayerActions.VerticalAscending.IsPressed();
-                inputHandler.VerticalDescendingInput = InputActions.PlayerActions.VerticalDescending.IsPressed();
-            }
-
-            inputHandler.SprintInput = InputActions.PlayerActions.SpeedUp.IsPressed();
+            inputHandler.SpeedUpInput = InputActions.PlayerActions.SpeedUp.IsPressed();
 
             Vector2 camAxis = InputActions.PlayerActions.CameraMove.ReadValue<Vector2>();
             camAxis = new Vector2(camAxis.y, camAxis.x);
 
             inputHandler.CameraAxis = camAxis;
-
 
             CustomController.SetInput(inputHandler);
             CameraCustom.SetInput(inputHandler);
