@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace CustomGameController
 {
@@ -34,11 +35,15 @@ namespace CustomGameController
             {
                 if (InputActions.PlayerActions.VerticalAction.WasPressedThisFrame())
                 {
-                    inputHandler.ChooseFlightInput = !inputHandler.ChooseFlightInput;
+                    inputHandler.ChooseFlightInput = true;
                     inputHandler.ActionTypeInput = false;
                 }
             }
-            else inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.IsPressed();
+            else
+            {
+                inputHandler.ChooseFlightInput = false;
+                inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.IsPressed();
+            }
 
             inputHandler.SpeedUpInput = InputActions.PlayerActions.SpeedUp.IsPressed();
 

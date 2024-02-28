@@ -145,7 +145,7 @@ namespace CustomGameController
                 return;
             }
 
-            CameraOfftset = /*CustomController.SprintInput ? Vector2.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime) :*/ Vector2.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
+            CameraOfftset = /*CustomController.SprintInput ? Vector2.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime) :*/ Vector3.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
 
             m_xRot = Mathf.Clamp(m_xRot, -50.0f, 70.0f);
 

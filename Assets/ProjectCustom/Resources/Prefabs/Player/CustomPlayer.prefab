@@ -606,10 +606,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dcc3bb543fc7bd408556a45e0e20c63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnPlayerDirection:
+  OnCharacterDirection:
     m_PersistentCalls:
       m_Calls: []
-  OnPlayerJump:
+  OnVerticalAction:
+    m_PersistentCalls:
+      m_Calls: []
+  OnSpeedUpAction:
     m_PersistentCalls:
       m_Calls: []
   PlayerPhysicsSimulation:
@@ -640,7 +643,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.92, z: 0}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!95 &5592879266318471706
 Animator:
   serializedVersion: 5
