@@ -72,80 +72,80 @@ namespace CustomGameController
             m_xRot += lookDirection.x * CameraSensibility;
             m_yRot += lookDirection.y * CameraSensibility;
 
-            angle = Vector3.SignedAngle(transform.forward, CustomController.ArchorReference.forward, Vector3.right);
+            //angle = Vector3.SignedAngle(transform.forward, CustomController.ArchorReference.forward, Vector3.right);
 
             if (CustomController.CurrentInputState == PlayerInputState.FlightControll /*&& CustomController.SprintInput*/)
             {
                 CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime);
 
-                float latitudinalOrientation = CustomController.transform.localEulerAngles.x > 180 ? CustomController.transform.localEulerAngles.x - 360 : CustomController.transform.localEulerAngles.x;
-                float longitudinalOrientation = CustomController.transform.localEulerAngles.y > 180 ? CustomController.transform.localEulerAngles.y - 360 : CustomController.transform.localEulerAngles.y;
+                //    float latitudinalOrientation = CustomController.transform.localEulerAngles.x > 180 ? CustomController.transform.localEulerAngles.x - 360 : CustomController.transform.localEulerAngles.x;
+                //    float longitudinalOrientation = CustomController.transform.localEulerAngles.y > 180 ? CustomController.transform.localEulerAngles.y - 360 : CustomController.transform.localEulerAngles.y;
 
-                if (latitudinalOrientation < -35.0f)
-                {
-                    if (lookDirection != Vector2.zero)
-                    {
-                        if (lookDirection.x > 0.2f)
-                        {
-                            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 125f, Time.deltaTime * 2.0f);
-                        }
-                        if (lookDirection.x < -0.2f)
-                        {
-                            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 15.0f, Time.deltaTime * 2.0f);
-                        }
-                    }
-                    else
-                    {
-                        latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 40.0f, Time.deltaTime * 2.0f);
-                    }
-                    latitudinalOrientation += latitudinalThreshold;
+                //    if (latitudinalOrientation < -35.0f)
+                //    {
+                //        if (lookDirection != Vector2.zero)
+                //        {
+                //            if (lookDirection.x > 0.2f)
+                //            {
+                //                latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 125f, Time.deltaTime * 2.0f);
+                //            }
+                //            if (lookDirection.x < -0.2f)
+                //            {
+                //                latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 15.0f, Time.deltaTime * 2.0f);
+                //            }
+                //        }
+                //        else
+                //        {
+                //            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 40.0f, Time.deltaTime * 2.0f);
+                //        }
+                //        latitudinalOrientation += latitudinalThreshold;
 
-                }
-                else
-                {
-                    if (lookDirection != Vector2.zero)
-                    {
-                        if (lookDirection.x > 0.2f)
-                        {
-                            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, -2.5f, Time.deltaTime * 2.0f);
-                        }
-                        if (lookDirection.x < -0.2f)
-                        {
-                            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 20.0f, Time.deltaTime * 2.0f);
-                        }
-                    }
-                    else
-                    {
-                        latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 15.0f, Time.deltaTime * 2.0f);
-                    }
-                    latitudinalOrientation += latitudinalThreshold;
-                }
+                //    }
+                //    else
+                //    {
+                //        if (lookDirection != Vector2.zero)
+                //        {
+                //            if (lookDirection.x > 0.2f)
+                //            {
+                //                latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, -2.5f, Time.deltaTime * 2.0f);
+                //            }
+                //            if (lookDirection.x < -0.2f)
+                //            {
+                //                latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 20.0f, Time.deltaTime * 2.0f);
+                //            }
+                //        }
+                //        else
+                //        {
+                //            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 15.0f, Time.deltaTime * 2.0f);
+                //        }
+                //        latitudinalOrientation += latitudinalThreshold;
+                //    }
 
-                if (lookDirection != Vector2.zero)
-                {
-                    if (lookDirection.y > 0.2f)
-                    {
-                        longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, -20.0f, Time.deltaTime * 2.0f);
-                    }
-                    if (lookDirection.y < -0.2f)
-                    {
-                        longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, Mathf.Clamp(longitudinalThreshold, 20.0f, 20.0f), Time.deltaTime * 2.0f);
-                    }
-                }
-                else
-                {
-                    longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, 0, Time.deltaTime * 2.0f);
-                }
+                //    if (lookDirection != Vector2.zero)
+                //    {
+                //        if (lookDirection.y > 0.2f)
+                //        {
+                //            longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, -20.0f, Time.deltaTime * 2.0f);
+                //        }
+                //        if (lookDirection.y < -0.2f)
+                //        {
+                //            longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, Mathf.Clamp(longitudinalThreshold, 20.0f, 20.0f), Time.deltaTime * 2.0f);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, 0, Time.deltaTime * 2.0f);
+                //    }
 
-                longitudinalOrientation += longitudinalThreshold;
-                transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(latitudinalOrientation, longitudinalOrientation, 0.0f), 4.5f * Time.deltaTime);
+                //    longitudinalOrientation += longitudinalThreshold;
+                //    transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(latitudinalOrientation, longitudinalOrientation, 0.0f), 4.5f * Time.deltaTime);
 
-                m_xRot = 0.0f;
-                m_yRot = CustomController.transform.localEulerAngles.y;
-                return;
+                //    m_xRot = 0.0f;
+                //    m_yRot = CustomController.transform.localEulerAngles.y;
+                //    return;
             }
 
-            CameraOfftset = /*CustomController.SprintInput ? Vector2.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime) :*/ Vector3.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
+            CameraOfftset = Vector3.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
 
             m_xRot = Mathf.Clamp(m_xRot, -50.0f, 70.0f);
 
