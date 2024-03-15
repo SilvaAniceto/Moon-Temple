@@ -276,112 +276,44 @@ namespace CustomGameController
         {
             inputDirection = inputDirection.normalized;
 
-            Vector3 right = new Vector3();
-            Vector3 forward = new Vector3();
-            Vector3 up = new Vector3();
+            Vector3 move = new Vector3();
+            Vector3 right = inputDirection.x * Right;
+            Vector3 forward = inputDirection.z * Forward;
 
-            if (inputDirection == Vector3.zero)
-            {
-                right = inputDirection.x * transform.right;
-                forward = 0.0f * transform.forward;
-            }
-            else
-            {
-                right = inputDirection.x * transform.right;
-                forward = movementSpeed * transform.forward;
-            }
-            
-            up = -Vector3.up * FlightMultiplierFactor;
+            move = right + forward + Vector3.zero;
 
-            FlightVelocity = right + forward + up;
+            FlightVelocity = Vector3.MoveTowards(FlightVelocity, move, CurrentAcceleration *Time.deltaTime);
 
             CharacterController.Move(FlightVelocity * Time.deltaTime * movementSpeed);
-
-            #region OLD
-            //if (move != Vector3.zero)
-            //{
-            //    Vector3 flightDirection = new Vector3(0.0f, CustomCamera.Instance.transform.transform.eulerAngles.y, 0.0f);
-
-            //    transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(flightDirection), CurrentAcceleration * Time.deltaTime);
-            //}
-
-            //if (CheckWallHit())
-            //{
-            //    CharacterController.Move(Vector3.zero);
-            //    return;
-            //}
-
-            //CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
-
-            //if (CurrentInputState != PlayerInputState.FlightControll) return;
-
-            //if (!SpeedUpAction)
-            //{
-            //    GravityVelocity = Vector3.zero;
-            //    FlightVelocity = Vector3.zero;
-
-            //    //UpdateFlightHeightPosition(VerticalAscendingInput, VerticalDescendingInput);
-
-            //    Vector3 move = new Vector3();
-            //    Vector3 right = inputDirection.x * Right;
-            //    Vector3 forward = inputDirection.z * Forward;
-
-            //    move = right + forward + Vector3.zero;
-
-            //    CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
-
-            //    CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
-
-            //    CharacterController.Move(GravityVelocity * Time.deltaTime);
-
-            //    FlightHorizontalRotation = 0.0f;
-            //    FlightVerticalRotation = CustomCamera.Instance.transform.transform.eulerAngles.y;
-
-            //    Vector3 flightDirection = new Vector3(FlightHorizontalRotation, FlightVerticalRotation, 0.0f);
-
-            //    transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(flightDirection), CurrentAcceleration * Time.deltaTime);
-            //}
-            //else
-            //{
-            //    Vector3 move = new Vector3();
-            //    Vector3 forward = 1.0f * transform.forward;
-            //    Vector3 right = inputDirection.x * Vector3.right;
-            //    Vector3 up = inputDirection.z * Vector3.up;
-
-            //    move = right + up + Vector3.zero;
-
-            //    FlightVelocity = Vector3.MoveTowards(FlightVelocity, transform.forward, CurrentAcceleration * Time.deltaTime);
-
-            //    if (move != Vector3.zero)
-            //    {
-            //        FlightHorizontalRotation += up.y * 1.2f;
-            //        FlightHorizontalRotation = Mathf.Clamp(FlightHorizontalRotation, -85f, 70f);
-
-            //        FlightVerticalRotation += right.x * 1.8f;
-
-            //        Vector3 flightDirection = new Vector3(FlightHorizontalRotation, FlightVerticalRotation, 0.0f);
-
-            //        transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(flightDirection), 0.8f);
-            //    }
-            //    else
-            //    {
-            //        FlightVerticalRotation = transform.eulerAngles.y;
-            //    }
-
-            //    CharacterController.Move(FlightVelocity * Time.deltaTime * movementSpeed * 8);
-            //}
-            #endregion
         }
         public void UpdateFlightHeightPosition(bool verticalAction)
         {
-            if (verticalAction)
+            if (GroundDistance > JumpSpeed)
             {
-                FlightMultiplierFactor = Mathf.Lerp(FlightMultiplierFactor, FlightMultiplierFactor - 0.01f, Time.deltaTime);
+                if (verticalAction)
+                {
+                    FlightMultiplierFactor = Mathf.Lerp(FlightMultiplierFactor, -GroundDistance , Time.deltaTime);
+                }
+                else
+                {
+                    FlightMultiplierFactor = 0.0f;
+                }
             }
-            else
+            if (GroundDistance < JumpSpeed)
             {
-                FlightMultiplierFactor = Mathf.Lerp(-FlightMultiplierFactor, 0.0f, Time.deltaTime);
+                if (verticalAction)
+                {
+                    FlightMultiplierFactor = Mathf.Lerp(FlightMultiplierFactor, -GroundDistance, Time.deltaTime);
+                }
+                else
+                {
+                    FlightMultiplierFactor = 0.0f;
+                }
             }
+
+            FlightVelocity -= Gravity * FlightMultiplierFactor * Time.deltaTime;
+
+            CharacterController.Move(FlightVelocity * Time.deltaTime);
         }
         #endregion
 
@@ -798,6 +730,7 @@ namespace CustomGameController
             //GUILayout.Label("   Current Flight Factor: " + FlightMultiplierFactor);
             GUILayout.Label("   Jump Speed: " + JumpSpeed);
             GUILayout.Label("   Jump Height: " + JumpHeight);
+            GUILayout.Label("   Flight Multiplier Factor: " + FlightMultiplierFactor);            
         }
     }
 }
