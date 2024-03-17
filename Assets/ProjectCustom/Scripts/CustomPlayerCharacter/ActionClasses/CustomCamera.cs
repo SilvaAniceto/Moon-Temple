@@ -69,12 +69,15 @@ namespace CustomGameController
 
             lookDirection = lookDirection.normalized;
 
-            m_xRot += lookDirection.x * CameraSensibility;
-            m_yRot += lookDirection.y * CameraSensibility;
+            float xRot = transform.localEulerAngles.x;
+            float yRot = transform.localEulerAngles.y;
 
-            //angle = Vector3.SignedAngle(transform.forward, CustomController.ArchorReference.forward, Vector3.right);
+            yRot += lookDirection.y * (Mathf.Pow(5.0f, 2.0f) * CameraSensibility);
+            xRot += lookDirection.x * (Mathf.Pow(5.0f, 2.0f) * CameraSensibility);
 
-            if (CustomController.CurrentInputState == PlayerInputState.FlightControll /*&& CustomController.SprintInput*/)
+            xRot = xRot > 180 ? xRot - 360 : xRot;
+
+            if (CustomController.CurrentInputState == PlayerInputState.FlightControll)
             {
                 CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime);
 
@@ -143,13 +146,22 @@ namespace CustomGameController
                 //    m_xRot = 0.0f;
                 //    m_yRot = CustomController.transform.localEulerAngles.y;
                 //    return;
+                xRot = CustomController.transform.localEulerAngles.x;
+
+                xRot = xRot > 180 ? xRot - 360 : xRot;
+                xRot = Mathf.Clamp(xRot, -5.0f, 70.0f);
+
+                yRot = CustomController.transform.localEulerAngles.y;
+
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(xRot, yRot, 0.0f), 4.5f * Time.deltaTime);
+                return;
             }
 
             CameraOfftset = Vector3.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
 
-            m_xRot = Mathf.Clamp(m_xRot, -50.0f, 70.0f);
+            xRot = Mathf.Clamp(xRot, -50.0f, 70.0f);
 
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(m_xRot, m_yRot, 0), 4.5f * Time.deltaTime);
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(xRot, yRot, 0), 4.5f * Time.deltaTime);
 
             CustomController.Forward = CustomPerspective.CustomForward;
             CustomController.Right = CustomPerspective.CustomRight;

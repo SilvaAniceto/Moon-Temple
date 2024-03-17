@@ -15,7 +15,7 @@ namespace CustomGameController
         [SerializeField] private CustomCamera CameraCustom;
         [SerializeField] private Transform m_CameraTarget;
         [SerializeField, Range(1f, 5)] private float m_CameraTargetHeight = 1.8f;
-        [SerializeField, Range(0.5f, 1.5f)] private float m_cameraSensibility = 1.25f;
+        [SerializeField, Range(0.3f, 1.0f)] private float m_cameraSensibility = 1.25f;
         [SerializeField] LayerMask m_thirdPersonCollisionFilter;
 
         #endregion
