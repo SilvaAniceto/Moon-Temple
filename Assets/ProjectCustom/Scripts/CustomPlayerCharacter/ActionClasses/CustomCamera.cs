@@ -146,10 +146,10 @@ namespace CustomGameController
                 //    m_xRot = 0.0f;
                 //    m_yRot = CustomController.transform.localEulerAngles.y;
                 //    return;
-                xRot = CustomController.transform.localEulerAngles.x;
+                //xRot = CustomController.transform.localEulerAngles.x;
 
-                xRot = xRot > 180 ? xRot - 360 : xRot;
-                xRot = Mathf.Clamp(xRot, -5.0f, 70.0f);
+                //xRot = xRot > 180 ? xRot - 360 : xRot;
+                xRot = Mathf.Clamp(xRot, -50.0f, 70.0f);
 
                 yRot = CustomController.transform.localEulerAngles.y;
 

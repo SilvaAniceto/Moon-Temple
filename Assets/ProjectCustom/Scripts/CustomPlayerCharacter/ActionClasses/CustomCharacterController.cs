@@ -248,10 +248,13 @@ namespace CustomGameController
         #region CHARACTER FLIGHT
         public Vector3 FlightVelocity { get; set; }
         public Transform ForwardFlightDirectionArchor { get; set; }
+        public float MaximunFlightHeight { get => Mathf.Round(Mathf.Pow(CharacterController.height, 10.015f)); }
+        public float FlightHeightMultiplier { get => Mathf.Round(Mathf.InverseLerp(MaximunFlightHeight, JumpSpeed, GroundDistance) * 100) / 100; }
         public float FlightGravityDirection { get; set; }
         public float FlightForwardSpeedFactor { get; set; }
-        public float FlightSpeedFactor { get => Mathf.RoundToInt(Mathf.Clamp01(Mathf.Clamp((BaseSpeed - CurrentSpeed), 0.1f, CurrentSpeed) / (CurrentSpeed - BaseSpeed))); }
-        public float FlightAngleCorrection { get => Vector3.SignedAngle(transform.forward, ForwardFlightDirectionArchor.forward, Vector3.right); }
+        public float InverseFlightSpeedFactor { get => Mathf.InverseLerp(BaseSpeed * 3.6f, BaseSpeed, CurrentSpeed); }
+        public float FlightSpeedFactor { get => Mathf.InverseLerp(BaseSpeed, CurrentSpeed, CurrentSpeed); }
+        //public float FlightAngleCorrection { get => Vector3.SignedAngle(transform.forward, ForwardFlightDirectionArchor.forward, Vector3.right); }
 
 
         IEnumerator StartFlightDelay()
@@ -283,8 +286,8 @@ namespace CustomGameController
             float xRot = transform.eulerAngles.x;
             float yRot = transform.eulerAngles.y;
 
-            xRot += inputDirection.z * Mathf.Pow(BaseSpeed, 3.0f) * Mathf.Clamp(FlightSpeedFactor, 0.6f, 0.7f);
-            yRot += inputDirection.x * Mathf.Pow(BaseSpeed, 3.0f) * Mathf.Clamp(FlightSpeedFactor, 0.6f, 0.7f);
+            xRot += inputDirection.z * Mathf.Pow(BaseSpeed, 3.0f) * Mathf.Clamp(InverseFlightSpeedFactor, 0.6f, 0.7f);
+            yRot += inputDirection.x * Mathf.Pow(BaseSpeed, 3.0f) * Mathf.Clamp(InverseFlightSpeedFactor, 0.6f, 0.7f);
 
             xRot = xRot > 180 ? xRot - 360 : xRot;
             xRot = Mathf.Clamp(xRot, -25.0f, 70.0f);
@@ -293,30 +296,26 @@ namespace CustomGameController
             
             transform.rotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(lookDirection), 4.5f * Time.deltaTime);
 
-            Vector3 move = new Vector3();
-            Vector3 forward = movementSpeed * ForwardFlightDirectionArchor.forward;
+            //Vector3 move = new Vector3();
+            //Vector3 forward = movementSpeed * ForwardFlightDirectionArchor.forward;
 
-            move = forward + Vector3.zero;
+            //move = forward + Vector3.zero;
 
-            FlightVelocity = Vector3.MoveTowards(FlightVelocity, move, CurrentAcceleration * Time.deltaTime);
+            //FlightVelocity = Vector3.MoveTowards(FlightVelocity, move, CurrentAcceleration * Time.deltaTime);
 
-            CharacterController.Move(FlightVelocity * Time.deltaTime * movementSpeed);
+            //CharacterController.Move(FlightVelocity * Time.deltaTime * movementSpeed);
         }
         public void UpdateFlightHeightPosition(bool verticalAction)
         {
             if (verticalAction)
             {
                 FlightForwardSpeedFactor = Mathf.Lerp(FlightForwardSpeedFactor, 1.0f, Time.deltaTime);
-
-                if (FlightGravityDirection < 0.5f)
-                {
-                    FlightGravityDirection = Mathf.Lerp(FlightGravityDirection, 0.5f, Time.deltaTime);
-                }
+                FlightGravityDirection = Mathf.Lerp(0.0f, 0.5f, FlightHeightMultiplier ) * Mathf.Lerp(-0.2f, 1.0f, InverseFlightSpeedFactor);
             }
             else
             {
                 FlightForwardSpeedFactor = Mathf.Lerp(FlightForwardSpeedFactor, 0.0f, Time.deltaTime / CurrentAcceleration);
-                FlightGravityDirection = Mathf.Lerp(FlightGravityDirection, -1.0f, CurrentAcceleration * Time.deltaTime);
+                FlightGravityDirection = Mathf.Lerp(FlightGravityDirection, -1.0f, CurrentAcceleration * Time.deltaTime) * Mathf.Clamp(InverseFlightSpeedFactor, 0.8f, 1.0f);
             }
 
             //FlightForwardSpeedFactor = Mathf.Clamp01(FlightForwardSpeedFactor);
@@ -338,7 +337,7 @@ namespace CustomGameController
             //}
 
             Vector3 move = new Vector3();
-            Vector3 up = FlightGravityDirection * Vector3.up * Mathf.Clamp(FlightSpeedFactor, 0.33f, 1.0f);
+            Vector3 up = FlightGravityDirection * Vector3.up;
 
             move = up + new Vector3(FlightVelocity.x, 0.0f, FlightVelocity.z);
 
@@ -497,6 +496,15 @@ namespace CustomGameController
         }
         private bool onGround;
         public LayerMask GroundLayer { get; set; }
+        public float GroundDistance
+        {
+            get
+            {
+                Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, MaximunFlightHeight, GroundLayer);
+
+                return hitInfo.distance;
+            }
+        }
 
         public void CheckGroundLevel()
         {
@@ -520,6 +528,8 @@ namespace CustomGameController
             yield return new WaitUntil(() => OnGround);
 
             SetPlayerPhysicsSimulation(ApplyGravity);
+
+            FlightGravityDirection = 0.0f;
 
             CurrentyVelocity = CurrentyVelocity / Drag * 0.85f;
 
@@ -630,7 +640,7 @@ namespace CustomGameController
             CharacterAnimator.SetBool("OnGround", onGround);
             CharacterAnimator.SetBool("Falling", VerticalState == VerticalState.Falling);
             CharacterAnimator.SetBool("InFlight", CurrentInputState == PlayerInputState.FlightControll);
-            CharacterAnimator.SetBool("SpeedFlight", FlightSpeedFactor == 0.0f && FlightForwardSpeedFactor > 0.0f ? true : false);
+            //CharacterAnimator.SetBool("SpeedFlight", FlightSpeedFactor == 0.0f && FlightForwardSpeedFactor > 0.0f ? true : false);
         }
         #endregion 
 
@@ -686,16 +696,6 @@ namespace CustomGameController
                 {
                     PreviousInputState = CurrentInputState;
                 }
-            }
-        }
-
-        public float GroundDistance
-        {
-            get
-            {
-                Physics.Raycast(transform.position, Vector3.down, out RaycastHit hitInfo, Mathf.Pow(CharacterController.height, 9.0f), GroundLayer);
-
-                return hitInfo.distance;
             }
         }
 
@@ -767,10 +767,12 @@ namespace CustomGameController
             //GUILayout.Label("   Current Velocity: " + CurrentyVelocity);
             //GUILayout.Label("   Current Velocity Magnitude: " + CurrentyVelocity.magnitude * Time.deltaTime);
             GUILayout.Label("   Current Velocity Factor: " + (CurrentSpeed / BaseSpeed));
-            GUILayout.Label("   Current Velocity Percentage: " + FlightSpeedFactor);
+            GUILayout.Label("   Inverse Flight Speed Percentage: " + InverseFlightSpeedFactor);
+            GUILayout.Label("   Flight Speed Percentage: " + FlightSpeedFactor);
             GUILayout.Label("   Current Flight Factor: " + FlightGravityDirection);
             GUILayout.Label("   Current Flight Forward: " + Mathf.Round(FlightForwardSpeedFactor * 100) / 100);
-            GUILayout.Label("   Current Flight Gravity Direction: " + FlightGravityDirection);
+            GUILayout.Label("   Current Flight Gravity Direction: " + Mathf.Round(FlightGravityDirection * 100) / 100);
+            GUILayout.Label("   Flight Height Multiplier: " + FlightHeightMultiplier);            
             //GUILayout.Label("   Current Flight Velocity: " + FlightVelocity);
             //GUILayout.Label("   Current Flight Magnitude: " + FlightVelocity.magnitude);
             //GUILayout.Label("   Jump Speed: " + JumpSpeed);
