@@ -296,26 +296,26 @@ namespace CustomGameController
             
             transform.rotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(lookDirection), 4.5f * Time.deltaTime);
 
-            //Vector3 move = new Vector3();
-            //Vector3 forward = movementSpeed * ForwardFlightDirectionArchor.forward;
+            Vector3 move = new Vector3();
+            Vector3 forward = movementSpeed * ForwardFlightDirectionArchor.forward * FlightForwardSpeedFactor;
 
-            //move = forward + Vector3.zero;
+            move = forward + Vector3.zero;
 
-            //FlightVelocity = Vector3.MoveTowards(FlightVelocity, move, CurrentAcceleration * Time.deltaTime);
+            FlightVelocity = Vector3.MoveTowards(FlightVelocity, move, CurrentAcceleration * Time.deltaTime);
 
-            //CharacterController.Move(FlightVelocity * Time.deltaTime * movementSpeed);
+            CharacterController.Move(FlightVelocity * Time.deltaTime * movementSpeed);
         }
         public void UpdateFlightHeightPosition(bool verticalAction)
         {
             if (verticalAction)
             {
                 FlightForwardSpeedFactor = Mathf.Lerp(FlightForwardSpeedFactor, 1.0f, Time.deltaTime);
-                FlightGravityDirection = Mathf.Lerp(0.0f, 0.5f, FlightHeightMultiplier ) * Mathf.Lerp(-0.2f, 1.0f, InverseFlightSpeedFactor);
+                FlightGravityDirection = Mathf.Lerp(CurrentSpeed, -0.66f - (FlightSpeedFactor * 2.0f), Mathf.InverseLerp(0.0f, 1.0f, FlightForwardSpeedFactor));
             }
             else
             {
-                FlightForwardSpeedFactor = Mathf.Lerp(FlightForwardSpeedFactor, 0.0f, Time.deltaTime / CurrentAcceleration);
-                FlightGravityDirection = Mathf.Lerp(FlightGravityDirection, -1.0f, CurrentAcceleration * Time.deltaTime) * Mathf.Clamp(InverseFlightSpeedFactor, 0.8f, 1.0f);
+                FlightForwardSpeedFactor = 0.01f;
+                FlightGravityDirection = Mathf.Lerp(FlightGravityDirection, -1.0f, CurrentAcceleration * Time.deltaTime);
             }
 
             //FlightForwardSpeedFactor = Mathf.Clamp01(FlightForwardSpeedFactor);
@@ -530,6 +530,7 @@ namespace CustomGameController
             SetPlayerPhysicsSimulation(ApplyGravity);
 
             FlightGravityDirection = 0.0f;
+            FlightForwardSpeedFactor = 0.0f;
 
             CurrentyVelocity = CurrentyVelocity / Drag * 0.85f;
 
