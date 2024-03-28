@@ -47,8 +47,8 @@ namespace SunTemple{
 			moveFB = InputActions.PlayerActions.MoveDirection.ReadValue<Vector2>().x * speed;
 			moveLR = InputActions.PlayerActions.MoveDirection.ReadValue<Vector2>().y * speed;
 
-			rotHorizontal = InputActions.PlayerActions.CameraMove.ReadValue<Vector2>().x * sensitivity;
-			rotVertical = -InputActions.PlayerActions.CameraMove.ReadValue<Vector2>().y * sensitivity;
+			rotHorizontal = InputActions.PlayerActions.CameraLook.ReadValue<Vector2>().x * sensitivity;
+			rotVertical = -InputActions.PlayerActions.CameraLook.ReadValue<Vector2>().y * sensitivity;
 
 
 			Vector3 movement = new Vector3 (moveFB, gravity, moveLR);

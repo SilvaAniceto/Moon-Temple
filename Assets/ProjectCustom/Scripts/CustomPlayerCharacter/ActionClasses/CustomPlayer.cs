@@ -31,6 +31,8 @@ namespace CustomGameController
 
             inputHandler.ActionTypeInput = InputActions.PlayerActions.ActionType.IsPressed();
 
+            //inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.IsPressed();
+
             if (inputHandler.ActionTypeInput)
             {
                 if (InputActions.PlayerActions.VerticalAction.WasPressedThisFrame())
@@ -45,9 +47,9 @@ namespace CustomGameController
                 inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.IsPressed();
             }
 
-            inputHandler.SpeedUpInput = InputActions.PlayerActions.SpeedUp.IsPressed();
+            inputHandler.SpeedUpInput = InputActions.PlayerActions.SpeedAction.IsPressed();
 
-            Vector2 camAxis = InputActions.PlayerActions.CameraMove.ReadValue<Vector2>();
+            Vector2 camAxis = InputActions.PlayerActions.CameraLook.ReadValue<Vector2>();
             camAxis = new Vector2(camAxis.y, camAxis.x);
 
             inputHandler.CameraAxis = camAxis;

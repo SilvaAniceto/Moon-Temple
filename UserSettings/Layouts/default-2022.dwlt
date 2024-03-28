@@ -119,7 +119,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 7602
+  controlID: 113
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -144,7 +144,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 7508
+  controlID: 50
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -169,7 +169,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 7509
+  controlID: 51
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: AnimatorControllerTool
+  m_Name: ConsoleWindow
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -246,14 +246,14 @@ MonoBehaviour:
     height: 264
   m_MinSize: {x: 101, y: 121}
   m_MaxSize: {x: 4001, y: 4021}
-  m_ActualView: {fileID: 19}
+  m_ActualView: {fileID: 18}
   m_Panes:
   - {fileID: 17}
   - {fileID: 18}
   - {fileID: 19}
   - {fileID: 20}
-  m_Selected: 2
-  m_LastSelected: 3
+  m_Selected: 1
+  m_LastSelected: 2
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -415,9 +415,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: ee0a0100
-      m_LastClickedID: 0
-      m_ExpandedIDs: 56f1ffff6cf1ffffe6faffff
+      m_SelectedIDs: 5cf1ffff
+      m_LastClickedID: -3748
+      m_ExpandedIDs: 6cf1ffffe6faffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -888,9 +888,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 125.06665, y: 12.757199, z: 102.26268}
+    m_Target: {x: 250, y: 360, z: 250}
     speed: 2
-    m_Value: {x: 125.06665, y: 12.757199, z: 102.26268}
+    m_Value: {x: 250, y: 360, z: 250}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -910,17 +910,17 @@ MonoBehaviour:
   m_Grid:
     xGrid:
       m_Fade:
-        m_Target: 0
+        m_Target: 1
         speed: 2
-        m_Value: 0
+        m_Value: 1
       m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.4}
       m_Pivot: {x: 0, y: 0, z: 0}
       m_Size: {x: 0.01, y: 0.01}
     yGrid:
       m_Fade:
-        m_Target: 1
+        m_Target: 0
         speed: 2
-        m_Value: 1
+        m_Value: 0
       m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.4}
       m_Pivot: {x: 0, y: 0, z: 0}
       m_Size: {x: 0.01, y: 0.01}
@@ -940,13 +940,13 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_Size:
-    m_Target: 39.366535
+    m_Target: 436.56302
     speed: 2
-    m_Value: 39.366535
+    m_Value: 436.56302
   m_Ortho:
-    m_Target: 0
+    m_Target: 1
     speed: 2
-    m_Value: 0
+    m_Value: 1
   m_CameraSettings:
     m_Speed: 1
     m_SpeedNormalized: 0.5
@@ -987,10 +987,10 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 363
+    x: 358
     y: 73
-    width: 1101
-    height: 646
+    width: 1095
+    height: 662
   m_SerializedDataModeController:
     m_DataMode: 0
     m_PreferredDataMode: 0
@@ -1025,9 +1025,9 @@ MonoBehaviour:
     m_SearchString: 
   m_ActionsTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: cb8c4eb3
-    m_LastClickedID: -1286697781
-    m_ExpandedIDs: 56ac8bd6
+    m_SelectedIDs: 01cc888a
+    m_LastClickedID: -1970746367
+    m_ExpandedIDs: cceaddb156ac8bd6
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1065,11 +1065,11 @@ MonoBehaviour:
       \"id\": \"8fd132bd-ed36-4b1f-80c3-c9a7dceb54df\",\n                    \"expectedControlType\":
       \"Button\",\n                    \"processors\": \"\",\n                   
       \"interactions\": \"\",\n                    \"initialStateCheck\": false\n               
-      },\n                {\n                    \"name\": \"SpeedUp\",\n                   
+      },\n                {\n                    \"name\": \"SpeedAction\",\n                   
       \"type\": \"Button\",\n                    \"id\": \"9e002070-7928-42dd-a6a1-f70e35746461\",\n                   
       \"expectedControlType\": \"Button\",\n                    \"processors\": \"\",\n                   
       \"interactions\": \"\",\n                    \"initialStateCheck\": false\n               
-      },\n                {\n                    \"name\": \"CameraMove\",\n                   
+      },\n                {\n                    \"name\": \"CameraLook\",\n                   
       \"type\": \"Value\",\n                    \"id\": \"e5d67788-fd8d-4a3f-92a8-336696ee5243\",\n                   
       \"expectedControlType\": \"Vector2\",\n                    \"processors\":
       \"ScaleVector2(y=-1)\",\n                    \"interactions\": \"\",\n                   
@@ -1077,14 +1077,6 @@ MonoBehaviour:
       \"name\": \"ActionType\",\n                    \"type\": \"Button\",\n                   
       \"id\": \"17670236-78d0-4059-a0c1-5d28f8e6e121\",\n                    \"expectedControlType\":
       \"Button\",\n                    \"processors\": \"\",\n                   
-      \"interactions\": \"\",\n                    \"initialStateCheck\": false\n               
-      },\n                {\n                    \"name\": \"VerticalAscending\",\n                   
-      \"type\": \"Button\",\n                    \"id\": \"290b7be8-b3d9-4d9c-a682-0009d5a12cb0\",\n                   
-      \"expectedControlType\": \"Button\",\n                    \"processors\": \"\",\n                   
-      \"interactions\": \"\",\n                    \"initialStateCheck\": false\n               
-      },\n                {\n                    \"name\": \"VerticalDescending\",\n                   
-      \"type\": \"Button\",\n                    \"id\": \"85da9e2f-bf8e-4197-8744-7c4c5657fe0a\",\n                   
-      \"expectedControlType\": \"Button\",\n                    \"processors\": \"\",\n                   
       \"interactions\": \"\",\n                    \"initialStateCheck\": false\n               
       }\n            ],\n            \"bindings\": [\n                {\n                   
       \"name\": \"MoveAxis\",\n                    \"id\": \"bfc0d9d5-5ffe-4890-837e-40ffb7922b2c\",\n                   
@@ -1132,24 +1124,24 @@ MonoBehaviour:
       \"id\": \"92f0bd53-e01c-4d4e-a163-0e8fc489a751\",\n                    \"path\":
       \"<Keyboard>/leftShift\",\n                    \"interactions\": \"\",\n                   
       \"processors\": \"\",\n                    \"groups\": \"Mouse&Keyboard\",\n                   
-      \"action\": \"SpeedUp\",\n                    \"isComposite\": false,\n                   
+      \"action\": \"SpeedAction\",\n                    \"isComposite\": false,\n                   
       \"isPartOfComposite\": false\n                },\n                {\n                   
       \"name\": \"\",\n                    \"id\": \"76f81138-9880-4a76-98ee-695bb7c73d62\",\n                   
       \"path\": \"<Gamepad>/rightTrigger\",\n                    \"interactions\":
       \"\",\n                    \"processors\": \"\",\n                    \"groups\":
-      \"Gamepad\",\n                    \"action\": \"SpeedUp\",\n                   
+      \"Gamepad\",\n                    \"action\": \"SpeedAction\",\n                   
       \"isComposite\": false,\n                    \"isPartOfComposite\": false\n               
       },\n                {\n                    \"name\": \"\",\n                   
       \"id\": \"c3af5d24-9d4e-4bee-86c7-fbba516e50b8\",\n                    \"path\":
       \"<Mouse>/delta\",\n                    \"interactions\": \"\",\n                   
       \"processors\": \"ScaleVector2(y=-1),StickDeadzone(min=0.2)\",\n                   
-      \"groups\": \"Mouse&Keyboard\",\n                    \"action\": \"CameraMove\",\n                   
+      \"groups\": \"Mouse&Keyboard\",\n                    \"action\": \"CameraLook\",\n                   
       \"isComposite\": false,\n                    \"isPartOfComposite\": false\n               
       },\n                {\n                    \"name\": \"\",\n                   
       \"id\": \"4bc6381d-1ad6-4dd2-8bd7-5d044e51810e\",\n                    \"path\":
       \"<Gamepad>/rightStick\",\n                    \"interactions\": \"\",\n                   
       \"processors\": \"ScaleVector2(x=0.8,y=0.8),StickDeadzone(min=0.09)\",\n                   
-      \"groups\": \"Gamepad\",\n                    \"action\": \"CameraMove\",\n                   
+      \"groups\": \"Gamepad\",\n                    \"action\": \"CameraLook\",\n                   
       \"isComposite\": false,\n                    \"isPartOfComposite\": false\n               
       },\n                {\n                    \"name\": \"\",\n                   
       \"id\": \"078b671a-9367-4fb1-b1eb-0889bcd04d1b\",\n                    \"path\":
@@ -1161,28 +1153,6 @@ MonoBehaviour:
       \"path\": \"<Gamepad>/leftShoulder\",\n                    \"interactions\":
       \"\",\n                    \"processors\": \"\",\n                    \"groups\":
       \"Gamepad\",\n                    \"action\": \"ActionType\",\n                   
-      \"isComposite\": false,\n                    \"isPartOfComposite\": false\n               
-      },\n                {\n                    \"name\": \"\",\n                   
-      \"id\": \"948908ca-b4c0-4186-96d0-cf78ff7b9eab\",\n                    \"path\":
-      \"<Keyboard>/space\",\n                    \"interactions\": \"Hold(duration=0.6)\",\n                   
-      \"processors\": \"\",\n                    \"groups\": \"Mouse&Keyboard\",\n                   
-      \"action\": \"VerticalAscending\",\n                    \"isComposite\": false,\n                   
-      \"isPartOfComposite\": false\n                },\n                {\n                   
-      \"name\": \"\",\n                    \"id\": \"4ce64e9f-3c7a-4f1f-9780-f9a9ebdf5a2f\",\n                   
-      \"path\": \"<Gamepad>/buttonSouth\",\n                    \"interactions\":
-      \"Hold(duration=0.6)\",\n                    \"processors\": \"\",\n                   
-      \"groups\": \"Gamepad\",\n                    \"action\": \"VerticalAscending\",\n                   
-      \"isComposite\": false,\n                    \"isPartOfComposite\": false\n               
-      },\n                {\n                    \"name\": \"\",\n                   
-      \"id\": \"1217da78-fddc-4ad0-8198-43e53cbde8cc\",\n                    \"path\":
-      \"<Keyboard>/leftAlt\",\n                    \"interactions\": \"Hold(duration=0.6)\",\n                   
-      \"processors\": \"\",\n                    \"groups\": \"Mouse&Keyboard\",\n                   
-      \"action\": \"VerticalDescending\",\n                    \"isComposite\": false,\n                   
-      \"isPartOfComposite\": false\n                },\n                {\n                   
-      \"name\": \"\",\n                    \"id\": \"ab6ef6fb-06c4-42b0-9ac7-cf596084f9ac\",\n                   
-      \"path\": \"<Gamepad>/buttonEast\",\n                    \"interactions\":
-      \"Hold(duration=0.6)\",\n                    \"processors\": \"\",\n                   
-      \"groups\": \"Gamepad\",\n                    \"action\": \"VerticalDescending\",\n                   
       \"isComposite\": false,\n                    \"isPartOfComposite\": false\n               
       }\n            ]\n        },\n        {\n            \"name\": \"GameControllerActions\",\n           
       \"id\": \"47375ca4-a452-4715-b85a-77a8241497d2\",\n            \"actions\":
@@ -1368,7 +1338,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 373}
     m_SelectedIDs: 98e20400
     m_LastClickedID: 320152
-    m_ExpandedIDs: 00000000280b01002a0b01002c0b01002e0b0100300b0100
+    m_ExpandedIDs: 000000002a0b01002c0b01002e0b0100300b0100320b0100
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1396,7 +1366,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000280b01002a0b01002c0b01002e0b0100300b0100
+    m_ExpandedIDs: 000000002a0b01002c0b01002e0b0100300b0100320b0100
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 

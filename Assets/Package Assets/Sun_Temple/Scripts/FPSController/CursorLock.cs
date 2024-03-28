@@ -24,13 +24,13 @@ namespace Sun_Temple{
 
         void Update(){
 			
-			if (InputActions.PlayerActions.VerticalDescending.WasPressedThisFrame()) {
-				if (isLocked) {
-					isLocked = false;
-				} else if (!isLocked) {
-					isLocked = true;
-				}
-			}
+			//if (InputActions.PlayerActions.VerticalDescending.WasPressedThisFrame()) {
+			//	if (isLocked) {
+			//		isLocked = false;
+			//	} else if (!isLocked) {
+			//		isLocked = true;
+			//	}
+			//}
 
 
 
