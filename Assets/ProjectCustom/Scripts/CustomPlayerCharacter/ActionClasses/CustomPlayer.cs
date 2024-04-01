@@ -31,20 +31,13 @@ namespace CustomGameController
 
             inputHandler.ActionTypeInput = InputActions.PlayerActions.ActionType.IsPressed();
 
-            //inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.IsPressed();
-
-            if (inputHandler.ActionTypeInput)
+            if (CustomController.VerticalState == VerticalState.InFlight)
             {
-                if (InputActions.PlayerActions.VerticalAction.WasPressedThisFrame())
-                {
-                    inputHandler.ChooseFlightInput = true;
-                    inputHandler.ActionTypeInput = false;
-                }
+                inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.IsPressed();
             }
             else
             {
-                inputHandler.ChooseFlightInput = false;
-                inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.IsPressed();
+                inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.WasPressedThisFrame();
             }
 
             inputHandler.SpeedUpInput = InputActions.PlayerActions.SpeedAction.IsPressed();

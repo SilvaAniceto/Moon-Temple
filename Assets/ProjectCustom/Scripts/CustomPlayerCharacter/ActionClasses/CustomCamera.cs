@@ -77,7 +77,7 @@ namespace CustomGameController
 
             xRot = xRot > 180 ? xRot - 360 : xRot;
 
-            if (CustomController.CurrentInputState == PlayerInputState.FlightControll)
+            if (CustomController.VerticalState == VerticalState.InFlight)
             {
                 CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime);
 
