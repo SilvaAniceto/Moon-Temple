@@ -102,9 +102,31 @@ namespace CustomGameController
         public void UpdateCharacterSpeed(bool speedAction, float speed)
         {
             if (speedAction)
-                CurrentSpeed = speed * 3.6f;
+            {
+                if (OnGround || !InFlight)
+                {
+                    CurrentSpeed = speed * 3.6f;
+                    return;
+                }
+                if (Gliding)
+                {
+                    CurrentSpeed = speed * 4.8f;
+                    return;
+                }
+            }
             else
-                CurrentSpeed = speed;
+            {
+                if (OnGround || !InFlight)
+                {
+                    CurrentSpeed = speed;
+                    return;
+                }
+                if (InFlight)
+                {
+                    CurrentSpeed = speed * 3.6f;
+                    return;
+                }
+            }
         }
         public void UpdateThirdPersonMovePosition(Vector3 inputDirection, float movementSpeed)
         {
@@ -219,7 +241,9 @@ namespace CustomGameController
                 }
                 if (!OnGround && InFlight)
                 {
-                    return 1.0f;
+                    if (Gliding) return 0.1f;
+
+                    return 1.2f;
                 }
 
                 return 0.0f;
@@ -247,12 +271,40 @@ namespace CustomGameController
         public Vector3 FlightVelocity { get; set; }
         public Transform ForwardFlightDirectionArchor { get; set; }
         public bool InFlight { get; set; }
-        public float MaximunFlightHeight { get => JumpSpeed * 3.6f; }
-        public float FlightHeight { get; set; }
+        public float MaximunFlightHeight { get => JumpSpeed * 1.4f; }
+
+        private float flightHeight;
+        public float FlightHeight
+        {
+            get
+            {
+                return flightHeight;
+            }
+            set
+            {
+                if (OnGround) flightHeight = value;
+
+                if (flightHeight < 0.8f && value < 1.0f)
+                {
+                    flightHeight = value;
+                    Gliding = false;
+                }
+                else if (flightHeight >= 0.8f && !Gliding)
+                {
+                    Gliding = true;
+                }
+                else if (value <= 0.05f && Gliding)
+                {
+                    flightHeight = value;
+                    Gliding = false;
+                }
+            }
+        }
         public float FlightGravityDirection { get; set; }
         public float FlightForwardSpeedFactor { get; set; }
         public float InverseFlightSpeedFactor { get => Mathf.InverseLerp(BaseSpeed * 3.6f, BaseSpeed, CurrentSpeed); }
         public float FlightSpeedFactor { get => Mathf.InverseLerp(BaseSpeed, CurrentSpeed, CurrentSpeed); }
+        public bool Gliding { get; set; }
 
         public void CheckEnterFlightState(bool value)
         {
@@ -295,17 +347,34 @@ namespace CustomGameController
         }
         public void UpdateFlightHeightPosition(bool verticalAction)
         {
-            if (verticalAction)
+            if (!Gliding)
             {
-                InFlight = true;
-                float flightHeight = Mathf.Clamp(Mathf.Round(Mathf.InverseLerp(PreviousPosition.y, PreviousPosition.y + MaximunFlightHeight, CurrentPosition.y - PreviousPosition.y) * 100.0f) / 100, 0.0f, 1.0f);
-                FlightHeight = flightHeight;
-                FlightGravityDirection = Mathf.Lerp(Gravity.y, 0.0f, flightHeight);
+                if (verticalAction)
+                {
+                    InFlight = true;
+                    float flightHeight = Mathf.Clamp(Mathf.Round(Mathf.InverseLerp(PreviousPosition.y, PreviousPosition.y + MaximunFlightHeight, CurrentPosition.y - PreviousPosition.y) * 100.0f) / 100, 0.0f, 1.0f);
+                    FlightHeight = flightHeight;
+                    FlightGravityDirection = Mathf.Lerp(Gravity.y, 0.0f, flightHeight);
+                }
+                else
+                {
+                    InFlight = false;
+                    FlightGravityDirection = 0.0f;
+                }
             }
             else
             {
-                InFlight = false;
-                FlightGravityDirection = 0.0f;
+                float flightHeight = Mathf.Clamp(Mathf.Round(Mathf.InverseLerp(PreviousPosition.y + MaximunFlightHeight, CurrentPosition.y, CurrentPosition.y - PreviousPosition.y) * 100.0f) / 100, 0.0f, 1.0f);
+                FlightHeight = flightHeight;
+
+                if (verticalAction)
+                {
+                    InFlight = true;
+                }
+                else
+                {
+                    InFlight = false;
+                }
             }
 
             Vector3 move = new Vector3();
@@ -448,6 +517,8 @@ namespace CustomGameController
                 if (value)
                 {
                     InFlight = false;
+                    Gliding = false;
+                    FlightHeight = 0.0f;
                     FlightVelocity = Vector3.zero;
                 }
 
@@ -675,7 +746,7 @@ namespace CustomGameController
             //GUILayout.Label("   Input State:" + CurrentInputState);
             //GUILayout.Label("   Vertical State: " + VerticalState);
             //GUILayout.Label("   Vertical Action State: " + ChooseFlight);
-            //GUILayout.Label("   Gravity Multiplier: " + GravityMultiplierFactor);
+            GUILayout.Label("   Gravity Multiplier: " + GravityMultiplierFactor);
             GUILayout.Label("   Gravity Velocity: " + GravityVelocity);
             //GUILayout.Label("   Last Position: " + PreviousPosition);
             //GUILayout.Label("   Current Position: " + CurrentPosition);
@@ -684,8 +755,8 @@ namespace CustomGameController
             GUILayout.Label("   Maximun Flight Height: " + MaximunFlightHeight);
             GUILayout.Label("   Flight Height: " + FlightHeight);
             //GUILayout.Label("   Current Speed: " + CurrentSpeed);
-            GUILayout.Label("   Current Velocity: " + CurrentyVelocity);
-            GUILayout.Label("   Current Velocity Magnitude: " + Vector3.Dot(transform.up, transform.position));
+            //GUILayout.Label("   Current Velocity: " + CurrentyVelocity);
+            //GUILayout.Label("   Current Velocity Magnitude: " + Vector3.Dot(transform.up, transform.position));
             //GUILayout.Label("   Current Velocity Factor: " + (CurrentSpeed / BaseSpeed));
             //GUILayout.Label("   Inverse Flight Speed Percentage: " + InverseFlightSpeedFactor);
             //GUILayout.Label("   Flight Speed Percentage: " + FlightSpeedFactor);
