@@ -80,91 +80,22 @@ namespace CustomGameController
             if (CustomController.VerticalState == VerticalState.InFlight)
             {
                 CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime);
-
-                //    float latitudinalOrientation = CustomController.transform.localEulerAngles.x > 180 ? CustomController.transform.localEulerAngles.x - 360 : CustomController.transform.localEulerAngles.x;
-                //    float longitudinalOrientation = CustomController.transform.localEulerAngles.y > 180 ? CustomController.transform.localEulerAngles.y - 360 : CustomController.transform.localEulerAngles.y;
-
-                //    if (latitudinalOrientation < -35.0f)
-                //    {
-                //        if (lookDirection != Vector2.zero)
-                //        {
-                //            if (lookDirection.x > 0.2f)
-                //            {
-                //                latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 125f, Time.deltaTime * 2.0f);
-                //            }
-                //            if (lookDirection.x < -0.2f)
-                //            {
-                //                latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 15.0f, Time.deltaTime * 2.0f);
-                //            }
-                //        }
-                //        else
-                //        {
-                //            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 40.0f, Time.deltaTime * 2.0f);
-                //        }
-                //        latitudinalOrientation += latitudinalThreshold;
-
-                //    }
-                //    else
-                //    {
-                //        if (lookDirection != Vector2.zero)
-                //        {
-                //            if (lookDirection.x > 0.2f)
-                //            {
-                //                latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, -2.5f, Time.deltaTime * 2.0f);
-                //            }
-                //            if (lookDirection.x < -0.2f)
-                //            {
-                //                latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 20.0f, Time.deltaTime * 2.0f);
-                //            }
-                //        }
-                //        else
-                //        {
-                //            latitudinalThreshold = Mathf.Lerp(latitudinalThreshold, 15.0f, Time.deltaTime * 2.0f);
-                //        }
-                //        latitudinalOrientation += latitudinalThreshold;
-                //    }
-
-                //    if (lookDirection != Vector2.zero)
-                //    {
-                //        if (lookDirection.y > 0.2f)
-                //        {
-                //            longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, -20.0f, Time.deltaTime * 2.0f);
-                //        }
-                //        if (lookDirection.y < -0.2f)
-                //        {
-                //            longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, Mathf.Clamp(longitudinalThreshold, 20.0f, 20.0f), Time.deltaTime * 2.0f);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        longitudinalThreshold = Mathf.Lerp(longitudinalThreshold, 0, Time.deltaTime * 2.0f);
-                //    }
-
-                //    longitudinalOrientation += longitudinalThreshold;
-                //    transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(latitudinalOrientation, longitudinalOrientation, 0.0f), 4.5f * Time.deltaTime);
-
-                //    m_xRot = 0.0f;
-                //    m_yRot = CustomController.transform.localEulerAngles.y;
-                //    return;
-                //    xRot = CustomController.transform.localEulerAngles.x;
-
-                //    xRot = xRot > 180 ? xRot - 360 : xRot;
-                //    xRot = Mathf.Clamp(xRot, -50.0f, 70.0f);
-
-                //    yRot = CustomController.transform.localEulerAngles.y;
-
-                //    transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(xRot, yRot, 0.0f), 4.5f * Time.deltaTime);
-                //    return;
             }
             else
             {
                 CameraOfftset = Vector3.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime);
             }
 
-
             xRot = Mathf.Clamp(xRot, -50.0f, 70.0f);
 
-            transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(xRot, yRot, 0), 4.5f * Time.deltaTime);
+            if (lookDirection == Vector2.zero && Mathf.Abs(CustomController.Input.x) > Mathf.Abs(CustomController.Input.z))
+            {
+                transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(transform.localEulerAngles.x, CustomController.transform.localEulerAngles.y, 0), Time.deltaTime);
+            }
+            else
+            {
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(xRot, yRot, 0), 4.5f * Time.deltaTime);
+            }
 
             CustomController.Forward = CustomPerspective.CustomForward;
             CustomController.Right = CustomPerspective.CustomRight;

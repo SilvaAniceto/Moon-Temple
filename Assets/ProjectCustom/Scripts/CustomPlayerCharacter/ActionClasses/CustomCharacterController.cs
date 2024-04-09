@@ -98,7 +98,7 @@ namespace CustomGameController
         public Vector3 Forward { get; set; }
         public Vector3 Right { get; set; }
         public Vector3 CurrentyVelocity { get; set; }
-
+        public Vector3 Input;
         public void UpdateCharacterSpeed(bool speedAction, float speed)
         {
             if (speedAction)
@@ -143,8 +143,8 @@ namespace CustomGameController
             Vector3 forward = inputDirection.z * Forward;
 
             move = right + forward + Vector3.zero;
-
-            if (move != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), 4.5f * Time.deltaTime);
+            Input = inputDirection;
+            if (move != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), Time.deltaTime * 4.5f);
 
             if (CheckWallHit())
             {
@@ -273,7 +273,6 @@ namespace CustomGameController
 
         #region CHARACTER FLIGHT
         public Vector3 FlightVelocity { get; set; }
-        public Transform ForwardFlightDirectionArchor { get; set; }
         public bool InFlight { get; set; }
         public float MaximunFlightHeight { get => JumpSpeed * 1.4f; }
 
@@ -305,7 +304,6 @@ namespace CustomGameController
             }
         }
         public float FlightGravityDirection { get; set; }
-        public float FlightForwardSpeedFactor { get; set; }
         public bool Gliding { get; set; }
         public bool SpeedFlight { get; set; }
 
@@ -334,15 +332,15 @@ namespace CustomGameController
             //xRot = Mathf.Clamp(xRot, -25.0f, 70.0f);
 
             //Vector3 lookDirection = new Vector3(0.0f , yRot, 0.0f);
-
+            Input = inputDirection;
             //transform.rotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(lookDirection), UngroundAcceleration * Time.deltaTime);
             Vector3 move = new Vector3();
-            Vector3 right = inputDirection.x * transform.right;
-            Vector3 forward = inputDirection.z * transform.forward;
+            Vector3 right = inputDirection.x * Right;
+            Vector3 forward = inputDirection.z * Forward;
 
             move = right + forward + Vector3.zero;
 
-            if (move != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), Time.deltaTime / CurrentAcceleration);
+            if (move != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), Time.deltaTime * 4.5f);
 
             CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
@@ -479,10 +477,6 @@ namespace CustomGameController
             ArchorReference = t.transform;
             ArchorReference.transform.SetParent(transform);
 
-            t = new GameObject("~ForwardFlightDirectionArchor");
-            ForwardFlightDirectionArchor = t.transform;
-            ForwardFlightDirectionArchor.transform.SetParent(transform.parent);
-
             SetPlayerPhysicsSimulation(ApplyGravity);
 
             OnSpeedUpAction.AddListener(UpdateCharacterSpeed);
@@ -504,9 +498,6 @@ namespace CustomGameController
             ArchorReference.localRotation = transform.localRotation;
 
             WallCheckOrigin.position = CharacterCenterPosition;
-
-            ForwardFlightDirectionArchor.position = CharacterAnchorPosition;
-            ForwardFlightDirectionArchor.localRotation = Quaternion.Euler(new Vector3(0.0f, transform.localEulerAngles.y, 0.0f));
         }
         #endregion
 
@@ -573,7 +564,6 @@ namespace CustomGameController
             yield return new WaitUntil(() => OnGround);
 
             FlightGravityDirection = 0.0f;
-            FlightForwardSpeedFactor = 0.0f;
 
             CurrentyVelocity = CurrentyVelocity / Drag * 0.85f;
 
@@ -742,8 +732,8 @@ namespace CustomGameController
 
         private void OnGUI()
         {
-            //GUI.Box(new Rect(0, 0, 350, 200), "");
-            //GUILayout.Label("   Flight Speed Factor: " + FlightSpeedFactor);
+            GUI.Box(new Rect(0, 0, 350, 200), "");
+            GUILayout.Label("   Move Vector: " + Input);
         }
     }
 }
