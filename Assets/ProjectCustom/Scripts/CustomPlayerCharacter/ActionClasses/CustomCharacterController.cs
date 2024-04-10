@@ -47,11 +47,18 @@ namespace CustomGameController
         [HideInInspector] public UnityEvent PlayerPhysicsSimulation = new UnityEvent();
 
         #region PLAYER INPUTS SECTION
+        private Vector3 characterDirection;
         public Vector3 CharacterDirection
         {
+            get
+            {
+                return characterDirection;
+            }
             set
             {
                 if (value == Vector3.zero ) StartCoroutine(SmoothStop());
+
+                characterDirection = value;
 
                 OnCharacterDirection?.Invoke(value.normalized, CurrentSpeed);
 
@@ -98,21 +105,19 @@ namespace CustomGameController
         public Vector3 Forward { get; set; }
         public Vector3 Right { get; set; }
         public Vector3 CurrentyVelocity { get; set; }
-        public Vector3 Input;
+
         public void UpdateCharacterSpeed(bool speedAction, float speed)
         {
             if (speedAction)
             {
                 if (OnGround || !InFlight)
                 {
-                    SpeedFlight = false;
                     CurrentSpeed = speed * 3.6f;
                     return;
                 }
                 if (Gliding)
                 {
                     CurrentSpeed = speed * 4.8f;
-                    SpeedFlight = true;
                     return;
                 }
             }
@@ -120,13 +125,11 @@ namespace CustomGameController
             {
                 if (OnGround || !InFlight)
                 {
-                    SpeedFlight = false;
                     CurrentSpeed = speed;
                     return;
                 }
                 if (InFlight)
                 {
-                    SpeedFlight = false;
                     CurrentSpeed = speed * 3.6f;
                     return;
                 }
@@ -138,12 +141,11 @@ namespace CustomGameController
 
             inputDirection = inputDirection.normalized;
 
-            Vector3 move = new Vector3();
             Vector3 right = inputDirection.x * Right;
             Vector3 forward = inputDirection.z * Forward;
 
-            move = right + forward + Vector3.zero;
-            Input = inputDirection;
+            Vector3 move = right + forward + Vector3.zero;
+
             if (move != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), Time.deltaTime * 4.5f);
 
             if (CheckWallHit())
@@ -239,13 +241,13 @@ namespace CustomGameController
             {
                 if (!OnGround && !InFlight)
                 {
-                    if (VerticalState == VerticalState.Jumping) return 1.2f;
+                    if (VerticalState == VerticalState.Jumping) return 1.0f;
                     if (VerticalState == VerticalState.Falling) return 2.2f;
                     return 1.0f;
                 }
                 if (!OnGround && InFlight)
                 {
-                    if (Gliding) return 0.1f;
+                    if (Gliding) return 0.05f;
 
                     return 1.2f;
                 }
@@ -305,7 +307,6 @@ namespace CustomGameController
         }
         public float FlightGravityDirection { get; set; }
         public bool Gliding { get; set; }
-        public bool SpeedFlight { get; set; }
 
         public void CheckEnterFlightState(bool value)
         {
@@ -322,23 +323,10 @@ namespace CustomGameController
         {
             inputDirection = inputDirection.normalized;
 
-            //float xRot = transform.eulerAngles.x;
-            //float yRot = transform.eulerAngles.y;
-
-            //xRot += inputDirection.z * Mathf.Pow(BaseSpeed, 3.0f) * Mathf.Clamp(InverseFlightSpeedFactor, 0.6f, 0.7f);
-            //yRot += inputDirection.x * Mathf.Pow(BaseSpeed, 3.0f) /** Mathf.Clamp(InverseFlightSpeedFactor, 0.6f, 0.7f)*/;
-
-            //xRot = xRot > 180 ? xRot - 360 : xRot;
-            //xRot = Mathf.Clamp(xRot, -25.0f, 70.0f);
-
-            //Vector3 lookDirection = new Vector3(0.0f , yRot, 0.0f);
-            Input = inputDirection;
-            //transform.rotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(lookDirection), UngroundAcceleration * Time.deltaTime);
-            Vector3 move = new Vector3();
             Vector3 right = inputDirection.x * Right;
             Vector3 forward = inputDirection.z * Forward;
 
-            move = right + forward + Vector3.zero;
+            Vector3 move = right + forward + Vector3.zero;
 
             if (move != Vector3.zero) transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(move), Time.deltaTime * 4.5f);
 
@@ -390,7 +378,7 @@ namespace CustomGameController
         #endregion
 
         #region CHARACTER JUMP
-        public float JumpHeight { get => CharacterController.height * 0.8f; }
+        public float JumpHeight { get => CharacterController.height * 0.4f; }
         public float JumpSpeed { get => Mathf.Sqrt(2.0f * JumpHeight * Gravity.y); }
 
         public bool AllowJump { get; set; }
@@ -674,7 +662,7 @@ namespace CustomGameController
             CharacterAnimator.SetBool("OnGround", VerticalState == VerticalState.Idle);
             CharacterAnimator.SetBool("Falling", VerticalState == VerticalState.Falling);
             CharacterAnimator.SetBool("InFlight", VerticalState == VerticalState.InFlight);
-            CharacterAnimator.SetBool("SpeedFlight", SpeedFlight);
+            //CharacterAnimator.SetBool("SpeedFlight", SpeedFlight);
         }
         #endregion 
 
@@ -732,8 +720,8 @@ namespace CustomGameController
 
         private void OnGUI()
         {
-            GUI.Box(new Rect(0, 0, 350, 200), "");
-            GUILayout.Label("   Move Vector: " + Input);
+            //GUI.Box(new Rect(0, 0, 350, 200), "");
+            //GUILayout.Label("   Move Vector: " + CharacterDirection);
         }
     }
 }

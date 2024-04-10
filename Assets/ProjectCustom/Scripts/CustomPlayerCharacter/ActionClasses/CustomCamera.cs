@@ -88,7 +88,7 @@ namespace CustomGameController
 
             xRot = Mathf.Clamp(xRot, -50.0f, 70.0f);
 
-            if (lookDirection == Vector2.zero && Mathf.Abs(CustomController.Input.x) > Mathf.Abs(CustomController.Input.z))
+            if (lookDirection == Vector2.zero && Mathf.Abs(CustomController.CharacterDirection.x) > Mathf.Abs(CustomController.CharacterDirection.z))
             {
                 transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(transform.localEulerAngles.x, CustomController.transform.localEulerAngles.y, 0), Time.deltaTime);
             }
