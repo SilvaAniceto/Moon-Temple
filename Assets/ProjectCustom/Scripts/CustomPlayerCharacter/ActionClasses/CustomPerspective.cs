@@ -8,18 +8,18 @@ namespace CustomGameController
         {
             get
             {
-                Vector3 isometricForward = Camera.main.transform.forward;
-                isometricForward.y = 0;
-                isometricForward = Vector3.Normalize(isometricForward);
+                Vector3 forward = CustomPlayer.CharacterCamera.transform.forward;
+                forward.y = 0;
+                forward = Vector3.Normalize(forward);
 
-                return isometricForward;
+                return forward;
             }
         }
         public static Vector3 CustomRight
         {
             get
             {
-                return Camera.main.transform.right;
+                return CustomPlayer.CharacterCamera.transform.right;
             }
         }
     }

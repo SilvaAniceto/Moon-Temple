@@ -485,14 +485,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6420b5e689643bd4b8261d5d80c93ea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CustomController: {fileID: 8816536009599227440}
   m_groundLayer:
     serializedVersion: 2
     m_Bits: 8
   m_maxSlopeAngle: 30
-  CameraCustom: {fileID: 5971116519063747385}
   m_CameraTarget: {fileID: 4874704018937443166}
-  m_CameraTargetHeight: 1.8
   m_cameraSensibility: 0.6
   m_thirdPersonCollisionFilter:
     serializedVersion: 2
@@ -606,19 +603,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7dcc3bb543fc7bd408556a45e0e20c63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  OnCharacterDirection:
-    m_PersistentCalls:
-      m_Calls: []
-  OnVerticalAction:
-    m_PersistentCalls:
-      m_Calls: []
-  OnSpeedUpAction:
-    m_PersistentCalls:
-      m_Calls: []
-  PlayerPhysicsSimulation:
-    m_PersistentCalls:
-      m_Calls: []
-  Input: {x: 0, y: 0, z: 0}
 --- !u!143 &4425855189054807667
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2031,7 +2015,7 @@ Transform:
   m_GameObject: {fileID: 7202825211704979682}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.3500061, y: 1.6, z: -1.3999939}
+  m_LocalPosition: {x: 0.34999847, y: 1.6, z: -1.4000015}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2614,7 +2598,7 @@ Transform:
   m_GameObject: {fileID: 8403284312476749425}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.3500061, y: 1.6, z: -1.3999939}
+  m_LocalPosition: {x: 0.34999847, y: 1.6, z: -1.4000015}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

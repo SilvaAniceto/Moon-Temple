@@ -59,5 +59,34 @@ namespace CustomGameController
         //        }
         //    }
         //}
+
+        //private float TimeStamp = 0.66f;
+        //private float ActionTimer = 0.33f;
+        //private bool ActionTime
+        //{
+        //    get
+        //    {
+        //        if (TimeStamp >= 0)
+        //        {
+        //            TimeStamp -= Time.deltaTime;
+        //            return false;
+        //        }
+        //        else if (TimeStamp < 0)
+        //        {
+        //            TimeStamp = 0.66f;
+
+        //            ActionTimer -= Time.deltaTime;
+
+        //            if (ActionTimer < 0)
+        //            {
+        //                TimeStamp = 0.66f;
+        //                ActionTimer = 0.33f;
+        //            }
+
+        //            return true;
+        //        }
+        //        return false;
+        //    }
+        //}
     }
 }
