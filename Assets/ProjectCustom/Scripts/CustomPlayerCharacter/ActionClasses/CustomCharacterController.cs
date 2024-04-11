@@ -120,7 +120,18 @@ namespace CustomGameController
                 }
                 if (!OnGround && InFlight)
                 {
-                    if (Gliding) return 0.05f;
+                    if (Gliding)
+                    {
+                        if (DelayGlideGravity)
+                        {
+                            return GlidingGravityMultiplierFactor;
+                        }
+                        else
+                        {
+                            GlidingGravityMultiplierFactor = Mathf.Lerp(GlidingGravityMultiplierFactor, 0.5f, Time.deltaTime * 2.5f);
+                            return GlidingGravityMultiplierFactor;
+                        }
+                    }
 
                     return 1.2f;
                 }
@@ -157,8 +168,8 @@ namespace CustomGameController
                 {
                     InFlight = false;
                     Gliding = false;
-                    FlightHeight = 0.0f;
-                    FlightVelocity = Vector3.zero;
+                    //FlightHeight = 0.0f;
+                    //FlightVelocity = Vector3.zero;
                 }
 
                 if (onGround == value) return;
@@ -198,7 +209,7 @@ namespace CustomGameController
 
             yield return new WaitUntil(() => OnGround);
 
-            FlightGravityDirection = 0.0f;
+            //FlightGravityDirection = 0.0f;
 
             CurrentyVelocity = CurrentyVelocity / Drag * 0.85f;
 
@@ -328,22 +339,17 @@ namespace CustomGameController
                     CurrentSpeed = speed * 3.6f;
                     return;
                 }
-                if (Gliding)
-                {
-                    CurrentSpeed = speed * 5.2f;
-                    return;
-                }
             }
             else
             {
                 if (OnGround || !InFlight)
                 {
                     CurrentSpeed = speed;
-                    return;
+                    return; 
                 }
-                if (InFlight)
+                if (Gliding)
                 {
-                    CurrentSpeed = speed * 3.6f;
+                    CurrentSpeed = speed * 1.8f;
                     return;
                 }
             }
@@ -447,39 +453,68 @@ namespace CustomGameController
         #endregion
 
         #region CHARACTER FLIGHT
-        private float MaximunFlightHeight { get => JumpSpeed * 1.4f; }
+        //private float MaximunFlightHeight { get => JumpSpeed * 1.4f; }
         private bool InFlight { get; set; }
-        private bool Gliding { get; set; }
-        private float FlightGravityDirection { get; set; }
 
-        private float flightHeight;
-        private float FlightHeight
+        private bool gliding;
+        private bool Gliding 
         {
-            get
-            {
-                return flightHeight;
-            }
+            get => gliding;
             set
             {
-                if (OnGround) flightHeight = value;
+                if (value == gliding) return;
 
-                if (flightHeight < 0.8f && value < 1.0f)
+                gliding = value;
+
+                if (value)
                 {
-                    flightHeight = value;
-                    Gliding = false;
-                }
-                else if (flightHeight >= 0.8f && !Gliding)
-                {
-                    Gliding = true;
-                }
-                else if (value <= 0.05f && Gliding)
-                {
-                    flightHeight = value;
-                    Gliding = false;
+                    DelayGlideGravity = true;
+                    GlidingGravityMultiplierFactor = 0.05f;
+                    StopCoroutine(StartDelayGlideGravity());
+                    StartCoroutine(StartDelayGlideGravity());
                 }
             }
         }
-        private Vector3 FlightVelocity { get; set; }
+        private float GlidingGravityMultiplierFactor { get; set; }
+        private bool DelayGlideGravity {  get; set; }
+
+        IEnumerator StartDelayGlideGravity()
+        {
+            yield return new WaitForSeconds(1.0f);
+
+            DelayGlideGravity = false;
+        }
+
+        //private float FlightGravityDirection { get; set; }
+
+        //private float flightHeight;
+        //private float FlightHeight
+        //{
+        //    get
+        //    {
+        //        return flightHeight;
+        //    }
+        //    set
+        //    {
+        //        if (OnGround) flightHeight = value;
+
+        //        if (flightHeight < 0.8f && value < 1.0f)
+        //        {
+        //            flightHeight = value;
+        //            Gliding = false;
+        //        }
+        //        else if (flightHeight >= 0.8f && !Gliding)
+        //        {
+        //            Gliding = true;
+        //        }
+        //        else if (value <= 0.05f && Gliding)
+        //        {
+        //            flightHeight = value;
+        //            Gliding = false;
+        //        }
+        //    }
+        //}
+        //private Vector3 FlightVelocity { get; set; }
 
         private void CheckEnterFlightState(bool value)
         {
@@ -489,7 +524,8 @@ namespace CustomGameController
                 CustomPlayer.OnCharacterDirection.RemoveAllListeners();
                 CustomPlayer.OnCharacterDirection.AddListener(UpdateFlightPosition);
                 CustomPlayer.OnVerticalAction.RemoveAllListeners();
-                CustomPlayer.OnVerticalAction.AddListener(UpdateFlightHeightPosition);
+                //CustomPlayer.OnVerticalAction.AddListener(UpdateFlightHeightPosition);
+                CustomPlayer.OnVerticalAction.AddListener(CharacterGlide);
             }
         }
         private void UpdateFlightPosition(Vector3 inputDirection, float movementSpeed)
@@ -507,46 +543,50 @@ namespace CustomGameController
 
             CharacterController.Move(CurrentyVelocity * Time.deltaTime * movementSpeed);
         }
-        private void UpdateFlightHeightPosition(bool verticalAction)
+        private void CharacterGlide(bool verticalAction)
         {
-            if (!Gliding)
-            {
-                if (verticalAction)
-                {
-                    InFlight = true;
-                    float flightHeight = Mathf.Clamp(Mathf.Round(Mathf.InverseLerp(PreviousPosition.y, PreviousPosition.y + MaximunFlightHeight, CurrentPosition.y) * 100.0f) / 100, 0.0f, 1.0f);
-                    FlightHeight = flightHeight;
-                    FlightGravityDirection = Mathf.Lerp(Gravity.y, 0.0f, flightHeight);
-                }
-                else
-                {
-                    InFlight = false;
-                    FlightGravityDirection = 0.0f;
-                }
-            }
-            else
-            {
-                float flightHeight = Mathf.Clamp(Mathf.Round(Mathf.InverseLerp(PreviousPosition.y + MaximunFlightHeight, CurrentPosition.y, CurrentPosition.y - PreviousPosition.y) * 100.0f) / 100, 0.0f, 1.0f);
-                FlightHeight = flightHeight;
-
-                if (verticalAction)
-                {
-                    InFlight = true;
-                }
-                else
-                {
-                    InFlight = false;
-                }
-            }
-
-            Vector3 up = FlightGravityDirection * Vector3.up;
-
-            Vector3 move = up + new Vector3(FlightVelocity.x, 0.0f, FlightVelocity.z);
-
-            FlightVelocity = Vector3.MoveTowards(FlightVelocity, move, Time.deltaTime * Gravity.y);
-
-            CharacterController.Move(FlightVelocity * Gravity.y * Time.deltaTime);
+            Gliding = verticalAction;
         }
+        //private void UpdateFlightHeightPosition(bool verticalAction)
+        //{
+        //    if (!Gliding)
+        //    {
+        //        if (verticalAction)
+        //        {
+        //            InFlight = true;
+        //            float flightHeight = Mathf.Clamp(Mathf.Round(Mathf.InverseLerp(PreviousPosition.y, PreviousPosition.y + MaximunFlightHeight, CurrentPosition.y) * 100.0f) / 100, 0.0f, 1.0f);
+        //            FlightHeight = flightHeight;
+        //            FlightGravityDirection = Mathf.Lerp(Gravity.y, 0.0f, flightHeight);
+        //        }
+        //        else
+        //        {
+        //            InFlight = false;
+        //            FlightGravityDirection = 0.0f;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        float flightHeight = Mathf.Clamp(Mathf.Round(Mathf.InverseLerp(PreviousPosition.y + MaximunFlightHeight, CurrentPosition.y, CurrentPosition.y - PreviousPosition.y) * 100.0f) / 100, 0.0f, 1.0f);
+        //        FlightHeight = flightHeight;
+
+        //        if (verticalAction)
+        //        {
+        //            InFlight = true;
+        //        }
+        //        else
+        //        {
+        //            InFlight = false;
+        //        }
+        //    }
+
+        //    Vector3 up = FlightGravityDirection * Vector3.up;
+
+        //    Vector3 move = up + new Vector3(FlightVelocity.x, 0.0f, FlightVelocity.z);
+
+        //    FlightVelocity = Vector3.MoveTowards(FlightVelocity, move, Time.deltaTime * Gravity.y);
+
+        //    CharacterController.Move(FlightVelocity * Gravity.y * Time.deltaTime);
+        //}
         #endregion
 
         #region CHARACTER JUMP

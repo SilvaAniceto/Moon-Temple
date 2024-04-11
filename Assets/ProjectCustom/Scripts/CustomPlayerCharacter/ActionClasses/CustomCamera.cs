@@ -12,6 +12,7 @@ namespace CustomGameController
         public Vector3 CameraOfftset { get; set; }
         public Vector3 DefaultOfftset { get => Vector3.forward * -0.2f; }
         public Vector3 SprintOfftset { get => Vector3.forward * -0.8f; }
+        public Vector3 GlidingOfftset { get => new Vector3(-0.35f, -0.5f, -1.25f); }
         public Vector3 SpeedFlightOfftset { get => new Vector3(-0.35f, 0.15f, -1.25f); }
         #endregion
 
@@ -43,7 +44,7 @@ namespace CustomGameController
 
             if (verticalState == VerticalState.InFlight)
             {
-                CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime * 4.5f);
+                CameraOfftset = Vector3.Lerp(CameraOfftset, GlidingOfftset, Time.deltaTime * 4.5f);
             }
             else
             {
