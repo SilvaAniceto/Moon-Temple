@@ -62,6 +62,24 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""processors"": ""ScaleVector2(y=-1)"",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""LeftPropulsion"",
+                    ""type"": ""Value"",
+                    ""id"": ""2b7baf43-6e6a-4de1-8501-11d042bb2fb4"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""RightPropulsion"",
+                    ""type"": ""Value"",
+                    ""id"": ""9901e1db-c664-4281-b91b-8dcb043ca2ed"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -167,7 +185,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""76f81138-9880-4a76-98ee-695bb7c73d62"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -194,6 +212,28 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""processors"": ""ScaleVector2(x=0.8,y=0.8),StickDeadzone(min=0.09)"",
                     ""groups"": ""Gamepad"",
                     ""action"": ""CameraLook"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9618dac8-867a-4644-bfd8-da171f19f7b1"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""LeftPropulsion"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b28cc281-dfc5-465c-91ab-bb9762821384"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""RightPropulsion"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -357,6 +397,8 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         m_PlayerActions_VerticalAction = m_PlayerActions.FindAction("VerticalAction", throwIfNotFound: true);
         m_PlayerActions_SpeedAction = m_PlayerActions.FindAction("SpeedAction", throwIfNotFound: true);
         m_PlayerActions_CameraLook = m_PlayerActions.FindAction("CameraLook", throwIfNotFound: true);
+        m_PlayerActions_LeftPropulsion = m_PlayerActions.FindAction("LeftPropulsion", throwIfNotFound: true);
+        m_PlayerActions_RightPropulsion = m_PlayerActions.FindAction("RightPropulsion", throwIfNotFound: true);
         // GameControllerActions
         m_GameControllerActions = asset.FindActionMap("GameControllerActions", throwIfNotFound: true);
         m_GameControllerActions_Pause = m_GameControllerActions.FindAction("Pause", throwIfNotFound: true);
@@ -431,6 +473,8 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActions_VerticalAction;
     private readonly InputAction m_PlayerActions_SpeedAction;
     private readonly InputAction m_PlayerActions_CameraLook;
+    private readonly InputAction m_PlayerActions_LeftPropulsion;
+    private readonly InputAction m_PlayerActions_RightPropulsion;
     public struct PlayerActionsActions
     {
         private @CustomInputActions m_Wrapper;
@@ -439,6 +483,8 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         public InputAction @VerticalAction => m_Wrapper.m_PlayerActions_VerticalAction;
         public InputAction @SpeedAction => m_Wrapper.m_PlayerActions_SpeedAction;
         public InputAction @CameraLook => m_Wrapper.m_PlayerActions_CameraLook;
+        public InputAction @LeftPropulsion => m_Wrapper.m_PlayerActions_LeftPropulsion;
+        public InputAction @RightPropulsion => m_Wrapper.m_PlayerActions_RightPropulsion;
         public InputActionMap Get() { return m_Wrapper.m_PlayerActions; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -460,6 +506,12 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
             @CameraLook.started += instance.OnCameraLook;
             @CameraLook.performed += instance.OnCameraLook;
             @CameraLook.canceled += instance.OnCameraLook;
+            @LeftPropulsion.started += instance.OnLeftPropulsion;
+            @LeftPropulsion.performed += instance.OnLeftPropulsion;
+            @LeftPropulsion.canceled += instance.OnLeftPropulsion;
+            @RightPropulsion.started += instance.OnRightPropulsion;
+            @RightPropulsion.performed += instance.OnRightPropulsion;
+            @RightPropulsion.canceled += instance.OnRightPropulsion;
         }
 
         private void UnregisterCallbacks(IPlayerActionsActions instance)
@@ -476,6 +528,12 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
             @CameraLook.started -= instance.OnCameraLook;
             @CameraLook.performed -= instance.OnCameraLook;
             @CameraLook.canceled -= instance.OnCameraLook;
+            @LeftPropulsion.started -= instance.OnLeftPropulsion;
+            @LeftPropulsion.performed -= instance.OnLeftPropulsion;
+            @LeftPropulsion.canceled -= instance.OnLeftPropulsion;
+            @RightPropulsion.started -= instance.OnRightPropulsion;
+            @RightPropulsion.performed -= instance.OnRightPropulsion;
+            @RightPropulsion.canceled -= instance.OnRightPropulsion;
         }
 
         public void RemoveCallbacks(IPlayerActionsActions instance)
@@ -633,6 +691,8 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
         void OnVerticalAction(InputAction.CallbackContext context);
         void OnSpeedAction(InputAction.CallbackContext context);
         void OnCameraLook(InputAction.CallbackContext context);
+        void OnLeftPropulsion(InputAction.CallbackContext context);
+        void OnRightPropulsion(InputAction.CallbackContext context);
     }
     public interface IGameControllerActionsActions
     {

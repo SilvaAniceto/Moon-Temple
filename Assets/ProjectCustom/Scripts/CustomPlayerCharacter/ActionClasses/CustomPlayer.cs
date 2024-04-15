@@ -4,6 +4,18 @@ using System.Collections;
 
 namespace CustomGameController
 {
+    public struct CustomPlayerInputHandler
+    {
+        public Vector3 MoveDirectionInput;
+        public bool VerticalActionInput;
+        public bool SpeedUpInput;
+
+        public Vector2 CameraAxis;
+
+        public float LeftPropulsion;
+        public float RightPropulsion;
+    }
+
     public class CustomPlayer : MonoBehaviour
     {
         #region INSPECTOR FIELDS
@@ -45,7 +57,7 @@ namespace CustomGameController
         {
             PlayerPhysicsSimulation?.Invoke();
 
-            CameraLookDirection?.Invoke(new Vector2(CameraTilt, CameraPan), CharacterDirection, CustomController.VerticalState, CustomController.transform.localEulerAngles.y);
+            CameraLookDirection?.Invoke(new Vector2(CameraTilt, CameraPan), CharacterDirection + FlightDirection, CustomController.transform.localEulerAngles.y);
 
             CharacterCheckSlopeAndGround?.Invoke();
 
@@ -55,7 +67,7 @@ namespace CustomGameController
         }
         private void LateUpdate()
         {
-            CameraPositionAndOffset?.Invoke(CustomController.ArchorReference);
+            CameraPositionAndOffset?.Invoke(CustomController.ArchorReference, CustomController.SpeedingUpAction, CustomController.VerticalState);
         }
         #endregion
 
@@ -66,28 +78,37 @@ namespace CustomGameController
 
         [HideInInspector] public static UnityEvent<bool, float> OnSpeedUpAction = new UnityEvent<bool, float>();
 
+        [HideInInspector] public static UnityEvent<Vector3> OnFlightPropulsion = new UnityEvent<Vector3>();
+
         [HideInInspector] public static UnityEvent PlayerPhysicsSimulation = new UnityEvent();
 
-        [HideInInspector] public static UnityEvent<Vector2, Vector3, VerticalState, float> CameraLookDirection = new UnityEvent<Vector2, Vector3, VerticalState, float>();
+        [HideInInspector] public static UnityEvent<Vector2, Vector3, float> CameraLookDirection = new UnityEvent<Vector2, Vector3, float>();
 
-        [HideInInspector] public static UnityEvent<Transform> CameraPositionAndOffset = new UnityEvent<Transform>();
+        [HideInInspector] public static UnityEvent<Transform, bool, VerticalState> CameraPositionAndOffset = new UnityEvent<Transform, bool, VerticalState>();
 
         [HideInInspector] public static UnityEvent CharacterCheckSlopeAndGround = new UnityEvent();
 
         [HideInInspector] public static UnityEvent UpdateCharacterAnimation = new UnityEvent();
 
-        private Vector3 characterDirection;
+        private Vector3 m_characterDirection;
         public Vector3 CharacterDirection
         {
             get
             {
-                return characterDirection;
+                return  m_characterDirection;
             }
             set
             {
-                if (value == Vector3.zero) StartCoroutine(SmoothStop());
+                if (value == Vector3.zero)
+                {
+                    if (CustomController.VerticalState != VerticalState.Flighting)
+                    {
+                        StartCoroutine(SmoothStop());
+                        SpeedUpAction = false;
+                    }
+                }
 
-                characterDirection = value;
+                m_characterDirection = value;
 
                 OnCharacterDirection?.Invoke(value.normalized, CustomController.CurrentSpeed);
 
@@ -107,10 +128,18 @@ namespace CustomGameController
                 }
             }
         }
+
+        private bool m_speedUpAction;
         public bool SpeedUpAction
         {
+            get
+            {
+                return m_speedUpAction;
+            }
             set
             {
+                m_speedUpAction = value;
+
                 OnSpeedUpAction?.Invoke(value, CustomController.BaseSpeed);
             }
         }
@@ -123,6 +152,23 @@ namespace CustomGameController
         }
         public float CameraPan { get; set; }
         public float CameraTilt { get; set; }
+        public float LeftPropulsion { get; set; }
+        public float RightPropulsion { get; set; }
+
+        private Vector3 m_flightDirection;
+        public Vector3 FlightDirection 
+        {
+            get
+            {
+                return m_flightDirection;
+            }
+            set
+            {
+                m_flightDirection = value;
+
+                OnFlightPropulsion?.Invoke(value);
+            }
+        }
 
         public void ReadPlayerInput()
         {
@@ -132,32 +178,35 @@ namespace CustomGameController
 
             inputHandler.MoveDirectionInput = new Vector3(direction.x, 0.0f, direction.y);
 
-            if (CustomController.VerticalState == VerticalState.InFlight)
-            {
-                inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.IsPressed();
-            }
-            else
-            {
-                inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.WasPressedThisFrame();
-            }
+            inputHandler.VerticalActionInput = InputActions.PlayerActions.VerticalAction.WasPressedThisFrame();
 
-            inputHandler.SpeedUpInput = InputActions.PlayerActions.SpeedAction.IsPressed();
+            inputHandler.SpeedUpInput = InputActions.PlayerActions.SpeedAction.WasPressedThisFrame();
 
             Vector2 camAxis = InputActions.PlayerActions.CameraLook.ReadValue<Vector2>();
             camAxis = new Vector2(camAxis.y, camAxis.x);
 
             inputHandler.CameraAxis = camAxis;
 
+            inputHandler.LeftPropulsion = InputActions.PlayerActions.LeftPropulsion.ReadValue<float>();
+            inputHandler.RightPropulsion = InputActions.PlayerActions.RightPropulsion.ReadValue<float>();
+
             SetPlayerInput(inputHandler);
         }
         public void SetPlayerInput(CustomPlayerInputHandler inputs)
         {
             CharacterDirection = inputs.MoveDirectionInput;
-            SpeedUpAction = inputs.SpeedUpInput;
+            SpeedUpAction = inputs.SpeedUpInput ? !SpeedUpAction : SpeedUpAction;
             VerticalAction = inputs.VerticalActionInput;
 
             CameraPan = Mathf.Clamp(inputs.CameraAxis.y, -1, 1);
             CameraTilt = Mathf.Clamp(inputs.CameraAxis.x, -1, 1);
+
+            LeftPropulsion = Mathf.Round(inputs.LeftPropulsion * 100) / 100;
+            RightPropulsion = Mathf.Round(inputs.RightPropulsion * 100) / 100;
+
+            Vector3 up = Vector3.up * (LeftPropulsion + RightPropulsion) / 2.0f;
+            Vector3 right = Vector3.right * (LeftPropulsion - RightPropulsion) / 2.0f;
+            FlightDirection = up + right;
         }
         #endregion
     }

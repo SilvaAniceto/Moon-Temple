@@ -12,8 +12,8 @@ namespace CustomGameController
         public Vector3 CameraOfftset { get; set; }
         public Vector3 DefaultOfftset { get => Vector3.forward * -0.2f; }
         public Vector3 SprintOfftset { get => Vector3.forward * -0.8f; }
-        public Vector3 GlidingOfftset { get => new Vector3(-0.35f, -0.5f, -1.25f); }
-        public Vector3 SpeedFlightOfftset { get => new Vector3(-0.35f, 0.15f, -1.25f); }
+        public Vector3 FlightOfftset { get => new Vector3(-0.35f, -0.5f, -1.25f); }
+        public Vector3 SpeedFlightOfftset { get => new Vector3(-0.35f, -0.5f, -2.5f); }
         #endregion
 
         #region CAMERA METHODS
@@ -28,7 +28,7 @@ namespace CustomGameController
             CameraTarget = cameraTarget;
             CameraSensibility = sensibility;
         }
-        private void UpdateCameraLookDirection(Vector2 cameraPT, Vector3 characterDirection, VerticalState verticalState, float characterVerticalRotation)
+        private void UpdateCameraLookDirection(Vector2 cameraPT, Vector3 characterDirection, float characterVerticalRotation)
         {
             Vector2 lookDirection = new Vector3(cameraPT.x, cameraPT.y);
 
@@ -42,15 +42,6 @@ namespace CustomGameController
 
             xRot = xRot > 180 ? xRot - 360 : xRot;
 
-            if (verticalState == VerticalState.InFlight)
-            {
-                CameraOfftset = Vector3.Lerp(CameraOfftset, GlidingOfftset, Time.deltaTime * 4.5f);
-            }
-            else
-            {
-                CameraOfftset = Vector3.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime * 4.5f);
-            }
-
             xRot = Mathf.Clamp(xRot, -50.0f, 70.0f);
 
             if (lookDirection == Vector2.zero && Mathf.Abs(characterDirection.x) > Mathf.Abs(characterDirection.z))
@@ -62,8 +53,31 @@ namespace CustomGameController
                 transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(xRot, yRot, 0), 4.5f * Time.deltaTime);
             }
         }
-        private void UpdateCameraPositionAndOffset(Transform anchorReference)
+        private void UpdateCameraPositionAndOffset(Transform anchorReference, bool speedingUpAction, VerticalState verticalState)
         {
+            if (verticalState == VerticalState.Flighting)
+            {
+                if (speedingUpAction)
+                {
+                    CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime * 4.5f);
+                }
+                else
+                {
+                    CameraOfftset = Vector3.Lerp(CameraOfftset, FlightOfftset, Time.deltaTime * 4.5f);
+                }
+            }
+            else
+            {
+                if (speedingUpAction)
+                {
+                    CameraOfftset = Vector3.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime * 4.5f);
+                }
+                else
+                {
+                    CameraOfftset = Vector3.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime * 4.5f);
+                }
+            }
+
             transform.position = anchorReference.position;
             CameraTarget.localPosition = Vector3.zero + CameraOfftset;
         }

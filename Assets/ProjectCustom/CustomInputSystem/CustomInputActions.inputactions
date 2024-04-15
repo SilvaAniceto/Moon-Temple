@@ -40,6 +40,24 @@
                     "processors": "ScaleVector2(y=-1)",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "LeftPropulsion",
+                    "type": "Value",
+                    "id": "2b7baf43-6e6a-4de1-8501-11d042bb2fb4",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "RightPropulsion",
+                    "type": "Value",
+                    "id": "9901e1db-c664-4281-b91b-8dcb043ca2ed",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -145,7 +163,7 @@
                 {
                     "name": "",
                     "id": "76f81138-9880-4a76-98ee-695bb7c73d62",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/leftStickPress",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -172,6 +190,28 @@
                     "processors": "ScaleVector2(x=0.8,y=0.8),StickDeadzone(min=0.09)",
                     "groups": "Gamepad",
                     "action": "CameraLook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9618dac8-867a-4644-bfd8-da171f19f7b1",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "LeftPropulsion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b28cc281-dfc5-465c-91ab-bb9762821384",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "RightPropulsion",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
