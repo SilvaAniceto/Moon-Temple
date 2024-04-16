@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TreeEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -142,6 +143,7 @@ namespace CustomGameController
                     CustomPlayer.OnFlightPropulsion.RemoveAllListeners();
                     Flighting = false;
                     FlightVelocity = Vector3.zero;
+                    transform.localRotation = Quaternion.Euler(transform.localEulerAngles.x, transform.localEulerAngles.y, 0.0f);
                 }
 
                 if (onGround == value) return;
@@ -182,8 +184,7 @@ namespace CustomGameController
             yield return new WaitUntil(() => OnGround);
 
             CurrentyVelocity = CurrentyVelocity / Drag * 0.85f;
-
-           
+                       
             CustomPlayer.OnVerticalAction.RemoveAllListeners();
             CustomPlayer.OnVerticalAction.AddListener(Jump);
             CustomPlayer.OnCharacterDirection.RemoveAllListeners();
@@ -406,9 +407,20 @@ namespace CustomGameController
             Vector3 forward = SpeedingUpAction ? FlightVelocity.y * CustomPerspective.CustomForward : inputDirection.z * CustomPerspective.CustomForward;
 
             Vector3 move = right + forward + Vector3.zero;
-            Vector3 lookRotation = SpeedingUpAction ? CustomPerspective.CustomForward + Vector3.zero + (right * 0.25f) : CustomPerspective.CustomForward + Vector3.zero - (right * 0.5f);
+            Vector3 lookRotation = SpeedingUpAction ? CustomPerspective.CustomForward + Vector3.zero + (right * 0.1f) : CustomPerspective.CustomForward + Vector3.zero - (right * 0.5f);
 
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookRotation), Time.deltaTime * 4.5f);
+
+            if (SpeedingUpAction)
+            {
+                float zRot = transform.localEulerAngles.z;
+
+                float yRotFactor = Mathf.Round(Mathf.Clamp(transform.localEulerAngles.y > 180 ? transform.localEulerAngles.y - 360 : transform.localEulerAngles.y, -1.0f, 1.0f));
+
+                zRot = -inputDirection.x * (transform.localEulerAngles.y != 0.0f ? yRotFactor : 0.0f ) * 60.0f;
+
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(transform.localEulerAngles.x, transform.localEulerAngles.y, zRot), 4.5f * Time.deltaTime);
+            }
 
             CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
 
