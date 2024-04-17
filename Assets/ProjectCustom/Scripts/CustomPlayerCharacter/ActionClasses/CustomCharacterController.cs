@@ -44,6 +44,7 @@ namespace CustomGameController
         private Animator CharacterAnimator { get => GetComponent<Animator>(); }
         private Vector3 PreviousPosition { get; set; }
         private Vector3 CurrentPosition { get => transform.position; }
+        public float VerticalLocalEuler { get => transform.localEulerAngles.y > 180 ? transform.localEulerAngles.y - 360 : transform.localEulerAngles.y; }
         #endregion
 
         #region CHARACTER SETUPS
@@ -400,26 +401,24 @@ namespace CustomGameController
             }
         }
         private void UpdateFlightPosition(Vector3 inputDirection, float movementSpeed)
-        {
+        { 
             inputDirection = inputDirection.normalized;
 
             Vector3 right = inputDirection.x * CustomPerspective.CustomRight;
             Vector3 forward = SpeedingUpAction ? FlightVelocity.y * CustomPerspective.CustomForward : inputDirection.z * CustomPerspective.CustomForward;
 
-            Vector3 move = right + forward + Vector3.zero;
-            Vector3 lookRotation = SpeedingUpAction ? CustomPerspective.CustomForward + Vector3.zero + (right * 0.1f) : CustomPerspective.CustomForward + Vector3.zero - (right * 0.5f);
+            Vector3 move = SpeedingUpAction ? forward + Vector3.zero : right + forward + Vector3.zero;
+            Vector3 lookRotation = SpeedingUpAction ? CustomPerspective.CustomForward + Vector3.zero + (right * 0.2f) : CustomPerspective.CustomForward + Vector3.zero - (right * 0.5f);
 
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookRotation), Time.deltaTime * 4.5f);
 
             if (SpeedingUpAction)
             {
                 float zRot = transform.localEulerAngles.z;
+                
+                zRot = -inputDirection.x * 60.0f;
 
-                float yRotFactor = Mathf.Round(Mathf.Clamp(transform.localEulerAngles.y > 180 ? transform.localEulerAngles.y - 360 : transform.localEulerAngles.y, -1.0f, 1.0f));
-
-                zRot = -inputDirection.x * (transform.localEulerAngles.y != 0.0f ? yRotFactor : 0.0f ) * 60.0f;
-
-                transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(transform.localEulerAngles.x, transform.localEulerAngles.y, zRot), 4.5f * Time.deltaTime);
+                transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(transform.localEulerAngles.x, transform.localEulerAngles.y, zRot), 3.6f * Time.deltaTime);
             }
 
             CurrentyVelocity = Vector3.MoveTowards(CurrentyVelocity, move, CurrentAcceleration * Time.deltaTime);
@@ -500,6 +499,7 @@ namespace CustomGameController
             GUILayout.Label("Flight Velocity: " + FlightVelocity);
             GUILayout.Label("Current Velocity: " + CurrentyVelocity);
             GUILayout.Label("Propulsion Force: " + PropulsionForce);
+            //GUILayout.Label("Y: " + delta);
         }
     }
 }
