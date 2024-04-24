@@ -109,7 +109,13 @@ namespace CustomGameController
                 else if (VerticalState == VerticalState.Falling) return 2.2f;
                 else if (VerticalState == VerticalState.Flighting)
                 {
-                    return 0.1f * FlightVelocity.y;
+                    if (SpeedingUpAction)
+                    {
+                        float value = Mathf.Lerp(-0.9f, 1.1f, VerticalDirection);
+                        return Mathf.Clamp(value, -0.9f, 1.0f);
+                    }
+
+                    return 0.1f;
                 }
                 return 1.0f;
             }
@@ -124,6 +130,8 @@ namespace CustomGameController
         private void ApplyGravity()
         {
             GravityVelocity -= Gravity * GravityMultiplierFactor * Time.deltaTime;
+
+            if (VerticalState == VerticalState.Flighting) GravityVelocity = new Vector3(0.0f, Mathf.Clamp(GravityVelocity.y, -Gravity.y * 2.0f, 0.0f), 0.0f);
 
             if (SlopeAngle() <= MaxSlopeAngle)
                 CharacterController.Move(GravityVelocity * Time.deltaTime);
@@ -142,9 +150,10 @@ namespace CustomGameController
                 if (value)
                 {
                     CustomPlayer.OnFlightPropulsion.RemoveAllListeners();
+                    PropulsionForce = 0.0f;
                     Flighting = false;
                     FlightVelocity = Vector3.zero;
-                    transform.localRotation = Quaternion.Euler(transform.localEulerAngles.x, transform.localEulerAngles.y, 0.0f);
+                    transform.localRotation = Quaternion.Euler(0.0f, transform.localEulerAngles.y, 0.0f);
                 }
 
                 if (onGround == value) return;
@@ -388,12 +397,13 @@ namespace CustomGameController
         private Vector3 FlightVelocity { get; set; }
         private bool Flighting { get; set; }
         private float PropulsionForce {  get; set; }
+        private float VerticalDirection { get; set; }
 
         private void CheckEnterFlightState(Vector3 value)
         {
             if (value != Vector3.zero)
             {
-                PropulsionForce = 1.0f;
+                PropulsionForce = value.magnitude;
                 CustomPlayer.OnCharacterDirection.RemoveAllListeners();
                 CustomPlayer.OnCharacterDirection.AddListener(UpdateFlightPosition);
                 CustomPlayer.OnFlightPropulsion.RemoveAllListeners();
@@ -406,9 +416,12 @@ namespace CustomGameController
 
             Vector3 right = inputDirection.x * CustomPerspective.CustomRight;
             Vector3 forward = SpeedingUpAction ? FlightVelocity.y * CustomPerspective.CustomForward : inputDirection.z * CustomPerspective.CustomForward;
+            Vector3 up = -inputDirection.z * transform.up;
+
+            VerticalDirection = Mathf.Round(Mathf.InverseLerp(1.0f, -1.0f, up.y) * 100.0f) / 100.0f;
 
             Vector3 move = SpeedingUpAction ? forward + Vector3.zero : right + forward + Vector3.zero;
-            Vector3 lookRotation = SpeedingUpAction ? CustomPerspective.CustomForward + Vector3.zero + (right * 0.2f) : CustomPerspective.CustomForward + Vector3.zero - (right * 0.5f);
+            Vector3 lookRotation = SpeedingUpAction ? CustomPerspective.CustomForward + (up * Mathf.Lerp(0.1f, 0.85f, VerticalDirection)) + (right * 0.3f) : CustomPerspective.CustomForward + Vector3.zero - (right * 0.5f);
 
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookRotation), Time.deltaTime * 4.5f);
 
@@ -416,7 +429,7 @@ namespace CustomGameController
             {
                 float zRot = transform.localEulerAngles.z;
                 
-                zRot = -inputDirection.x * 60.0f;
+                zRot = -inputDirection.x * 90.0f;
 
                 transform.localRotation = Quaternion.Slerp(transform.localRotation, Quaternion.Euler(transform.localEulerAngles.x, transform.localEulerAngles.y, zRot), 3.6f * Time.deltaTime);
             }
@@ -430,15 +443,7 @@ namespace CustomGameController
             if (flightPropulsion != Vector3.zero)
             {
                 Flighting = true;
-
-                if (SpeedingUpAction)
-                {
-                    PropulsionForce = Mathf.Lerp(PropulsionForce, 0.0f, Time.deltaTime);
-                }
-                else
-                {
-                    PropulsionForce = Mathf.Lerp(PropulsionForce, 0.9f, Time.deltaTime);
-                }
+                PropulsionForce = Mathf.Lerp(PropulsionForce, 0.1f, Time.deltaTime);
             }
             else
             {
@@ -451,7 +456,7 @@ namespace CustomGameController
 
             FlightVelocity = right + up + Vector3.zero;
 
-            CharacterController.Move(FlightVelocity * Gravity.y * GravityMultiplierFactor * Time.deltaTime);
+            CharacterController.Move(FlightVelocity * Gravity.y * PropulsionForce * Time.deltaTime);
         }
         #endregion
 
@@ -492,13 +497,15 @@ namespace CustomGameController
 
         private void OnGUI()
         {
-            GUI.Box(new Rect(0, 0, 300, 300), "Debug");
-            GUILayout.Label("");
-            GUILayout.Label("Vetical State :" + VerticalState);
-            GUILayout.Label("Gravity Multiplier: " + GravityMultiplierFactor);
-            GUILayout.Label("Flight Velocity: " + FlightVelocity);
-            GUILayout.Label("Current Velocity: " + CurrentyVelocity);
-            GUILayout.Label("Propulsion Force: " + PropulsionForce);
+            //GUI.Box(new Rect(0, 0, 300, 300), "Debug");
+            //GUILayout.Label("");
+            //GUILayout.Label("Vetical State :" + VerticalState);
+            //GUILayout.Label("Gravity Multiplier: " + GravityMultiplierFactor);
+            //GUILayout.Label("Gravity Velocity: " + GravityVelocity);
+            //GUILayout.Label("Flight Velocity: " + FlightVelocity);
+            //GUILayout.Label("Vertical Direction: " + VerticalDirection);
+            //GUILayout.Label("Current Velocity: " + CurrentyVelocity);
+            //GUILayout.Label("Propulsion Force: " + PropulsionForce);
             //GUILayout.Label("Y: " + delta);
         }
     }

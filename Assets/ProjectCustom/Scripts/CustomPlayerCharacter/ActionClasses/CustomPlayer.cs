@@ -165,6 +165,14 @@ namespace CustomGameController
             }
             set
             {
+                if (value == Vector3.zero)
+                {
+                    if (CustomController.VerticalState == VerticalState.Flighting)
+                    {
+                        SpeedUpAction = false;
+                    }
+                }
+
                 m_flightDirection = value;
 
                 OnFlightPropulsion?.Invoke(value);
