@@ -206,11 +206,33 @@
                 },
                 {
                     "name": "",
+                    "id": "95e998a9-6e5f-44ac-93e4-8ef49e1cf1af",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse&Keyboard",
+                    "action": "LeftPropulsion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "b28cc281-dfc5-465c-91ab-bb9762821384",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
+                    "action": "RightPropulsion",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "565311e3-70d0-4750-b2a1-eab42f5968da",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse&Keyboard",
                     "action": "RightPropulsion",
                     "isComposite": false,
                     "isPartOfComposite": false
