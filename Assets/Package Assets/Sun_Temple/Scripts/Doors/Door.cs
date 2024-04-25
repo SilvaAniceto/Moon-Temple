@@ -30,13 +30,6 @@ namespace SunTemple
 
 		private bool scriptIsEnabled = true;
 
-        private CustomInputActions InputActions;
-
-        private void Awake()
-        {
-            InputActions = new CustomInputActions();
-            InputActions.Enable();
-        }
 
 
         void Start(){
@@ -81,9 +74,8 @@ namespace SunTemple
 					Rotate ();
 				}
 
-				if (InputActions.DriverActions.Brake.WasPressedThisFrame())
-				{
-					TryToOpen();
+				if (Input.GetKeyDown (KeyCode.Mouse0)) {
+					TryToOpen ();
 				}
 
 

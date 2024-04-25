@@ -13,24 +13,18 @@ namespace Sun_Temple{
 			isLocked = true;
 		}
 
-        private CustomInputActions InputActions;
 
-        private void Awake()
-        {
-            InputActions = new CustomInputActions();
-            InputActions.Enable();
-        }
+	
 
-
-        void Update(){
+		void Update(){
 			
-			//if (InputActions.PlayerActions.VerticalDescending.WasPressedThisFrame()) {
-			//	if (isLocked) {
-			//		isLocked = false;
-			//	} else if (!isLocked) {
-			//		isLocked = true;
-			//	}
-			//}
+			if (Input.GetKeyDown (KeyCode.Escape)) {
+				if (isLocked) {
+					isLocked = false;
+				} else if (!isLocked) {
+					isLocked = true;
+				}
+			}
 
 
 

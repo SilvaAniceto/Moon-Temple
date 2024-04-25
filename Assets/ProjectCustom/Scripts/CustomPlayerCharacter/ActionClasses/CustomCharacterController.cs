@@ -112,7 +112,7 @@ namespace CustomGameController
                     if (SpeedingUpAction)
                     {
                         float value = Mathf.Lerp(-0.9f, 1.1f, VerticalDirection);
-                        return Mathf.Clamp(value, -0.9f, 1.0f);
+                        return Mathf.Clamp(value, 0.002f, 1.0f);
                     }
 
                     return 0.1f;

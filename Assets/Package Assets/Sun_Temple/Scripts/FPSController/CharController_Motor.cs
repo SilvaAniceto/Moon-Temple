@@ -16,16 +16,10 @@ namespace SunTemple{
 		public bool webGLRightClickRotation = true;
 		float gravity = -9.8f;
 
-        //string debugText;
-        private CustomInputActions InputActions;
+		//string debugText;
 
-        private void Awake()
-        {
-            InputActions = new CustomInputActions();
-            InputActions.Enable();
-        }
 
-        void Start(){
+		void Start(){
 
 			character = GetComponent<CharacterController> ();
 
@@ -44,11 +38,11 @@ namespace SunTemple{
 
 
 		void FixedUpdate(){
-			moveFB = InputActions.PlayerActions.MoveDirection.ReadValue<Vector2>().x * speed;
-			moveLR = InputActions.PlayerActions.MoveDirection.ReadValue<Vector2>().y * speed;
+			moveFB = Input.GetAxis ("Horizontal") * speed;
+			moveLR = Input.GetAxis ("Vertical") * speed;
 
-			rotHorizontal = InputActions.PlayerActions.CameraLook.ReadValue<Vector2>().x * sensitivity;
-			rotVertical = -InputActions.PlayerActions.CameraLook.ReadValue<Vector2>().y * sensitivity;
+			rotHorizontal = Input.GetAxisRaw ("Mouse X") * sensitivity;
+			rotVertical = Input.GetAxisRaw ("Mouse Y") * sensitivity;
 
 
 			Vector3 movement = new Vector3 (moveFB, gravity, moveLR);
