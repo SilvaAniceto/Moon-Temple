@@ -11,9 +11,7 @@ namespace CustomThirdPerson
         [SerializeField] float otherValue;
         void FixedUpdate()
         {
-            //otherValue += value * Time.fixedDeltaTime * Physics.gravity.y;
-            //otherValue = Mathf.Clamp(otherValue, -2.0f, 2.0f); 
-            otherValue = Mathf.Lerp(-2.0f, 2.0f, value);
+            otherValue = Mathf.Lerp(-2.0f, 2.0f, new Vector3(value, 0.0f, 0.0f).magnitude);
 
             joint.targetPosition = new Vector3(0.0f, otherValue, 0.0f);
             joint.targetVelocity = Vector3.MoveTowards(joint.targetVelocity, new Vector3(0.0f, otherValue / 0.2f, 0.0f), Time.fixedDeltaTime);
