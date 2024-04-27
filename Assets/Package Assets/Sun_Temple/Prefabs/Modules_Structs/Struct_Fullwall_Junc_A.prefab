@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33411541372013168}
   - component: {fileID: 23695778500246406}
   - component: {fileID: 64828400415044562}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Struct_Fullwall_Junc_A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27,14 +27,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1072892600429732}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000021493559, y: 8.516053e-17, z: -0.0000000039621417, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 56.39273, y: 97.92243, z: 37.573483}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4667377715935482}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -4.243, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &33411541372013168
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 33208125783937998}
   - component: {fileID: 23752806229800576}
   - component: {fileID: 65591808622172458}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Prop_FireTorch_A
   m_TagString: Untagged
   m_Icon: {fileID: 0}

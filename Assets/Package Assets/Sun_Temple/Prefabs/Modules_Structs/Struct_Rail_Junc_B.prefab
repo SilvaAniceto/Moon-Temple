@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33294135858636878}
   - component: {fileID: 23880534699059612}
   - component: {fileID: 65774923713115698}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Struct_Rail_Junc_B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,5 +104,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.6401883, y: 1.4987879, z: 0.6401883}
-  m_Center: {x: -0.019515991, y: 0.74939394, z: 0.0000016093254}
+  m_Size: {x: 0.90501785, y: 2.3959656, z: 0.88879776}
+  m_Center: {x: -0.02762413, y: 1.1979828, z: 0.0000019073486}

@@ -210,12 +210,12 @@ namespace CustomGameController
             CameraPan = Mathf.Clamp(inputs.CameraAxis.y, -1, 1);
             CameraTilt = Mathf.Clamp(inputs.CameraAxis.x, -1, 1);
 
-            LeftPropulsion = Mathf.Round(inputs.LeftPropulsion * 100) / 100;
-            RightPropulsion = Mathf.Round(inputs.RightPropulsion * 100) / 100;
+            //LeftPropulsion = Mathf.Round(inputs.LeftPropulsion * 100) / 100;
+            //RightPropulsion = Mathf.Round(inputs.RightPropulsion * 100) / 100;
 
-            Vector3 up = Vector3.up * (LeftPropulsion + RightPropulsion) / 2.0f;
-            Vector3 right = Vector3.right * (LeftPropulsion - RightPropulsion) / 2.0f;
-            FlightDirection = up + right;
+            //Vector3 up = Vector3.up * (LeftPropulsion + RightPropulsion) / 2.0f;
+            //Vector3 right = Vector3.right * (LeftPropulsion - RightPropulsion) / 2.0f;
+            //FlightDirection = up + right;
         }
         #endregion
     }

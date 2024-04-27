@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4705209474300740}
   - component: {fileID: 33136365596720896}
   - component: {fileID: 23125813711091628}
+  - component: {fileID: 3595494374300276441}
   m_Layer: 0
   m_Name: Struct_Curb_A_Half
   m_TagString: Untagged
@@ -83,3 +84,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3595494374300276441
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1520108608416878}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.0049644, y: 0.6714863, z: 0.24279939}
+  m_Center: {x: -1.0024974, y: 0.33574316, z: -0.000000007450581}

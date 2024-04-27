@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 33891432812272104}
   - component: {fileID: 23408116288943970}
   - component: {fileID: 65836123523849828}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Struct_Rail_Mid_A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,5 +103,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5.05449, y: 0.62910575, z: 0.044488385}
-  m_Center: {x: -2.5276685, y: 0.7887366, z: -0.015457675}
+  m_Size: {x: 10.013027, y: 2.1243591, z: 0.077129535}
+  m_Center: {x: -5.006937, y: 2.0128708, z: -0.03177825}

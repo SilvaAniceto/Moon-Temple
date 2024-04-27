@@ -111,11 +111,11 @@ namespace CustomGameController
                 {
                     if (SpeedingUpAction)
                     {
-                        float value = Mathf.Lerp(-0.9f, 1.1f, VerticalDirection);
+                        float value = Mathf.Lerp(-0.7f, 1.3f, VerticalDirection);
                         return Mathf.Clamp(value, 0.002f, 1.0f);
                     }
 
-                    return 0.1f;
+                    return 0.02f;
                 }
                 return 1.0f;
             }
@@ -397,6 +397,7 @@ namespace CustomGameController
         private Vector3 FlightVelocity { get; set; }
         private bool Flighting { get; set; }
         private float PropulsionForce {  get; set; }
+        private float PropulsionTime { get; set; }
         private float VerticalDirection { get; set; }
 
         private void CheckEnterFlightState(Vector3 value)
@@ -404,6 +405,7 @@ namespace CustomGameController
             if (value != Vector3.zero)
             {
                 PropulsionForce = value.magnitude;
+                PropulsionTime = 5.0f;
                 CustomPlayer.OnCharacterDirection.RemoveAllListeners();
                 CustomPlayer.OnCharacterDirection.AddListener(UpdateFlightPosition);
                 CustomPlayer.OnFlightPropulsion.RemoveAllListeners();
@@ -444,9 +446,23 @@ namespace CustomGameController
             {
                 Flighting = true;
                 PropulsionForce = Mathf.Lerp(PropulsionForce, 0.1f, Time.deltaTime);
+
+                if (PropulsionTime > 0.0f /*&& SpeedingUpAction*/)
+                {
+                    PropulsionTime = Mathf.Lerp(PropulsionTime, 0.0f, Time.deltaTime);
+                    PropulsionTime = Mathf.Round(PropulsionTime * 100.0f) / 100.0f;
+                    PropulsionTime = Mathf.Clamp(PropulsionTime, 0.0f, 5.0f);
+                }
             }
             else
             {
+                if (PropulsionTime < 5.0f)
+                {
+                    PropulsionTime = Mathf.Lerp(PropulsionTime, 5.0f, Time.deltaTime);
+                    PropulsionTime = Mathf.Round(PropulsionTime * 100.0f) / 100.0f;
+                    PropulsionTime = Mathf.Clamp(PropulsionTime, 0.0f, 5.0f);
+                }
+
                 PropulsionForce = Mathf.Lerp(PropulsionForce, 1.0f, Time.deltaTime);
                 Flighting = false;
             }
@@ -497,16 +513,17 @@ namespace CustomGameController
 
         private void OnGUI()
         {
-            //GUI.Box(new Rect(0, 0, 300, 300), "Debug");
-            //GUILayout.Label("");
+            GUI.Box(new Rect(0, 0, 300, 300), "Debug");
+            GUILayout.Label("");
             //GUILayout.Label("Vetical State :" + VerticalState);
-            //GUILayout.Label("Gravity Multiplier: " + GravityMultiplierFactor);
+            GUILayout.Label("Gravity Multiplier: " + GravityMultiplierFactor);
             //GUILayout.Label("Gravity Velocity: " + GravityVelocity);
             //GUILayout.Label("Flight Velocity: " + FlightVelocity);
             //GUILayout.Label("Vertical Direction: " + VerticalDirection);
             //GUILayout.Label("Current Velocity: " + CurrentyVelocity);
             //GUILayout.Label("Propulsion Force: " + PropulsionForce);
             //GUILayout.Label("Y: " + delta);
+            GUILayout.Label("Propulsion Time: " + PropulsionTime);
         }
     }
 }
