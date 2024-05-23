@@ -59,7 +59,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""type"": ""Value"",
                     ""id"": ""e5d67788-fd8d-4a3f-92a8-336696ee5243"",
                     ""expectedControlType"": ""Vector2"",
-                    ""processors"": ""ScaleVector2(y=-1)"",
+                    ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 },
@@ -209,7 +209,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""id"": ""4bc6381d-1ad6-4dd2-8bd7-5d044e51810e"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": ""ScaleVector2(x=0.8,y=0.8),StickDeadzone(min=0.09)"",
+                    ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""CameraLook"",
                     ""isComposite"": false,

@@ -24,7 +24,6 @@ namespace CustomGameController
         [SerializeField] private float m_maxSlopeAngle = 45f;
 
         [Header("Custom Camera Controller Settings")]
-        [SerializeField] private Transform m_CameraTarget;
         [SerializeField, Range(0.3f, 1.0f)] private float m_cameraSensibility = 1.25f;
         [SerializeField] LayerMask m_thirdPersonCollisionFilter;
         #endregion
@@ -52,13 +51,13 @@ namespace CustomGameController
         private void Start()
         {
             CustomController.SetupCharacter(m_groundLayer);
-            CameraCustom.SetupCamera(m_thirdPersonCollisionFilter, CustomController, m_CameraTarget, m_cameraSensibility);
+            CameraCustom.SetupCamera(m_thirdPersonCollisionFilter, CustomController, m_cameraSensibility);
         }
         private void Update()
         {
             PlayerPhysicsSimulation?.Invoke();
 
-            CameraLookDirection?.Invoke(new Vector2(CameraTilt, CameraPan), CharacterDirection + FlightDirection, CustomController, DirectionVerticalDeltaRotation);
+            CameraLookDirection?.Invoke(new Vector2(CameraPan, CameraTilt), CharacterDirection + FlightDirection, CustomController, DirectionVerticalDeltaRotation);
 
             CharacterCheckSlopeAndGround?.Invoke();
 
@@ -68,7 +67,7 @@ namespace CustomGameController
         }
         private void LateUpdate()
         {
-            CameraPositionAndOffset?.Invoke(CustomController.ArchorReference, CustomController.SpeedingUpAction, CustomController.VerticalState);
+            CameraPositionAndOffset?.Invoke(CustomController.transform, CustomController.SpeedingUpAction, CustomController.VerticalState);
         }
         #endregion
 
@@ -192,7 +191,7 @@ namespace CustomGameController
             inputHandler.SpeedUpInput = InputActions.PlayerActions.SpeedAction.WasPressedThisFrame();
 
             Vector2 camAxis = InputActions.PlayerActions.CameraLook.ReadValue<Vector2>();
-            camAxis = new Vector2(camAxis.y, camAxis.x);
+            camAxis = new Vector2(camAxis.x, camAxis.y);
 
             inputHandler.CameraAxis = camAxis;
 
@@ -207,8 +206,8 @@ namespace CustomGameController
             SpeedUpAction = inputs.SpeedUpInput ? !SpeedUpAction : SpeedUpAction;
             VerticalAction = inputs.VerticalActionInput;
 
-            CameraPan = Mathf.Clamp(inputs.CameraAxis.y, -1, 1);
-            CameraTilt = Mathf.Clamp(inputs.CameraAxis.x, -1, 1);
+            CameraPan = Mathf.Clamp(inputs.CameraAxis.x, -1, 1);
+            CameraTilt = Mathf.Clamp(inputs.CameraAxis.y, -1, 1);
 
             //LeftPropulsion = Mathf.Round(inputs.LeftPropulsion * 100) / 100;
             //RightPropulsion = Mathf.Round(inputs.RightPropulsion * 100) / 100;
