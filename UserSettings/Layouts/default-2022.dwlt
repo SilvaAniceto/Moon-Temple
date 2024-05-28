@@ -120,7 +120,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 101
+  controlID: 119
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 42
+  controlID: 52
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -295,7 +295,7 @@ MonoBehaviour:
   m_ShowGizmos: 0
   m_TargetDisplay: 0
   m_ClearColor: {r: 0, g: 0, b: 0, a: 0}
-  m_TargetSize: {x: 3840, y: 2160}
+  m_TargetSize: {x: 1920, y: 1080}
   m_TextureFilterMode: 0
   m_TextureHideFlags: 61
   m_RenderIMGUI: 1
@@ -304,16 +304,16 @@ MonoBehaviour:
   m_VSyncEnabled: 0
   m_Gizmos: 0
   m_Stats: 0
-  m_SelectedSizes: 06000000000000000000000000000000000000000000000000000000000000000000000000000000
+  m_SelectedSizes: 03000000000000000000000000000000000000000000000000000000000000000000000000000000
   m_ZoomArea:
     m_HRangeLocked: 0
     m_VRangeLocked: 0
     hZoomLockedByDefault: 0
     vZoomLockedByDefault: 0
-    m_HBaseRangeMin: -1920
-    m_HBaseRangeMax: 1920
-    m_VBaseRangeMin: -1080
-    m_VBaseRangeMax: 1080
+    m_HBaseRangeMin: -960
+    m_HBaseRangeMax: 960
+    m_VBaseRangeMin: -540
+    m_VBaseRangeMax: 540
     m_HAllowExceedBaseRangeMin: 1
     m_HAllowExceedBaseRangeMax: 1
     m_VAllowExceedBaseRangeMin: 1
@@ -333,7 +333,7 @@ MonoBehaviour:
       y: 21
       width: 1258
       height: 668
-    m_Scale: {x: 0.30925927, y: 0.30925927}
+    m_Scale: {x: 0.61851853, y: 0.61851853}
     m_Translation: {x: 629, y: 334}
     m_MarginLeft: 0
     m_MarginRight: 0
@@ -341,12 +341,12 @@ MonoBehaviour:
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -2033.8922
-      y: -1080
-      width: 4067.7844
-      height: 2160
+      x: -1016.9461
+      y: -540
+      width: 2033.8922
+      height: 1080
     m_MinimalGUI: 1
-  m_defaultScale: 0.30925927
+  m_defaultScale: 0.61851853
   m_LastWindowPixelSize: {x: 1258, y: 689}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
@@ -390,9 +390,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 1269fcff
-      m_LastClickedID: -235246
-      m_ExpandedIDs: f670fbff96cffbff9acffbff32d3fbffb6d9fbffbad9fbff8ee2fbff92e2fbffb417fcfff618fcff4631fcff6e37fcff7237fcff2461fcff2861fcffd267fcff0c13feff3884ffffe6faffffe69400008a990000c2990000
+      m_SelectedIDs: 7283ffff
+      m_LastClickedID: -31886
+      m_ExpandedIDs: 7ab4fbff7ebefbffee76fcffae34fdffb234fdff404bfdff444bfdff7c51fdff1e56fdff8862fdffd664fdfff267fdffa86dfdff0a70fdffa874fdff1e87fdffe08bfdff3482ffff7283ffffd4faffff1a950000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -857,7 +857,7 @@ MonoBehaviour:
       floating: 0
       collapsed: 0
       displayed: 1
-      snapOffset: {x: 48, y: 25}
+      snapOffset: {x: 48, y: 10}
       snapOffsetDelta: {x: 0, y: 0}
       snapCorner: 0
       id: UnityEditor.SceneViewCameraOverlay
@@ -876,9 +876,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 151.38211, y: 85.97631, z: 293.26675}
+    m_Target: {x: 292.05005, y: 29.89383, z: 231.44626}
     speed: 2
-    m_Value: {x: 151.38211, y: 85.97631, z: 293.26675}
+    m_Value: {x: 0.3499999, y: 1.5999999, z: 98.6}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -924,17 +924,17 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.18209693, y: 0.75242, z: -0.23275119, w: 0.5886712}
+    m_Target: {x: 0.22082521, y: 0.7329029, z: -0.2791329, w: 0.57980627}
     speed: 2
-    m_Value: {x: 0.18121353, y: 0.75276744, z: -0.23162204, w: 0.58894306}
+    m_Value: {x: 0.031123988, y: -0.15292262, z: 0.004818641, w: 0.98773617}
   m_Size:
-    m_Target: 35.52266
+    m_Target: 90.94801
     speed: 2
-    m_Value: 33.992977
+    m_Value: 21.854647
   m_Ortho:
-    m_Target: 0
+    m_Target: 1
     speed: 2
-    m_Value: 0
+    m_Value: 1
   m_CameraSettings:
     m_Speed: 0.82059
     m_SpeedNormalized: 0.41
@@ -1341,7 +1341,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/TerrainSampleAssets/TerrainLayers
+    - Assets/ProjectCustom/Scripts/CustomPlayerCharacter/ActionClasses
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -1349,16 +1349,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/TerrainSampleAssets/TerrainLayers
+  - Assets/ProjectCustom/Scripts/CustomPlayerCharacter/ActionClasses
   m_LastFoldersGridSize: 16
   m_LastProjectPath: C:\Users\silva\OneDrive\Documentos\Unity Projects\RPG-Experience
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 748}
-    m_SelectedIDs: 7ac63b00
-    m_LastClickedID: 3917434
-    m_ExpandedIDs: 00000000f8080100fa080100fc080100fe08010000090100020901000409010006090100080901000a0901000c0901005a450e005e450e0062450e0068450e006e450e007c450e009ac63b009cc63b009ec63b0000ca9a3b
+    scrollPos: {x: 0, y: 256}
+    m_SelectedIDs: 72020400
+    m_LastClickedID: 262770
+    m_ExpandedIDs: 00000000020901000409010006090100080901000a0901000c0901000e090100100901001209010014090100160901002a0c0100300c01007402040000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1386,7 +1386,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000f8080100fa080100fc080100fe08010000090100020901000409010006090100080901000a0901000c090100
+    m_ExpandedIDs: 00000000020901000409010006090100080901000a0901000c0901000e09010010090100120901001409010016090100
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1438,7 +1438,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
     m_NewAssetIndexInList: -1
-    m_ScrollPosition: {x: 0, y: 103}
+    m_ScrollPosition: {x: 0, y: 0}
     m_GridSize: 16
   m_SkipHiddenPackages: 0
   m_DirectoriesAreaWidth: 603

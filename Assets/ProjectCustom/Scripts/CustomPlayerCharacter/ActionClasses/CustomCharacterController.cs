@@ -513,17 +513,17 @@ namespace CustomGameController
 
         private void OnGUI()
         {
-            GUI.Box(new Rect(0, 0, 300, 300), "Debug");
-            GUILayout.Label("");
+            //GUI.Box(new Rect(0, 0, 300, 300), "Debug");
+            //GUILayout.Label("");
             //GUILayout.Label("Vetical State :" + VerticalState);
-            GUILayout.Label("Gravity Multiplier: " + GravityMultiplierFactor);
+            //GUILayout.Label("Gravity Multiplier: " + GravityMultiplierFactor);
             //GUILayout.Label("Gravity Velocity: " + GravityVelocity);
             //GUILayout.Label("Flight Velocity: " + FlightVelocity);
             //GUILayout.Label("Vertical Direction: " + VerticalDirection);
             //GUILayout.Label("Current Velocity: " + CurrentyVelocity);
             //GUILayout.Label("Propulsion Force: " + PropulsionForce);
             //GUILayout.Label("Y: " + delta);
-            GUILayout.Label("Propulsion Time: " + PropulsionTime);
+            //GUILayout.Label("Propulsion Time: " + PropulsionTime);
         }
     }
 }
