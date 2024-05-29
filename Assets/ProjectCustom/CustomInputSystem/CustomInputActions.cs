@@ -59,7 +59,7 @@ public partial class @CustomInputActions: IInputActionCollection2, IDisposable
                     ""type"": ""Value"",
                     ""id"": ""e5d67788-fd8d-4a3f-92a8-336696ee5243"",
                     ""expectedControlType"": ""Vector2"",
-                    ""processors"": """",
+                    ""processors"": ""NormalizeVector2"",
                     ""interactions"": """",
                     ""initialStateCheck"": true
                 },

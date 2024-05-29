@@ -24,7 +24,7 @@ namespace CustomGameController
         [SerializeField] private float m_maxSlopeAngle = 45f;
 
         [Header("Custom Camera Controller Settings")]
-        [SerializeField, Range(0.3f, 1.0f)] private float m_cameraSensibility = 1.25f;
+        [SerializeField, Range(0.1f, 1.0f)] private float m_cameraSensibility = 1.25f;
         [SerializeField] LayerMask m_thirdPersonCollisionFilter;
         #endregion
 
@@ -55,9 +55,10 @@ namespace CustomGameController
         }
         private void Update()
         {
+            CameraCustom.CameraSensibility = m_cameraSensibility;
             PlayerPhysicsSimulation?.Invoke();
 
-            CameraLookDirection?.Invoke(new Vector2(CameraPan, CameraTilt), CharacterDirection + FlightDirection, CustomController, DirectionVerticalDeltaRotation);
+            CameraLookDirection?.Invoke(new Vector2(CameraPan, CameraTilt), CharacterDirection.normalized /*+ FlightDirection*/, CustomController, DirectionVerticalDeltaRotation);
 
             CharacterCheckSlopeAndGround?.Invoke();
 

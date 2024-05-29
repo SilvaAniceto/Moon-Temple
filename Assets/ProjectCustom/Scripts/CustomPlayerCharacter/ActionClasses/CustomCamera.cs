@@ -54,8 +54,8 @@ namespace CustomGameController
             float pan = PanAxis.localEulerAngles.y;
             float tilt = TiltAxis.localEulerAngles.x;
 
-            pan -= lookDirection.x;
-            tilt -= lookDirection.y;
+            pan += lookDirection.x * CameraSensibility;
+            tilt -= lookDirection.y * CameraSensibility;
 
             tilt = tilt > 180 ? tilt - 360 : tilt;
             tilt = Mathf.Clamp(tilt, -50.0f, 70.0f);
@@ -64,7 +64,7 @@ namespace CustomGameController
             {
                 if (Mathf.Abs(lookDirection.x * lookDirection.magnitude) > 0.45f)
                 {
-                    PanAxis.rotation = Quaternion.Slerp(PanAxis.rotation, Quaternion.Euler(0, pan, 0), Time.deltaTime / 3.14f);               
+                    PanAxis.localEulerAngles = Vector3.up * pan;
                 }
 
                 if (Mathf.Abs(lookDirection.y * lookDirection.magnitude) > 0.125f)
@@ -75,7 +75,17 @@ namespace CustomGameController
                 return;
             }
 
-            PanAxis.rotation = Quaternion.Slerp(PanAxis.rotation, customController.transform.rotation, Time.deltaTime);
+            if (characterDirection != Vector3.zero)
+            {
+                pan -= characterDirection.x;
+
+                PanAxis.rotation = Mathf.Abs(characterDirection.x) > 0.45f ? Quaternion.Slerp(PanAxis.rotation, Quaternion.Euler(0, pan, 0), 0.0009f) : PanAxis.rotation;
+                TiltAxis.localRotation = TiltAxis.localRotation;
+
+                return;
+            }
+
+            PanAxis.rotation = PanAxis.rotation;
             TiltAxis.localRotation = TiltAxis.localRotation;
         }
         private void UpdateCameraPositionAndOffset(Transform anchorReference, bool speedingUpAction, VerticalState verticalState)
