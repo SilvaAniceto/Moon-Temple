@@ -11,13 +11,10 @@ namespace CustomGameController
         public float CameraSensibility { get; set; }
         public LayerMask ThirdPersonCollisionFilter { get; set; }
         public CustomCharacterController CustomController { get; set; }
+        public Transform CameraCloseAnchor { get; set; }
         public Vector3 CameraOfftset { get; set; }
-        public Vector3 DefaultOfftset { get => Vector3.forward * -0.2f; }
-        public Vector3 JumpOffset { get => (Vector3.up * -0.8f); }
-        public Vector3 SprintOfftset { get => Vector3.forward * -0.8f; }
-        public Vector3 FlightOfftset { get => new Vector3(-0.35f, -0.5f, -1.25f); }
-        public Vector3 SpeedFlightOfftset { get => new Vector3(-0.35f, -0.5f, -2.5f); }
-        public float VerticalLocalEuler { get => transform.localEulerAngles.y > 180 ? transform.localEulerAngles.y - 360 : transform.localEulerAngles.y; }
+        public Vector3 MaxOffset { get => new Vector3(0.45f, 0.0f, -1.6f); }
+        public float CameraDistance { get; set; }
         #endregion
 
         #region CAMERA METHODS
@@ -31,21 +28,20 @@ namespace CustomGameController
             CustomController = customController;
             CameraSensibility = sensibility;
 
-            PanAxis = new GameObject("HorizontalAxis").transform;
+            PanAxis = new GameObject("PanAxis").transform;
             PanAxis.SetParent(transform);
             PanAxis.localPosition = Vector3.zero;
             PanAxis.localRotation = Quaternion.Euler(0, 0, 0);
 
-            TiltAxis = new GameObject("VerticalAxis").transform;
+            TiltAxis = new GameObject("TiltAxis").transform;
             TiltAxis.SetParent(PanAxis);
             TiltAxis.localPosition = Vector3.up * 1.7f;
             TiltAxis.localRotation = Quaternion.Euler(0, 0, 0);
 
             CameraTarget = CustomPlayer.CharacterCamera.transform;
             CameraTarget.SetParent(TiltAxis);
-            CameraTarget.localPosition = Vector3.forward * -1.2f + Vector3.right * 0.45f;
         }
-        private void UpdateCameraLookDirection(Vector2 cameraPT, Vector3 characterDirection, CustomCharacterController customController, float directionVerticalDeltaRotation)
+        private void UpdateCameraLookDirection(Vector2 cameraPT, Vector3 characterDirection, CustomCharacterController customController)
         {
             Vector2 lookDirection = new Vector3(cameraPT.x, cameraPT.y);
 
@@ -77,9 +73,9 @@ namespace CustomGameController
 
             if (characterDirection != Vector3.zero)
             {
-                pan -= characterDirection.x;
+                pan += characterDirection.x;
 
-                PanAxis.rotation = Mathf.Abs(characterDirection.x) > 0.45f ? Quaternion.Slerp(PanAxis.rotation, Quaternion.Euler(0, pan, 0), 0.0009f) : PanAxis.rotation;
+                PanAxis.rotation = Mathf.Abs(characterDirection.x) > 0.45f ? Quaternion.Slerp(PanAxis.rotation, Quaternion.Euler(0, pan, 0), 0.2f) : PanAxis.rotation;
                 TiltAxis.localRotation = TiltAxis.localRotation;
 
                 return;
@@ -90,42 +86,17 @@ namespace CustomGameController
         }
         private void UpdateCameraPositionAndOffset(Transform anchorReference, bool speedingUpAction, VerticalState verticalState)
         {
-            //if (verticalState == VerticalState.Flighting)
-            //{
-            //    if (speedingUpAction)
-            //    {
-            //        CameraOfftset = Vector3.Lerp(CameraOfftset, SpeedFlightOfftset, Time.deltaTime * 4.5f);
-            //    }
-            //    else
-            //    {
-            //        CameraOfftset = Vector3.Lerp(CameraOfftset, FlightOfftset, Time.deltaTime * 4.5f);
-            //    }
-            //}
-            //else if (verticalState == VerticalState.Jumping)
-            //{
-            //    if (speedingUpAction)
-            //    {
-            //        CameraOfftset = Vector3.Lerp(CameraOfftset, SprintOfftset + JumpOffset, Time.deltaTime * 4.5f);
-            //    }
-            //    else
-            //    {
-            //        CameraOfftset = Vector3.Lerp(CameraOfftset, DefaultOfftset + JumpOffset, Time.deltaTime * 4.5f);
-            //    }
-            //}
-            //else
-            //{
-            //    if (speedingUpAction)
-            //    {
-            //        CameraOfftset = Vector3.Lerp(CameraOfftset, SprintOfftset, Time.deltaTime * 4.5f);
-            //    }
-            //    else
-            //    {
-            //        CameraOfftset = Vector3.Lerp(CameraOfftset, DefaultOfftset, Time.deltaTime * 4.5f);
-            //    }
-            //}
-
             transform.position = anchorReference.position;
-            //CameraTarget.localPosition = Vector3.zero + CameraOfftset;
+            CameraTarget.LookAt(PanAxis.position + (PanAxis.forward * 25));
+            CameraTarget.localEulerAngles = new Vector3(0, CameraTarget.localEulerAngles.y, 0);
+
+            CameraDistance = speedingUpAction ? Mathf.Lerp(CameraDistance, 1.0f, Time.deltaTime * 3.5f) : Mathf.Lerp(CameraDistance, 0.7f, Time.deltaTime * 3.5f);
+
+            Physics.SphereCast(TiltAxis.position, 0.2f, CameraTarget.position - TiltAxis.position, out RaycastHit hitInfo, CameraDistance * 1.05f, ThirdPersonCollisionFilter);
+
+            CameraOfftset = Vector3.Lerp(Vector3.zero, MaxOffset, hitInfo.collider == null ? CameraDistance : Mathf.Clamp(hitInfo.distance, 0.25f, 1));
+
+            CameraTarget.localPosition = CameraOfftset;
         }
         #endregion
     }

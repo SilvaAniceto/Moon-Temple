@@ -37,7 +37,6 @@ namespace CustomGameController
         private CustomCamera CameraCustom { get => GetComponentInChildren<CustomCamera>(); }
 
         private CustomInputActions InputActions;
-        private float DirectionVerticalDeltaRotation { get => Mathf.Clamp(Mathf.Round(CameraCustom.VerticalLocalEuler - CustomController.VerticalLocalEuler), -1.0f, 1.0f); }
         #endregion
 
         #region DEFAULTS METHODS
@@ -58,7 +57,7 @@ namespace CustomGameController
             CameraCustom.CameraSensibility = m_cameraSensibility;
             PlayerPhysicsSimulation?.Invoke();
 
-            CameraLookDirection?.Invoke(new Vector2(CameraPan, CameraTilt), CharacterDirection.normalized /*+ FlightDirection*/, CustomController, DirectionVerticalDeltaRotation);
+            CameraLookDirection?.Invoke(new Vector2(CameraPan, CameraTilt), CharacterDirection.normalized , CustomController);
 
             CharacterCheckSlopeAndGround?.Invoke();
 
@@ -83,7 +82,7 @@ namespace CustomGameController
 
         [HideInInspector] public static UnityEvent PlayerPhysicsSimulation = new UnityEvent();
 
-        [HideInInspector] public static UnityEvent<Vector2, Vector3, CustomCharacterController, float> CameraLookDirection = new UnityEvent<Vector2, Vector3, CustomCharacterController, float>();
+        [HideInInspector] public static UnityEvent<Vector2, Vector3, CustomCharacterController> CameraLookDirection = new UnityEvent<Vector2, Vector3, CustomCharacterController>();
 
         [HideInInspector] public static UnityEvent<Transform, bool, VerticalState> CameraPositionAndOffset = new UnityEvent<Transform, bool, VerticalState>();
 
