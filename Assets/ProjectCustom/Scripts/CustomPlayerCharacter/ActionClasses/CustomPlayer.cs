@@ -24,8 +24,7 @@ namespace CustomGameController
         [SerializeField] private float m_maxSlopeAngle = 45f;
 
         [Header("Custom Camera Controller Settings")]
-        [SerializeField, Range(0.1f, 1.0f)] private float m_cameraSensibility = 1.25f;
-        [SerializeField] LayerMask m_thirdPersonCollisionFilter;
+        [SerializeField] private PlayerCamera m_playerCamera = new PlayerCamera();
         #endregion
 
         #region PUBLIC PROPERTIES
@@ -34,7 +33,6 @@ namespace CustomGameController
 
         #region PRIVATE PROPERTIES
         private CustomCharacterController CustomController { get => GetComponentInChildren<CustomCharacterController>(); }
-        private CustomCamera CameraCustom { get => GetComponentInChildren<CustomCamera>(); }
 
         private CustomInputActions InputActions;
         #endregion
@@ -50,14 +48,13 @@ namespace CustomGameController
         private void Start()
         {
             CustomController.SetupCharacter(m_groundLayer);
-            CameraCustom.SetupCamera(m_thirdPersonCollisionFilter, CustomController, m_cameraSensibility);
+            m_playerCamera.SetupCamera(transform, m_playerCamera.m_collisionFilter, m_playerCamera.m_cameraRotationSensibility);
         }
         private void Update()
         {
-            CameraCustom.CameraSensibility = m_cameraSensibility;
             PlayerPhysicsSimulation?.Invoke();
 
-            CameraLookDirection?.Invoke(new Vector2(CameraPan, CameraTilt), CharacterDirection.normalized , CustomController);
+            m_playerCamera.UpdateCameraLookDirection(new Vector2(CameraPan, CameraTilt), CharacterDirection.normalized , CustomController.SpeedingUpAction);
 
             CharacterCheckSlopeAndGround?.Invoke();
 
@@ -67,7 +64,7 @@ namespace CustomGameController
         }
         private void LateUpdate()
         {
-            CameraPositionAndOffset?.Invoke(CustomController.transform, CustomController.SpeedingUpAction, CustomController.VerticalState);
+            m_playerCamera.UpdateCameraPositionAndOffset(CustomController.transform, CustomController.SpeedingUpAction, CustomController.VerticalState);
         }
         #endregion
 
@@ -82,10 +79,6 @@ namespace CustomGameController
 
         [HideInInspector] public static UnityEvent PlayerPhysicsSimulation = new UnityEvent();
 
-        [HideInInspector] public static UnityEvent<Vector2, Vector3, CustomCharacterController> CameraLookDirection = new UnityEvent<Vector2, Vector3, CustomCharacterController>();
-
-        [HideInInspector] public static UnityEvent<Transform, bool, VerticalState> CameraPositionAndOffset = new UnityEvent<Transform, bool, VerticalState>();
-
         [HideInInspector] public static UnityEvent CharacterCheckSlopeAndGround = new UnityEvent();
 
         [HideInInspector] public static UnityEvent UpdateCharacterAnimation = new UnityEvent();
@@ -98,7 +91,7 @@ namespace CustomGameController
                 return  m_characterDirection;
             }
             set
-            {
+            { 
                 if (value == Vector3.zero)
                 {
                     if (CustomController.VerticalState != VerticalState.Flighting)
