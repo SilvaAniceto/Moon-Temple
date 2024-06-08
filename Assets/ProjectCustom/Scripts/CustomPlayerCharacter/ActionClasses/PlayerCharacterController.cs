@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.Events;
-using System.Collections;
 
 namespace CustomGameController
 {
@@ -16,25 +14,41 @@ namespace CustomGameController
         public float RightPropulsion;
     }
 
-    public class CustomPlayer : MonoBehaviour
+    public class PlayerCharacterController : MonoBehaviour
     {
+        public static Camera CharacterCamera;
+
         #region INSPECTOR FIELDS
         [Header("Custom Character Controller Settings")]
-        [SerializeField] private LayerMask m_groundLayer;
-        [SerializeField] private float m_maxSlopeAngle = 45f;
+        [SerializeField] private PlayerCharacter m_playerCharacter = new PlayerCharacter();
 
         [Header("Custom Camera Controller Settings")]
         [SerializeField] private PlayerCamera m_playerCamera = new PlayerCamera();
         #endregion
 
-        #region PUBLIC PROPERTIES
-        public static Camera CharacterCamera;
-        #endregion
-
         #region PRIVATE PROPERTIES
-        private CustomCharacterController CustomController { get => GetComponentInChildren<CustomCharacterController>(); }
-
         private CustomInputActions InputActions;
+        private bool OnGround
+        {
+            get => m_playerCharacter.m_onGround;
+            set
+            {
+                if (value)
+                {
+                    m_playerCharacter.m_characterController.transform.localRotation = Quaternion.Euler(0.0f, m_playerCharacter.m_characterController.transform.localEulerAngles.y, 0.0f);
+                }
+
+                if (m_playerCharacter.m_onGround == value) return;
+
+                m_playerCharacter.m_onGround = value;
+
+                if (!m_playerCharacter.m_onGround && m_playerCharacter.SlopeHit().collider == null)
+                {
+                    StopCoroutine(m_playerCharacter.CheckingUngroundedStates());
+                    StartCoroutine(m_playerCharacter.CheckingUngroundedStates());
+                }
+            }
+        }
         #endregion
 
         #region DEFAULTS METHODS
@@ -42,47 +56,44 @@ namespace CustomGameController
         {
             if (CharacterCamera == null) CharacterCamera = GetComponentInChildren<Camera>();
 
+            if (m_playerCharacter.m_characterController == null)
+            {
+                m_playerCharacter.m_characterController = gameObject.GetComponentInChildren<CharacterController>();
+            }
+
+            if (m_playerCharacter.m_characterAnimator == null)
+            {
+                m_playerCharacter.m_characterAnimator = gameObject.GetComponentInChildren<Animator>();
+            }
+
             InputActions = new CustomInputActions();
             InputActions.Enable();
         }
         private void Start()
         {
-            CustomController.SetupCharacter(m_groundLayer);
+            m_playerCharacter.SetupPlayerCharacter();
             m_playerCamera.SetupCamera(transform, m_playerCamera.m_collisionFilter, m_playerCamera.m_cameraRotationSensibility);
+
+            StartCoroutine(m_playerCharacter.CheckingUngroundedStates());
         }
         private void Update()
         {
-            PlayerPhysicsSimulation?.Invoke();
+            m_playerCharacter.ApplyGravity();
+            OnGround = m_playerCharacter.CheckGroundLevel();
+            m_playerCharacter.SetCheckersLocation();
+            m_playerCharacter.Animate();
 
-            m_playerCamera.UpdateCameraLookDirection(new Vector2(CameraPan, CameraTilt), CharacterDirection.normalized , CustomController.SpeedingUpAction);
-
-            CharacterCheckSlopeAndGround?.Invoke();
-
-            UpdateCharacterAnimation?.Invoke();
+            m_playerCamera.UpdateCameraLookDirection(new Vector2(CameraPan, CameraTilt), CharacterDirection.normalized , SpeedUpAction);
 
             ReadPlayerInput();
         }
         private void LateUpdate()
         {
-            m_playerCamera.UpdateCameraPositionAndOffset(CustomController.transform, CustomController.SpeedingUpAction, CustomController.VerticalState);
+            m_playerCamera.UpdateCameraPositionAndOffset(m_playerCharacter.m_characterController.transform, SpeedUpAction, m_playerCharacter.VerticalState);
         }
         #endregion
 
         #region PLAYER INPUTS SECTION
-        [HideInInspector] public static UnityEvent<Vector3, float> OnCharacterDirection = new UnityEvent<Vector3, float>();
-
-        [HideInInspector] public static UnityEvent<bool> OnVerticalAction = new UnityEvent<bool>();
-
-        [HideInInspector] public static UnityEvent<bool, float> OnSpeedUpAction = new UnityEvent<bool, float>();
-
-        [HideInInspector] public static UnityEvent<Vector3> OnFlightPropulsion = new UnityEvent<Vector3>();
-
-        [HideInInspector] public static UnityEvent PlayerPhysicsSimulation = new UnityEvent();
-
-        [HideInInspector] public static UnityEvent CharacterCheckSlopeAndGround = new UnityEvent();
-
-        [HideInInspector] public static UnityEvent UpdateCharacterAnimation = new UnityEvent();
-
         private Vector3 m_characterDirection;
         public Vector3 CharacterDirection
         {
@@ -94,31 +105,13 @@ namespace CustomGameController
             { 
                 if (value == Vector3.zero)
                 {
-                    if (CustomController.VerticalState != VerticalState.Flighting)
-                    {
-                        StartCoroutine(SmoothStop());
-                        SpeedUpAction = false;
-                    }
+                    StartCoroutine(m_playerCharacter.SmoothStop());
+                    SpeedUpAction = false;
                 }
 
                 m_characterDirection = value;
 
-                OnCharacterDirection?.Invoke(value.normalized, CustomController.CurrentSpeed);
-
-                IEnumerator SmoothStop()
-                {
-                    float delayedStopTime = Vector3.Distance(CustomController.CurrentyVelocity, Vector3.zero);
-
-                    while (delayedStopTime > 0)
-                    {
-                        CustomController.CharacterController.Move(Vector3.MoveTowards(CustomController.CurrentyVelocity, value, 1.0f));
-                        delayedStopTime -= Time.deltaTime / CustomController.CurrentSpeed;
-                    }
-
-                    CustomController.CurrentyVelocity = Vector3.zero;
-
-                    yield return null;
-                }
+                m_playerCharacter.UpdateHorizontalPositionAndDirection(value.normalized);
             }
         }
 
@@ -133,43 +126,43 @@ namespace CustomGameController
             {
                 m_speedUpAction = value;
 
-                OnSpeedUpAction?.Invoke(value, CustomController.BaseSpeed);
+                m_playerCharacter.SpeedingUpAction = value;
             }
         }
         public bool VerticalAction
         {
             set
             {
-                OnVerticalAction?.Invoke(value);
+                m_playerCharacter.Jump(value);
             }
         }
         public float CameraPan { get; set; }
         public float CameraTilt { get; set; }
-        public float LeftPropulsion { get; set; }
-        public float RightPropulsion { get; set; }
 
-        private Vector3 m_flightDirection;
-        public Vector3 FlightDirection 
-        {
-            get
-            {
-                return m_flightDirection;
-            }
-            set
-            {
-                if (value == Vector3.zero)
-                {
-                    if (CustomController.VerticalState == VerticalState.Flighting)
-                    {
-                        SpeedUpAction = false;
-                    }
-                }
+        //public float LeftPropulsion { get; set; }
+        //public float RightPropulsion { get; set; }
+        //private Vector3 m_flightDirection;
+        //public Vector3 FlightDirection 
+        //{
+        //    get
+        //    {
+        //        return m_flightDirection;
+        //    }
+        //    set
+        //    {
+        //        if (value == Vector3.zero)
+        //        {
+        //            if (CustomController.VerticalState == VerticalState.Flighting)
+        //            {
+        //                SpeedUpAction = false;
+        //            }
+        //        }
 
-                m_flightDirection = value;
+        //        m_flightDirection = value;
 
-                OnFlightPropulsion?.Invoke(value);
-            }
-        }
+        //        OnFlightPropulsion?.Invoke(value);
+        //    }
+        //}
 
         public void ReadPlayerInput()
         {

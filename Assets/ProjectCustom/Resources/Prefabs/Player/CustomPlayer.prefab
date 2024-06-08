@@ -1127,10 +1127,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6420b5e689643bd4b8261d5d80c93ea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  m_maxSlopeAngle: 30
+  m_playerCharacter:
+    m_groundLayer:
+      serializedVersion: 2
+      m_Bits: 8
+    m_wallLayer:
+      serializedVersion: 2
+      m_Bits: 512
+    m_characterController: {fileID: 0}
+    m_characterAnimator: {fileID: 0}
+    m_onGround: 0
   m_playerCamera:
     m_cameraRotationSensibility: 0.5
     m_collisionFilter:
@@ -2379,7 +2385,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8311188913500309561}
-  - component: {fileID: 3420508063155240670}
   - component: {fileID: 4509866187357834380}
   - component: {fileID: 6753746344580524323}
   m_Layer: 7
@@ -2405,18 +2410,6 @@ Transform:
   - {fileID: 6567832005046866847}
   m_Father: {fileID: 8544233725694826168}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3420508063155240670
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7674390632365401184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dcc3bb543fc7bd408556a45e0e20c63, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!143 &4509866187357834380
 CharacterController:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ namespace CustomGameController
         {
             get
             {
-                Vector3 forward = CustomPlayer.CharacterCamera.transform.forward;
+                Vector3 forward = PlayerCharacterController.CharacterCamera.transform.forward;
                 forward.y = 0;
                 forward = Vector3.Normalize(forward);
 
@@ -19,7 +19,7 @@ namespace CustomGameController
         {
             get
             {
-                return CustomPlayer.CharacterCamera.transform.right;
+                return PlayerCharacterController.CharacterCamera.transform.right;
             }
         }
     }

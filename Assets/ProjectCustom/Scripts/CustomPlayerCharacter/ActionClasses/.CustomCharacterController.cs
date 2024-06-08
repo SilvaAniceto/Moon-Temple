@@ -131,7 +131,7 @@ namespace CustomGameController
         {
             GravityVelocity -= Gravity * GravityMultiplierFactor * Time.deltaTime;
 
-            if (VerticalState == VerticalState.Flighting) GravityVelocity = new Vector3(0.0f, Mathf.Clamp(GravityVelocity.y, -Gravity.y * 2.0f, 0.0f), 0.0f);
+            //if (VerticalState == VerticalState.Flighting) GravityVelocity = new Vector3(0.0f, Mathf.Clamp(GravityVelocity.y, -Gravity.y * 2.0f, 0.0f), 0.0f);
 
             if (SlopeAngle() <= MaxSlopeAngle)
                 CharacterController.Move(GravityVelocity * Time.deltaTime);
@@ -149,7 +149,7 @@ namespace CustomGameController
             {
                 if (value)
                 {
-                    CustomPlayer.OnFlightPropulsion.RemoveAllListeners();
+                    //CustomPlayer.OnFlightPropulsion.RemoveAllListeners();
                     PropulsionForce = 0.0f;
                     Flighting = false;
                     FlightVelocity = Vector3.zero;
@@ -189,7 +189,7 @@ namespace CustomGameController
 
             AllowJump = false;
 
-            CustomPlayer.OnFlightPropulsion.AddListener(CheckEnterFlightState);
+            //CustomPlayer.OnFlightPropulsion.AddListener(CheckEnterFlightState);
 
             yield return new WaitUntil(() => OnGround);
 
@@ -197,8 +197,8 @@ namespace CustomGameController
                        
             CustomPlayer.OnVerticalAction.RemoveAllListeners();
             CustomPlayer.OnVerticalAction.AddListener(Jump);
-            CustomPlayer.OnCharacterDirection.RemoveAllListeners();
-            CustomPlayer.OnCharacterDirection.AddListener(UpdateThirdPersonMovePosition);
+            //CustomPlayer.OnCharacterDirection.RemoveAllListeners();
+            //CustomPlayer.OnCharacterDirection.AddListener(UpdateThirdPersonMovePosition);
 
             yield return new WaitForSeconds(Time.fixedDeltaTime);
             AllowJump = true;

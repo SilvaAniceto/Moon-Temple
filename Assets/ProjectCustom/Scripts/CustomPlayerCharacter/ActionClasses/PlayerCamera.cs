@@ -43,7 +43,7 @@ namespace CustomGameController
             m_tiltAxis.localPosition = Vector3.up * 1.7f;
             m_tiltAxis.localRotation = Quaternion.Euler(0, 0, 0);
 
-            m_cameraTarget = CustomPlayer.CharacterCamera.transform;
+            m_cameraTarget = PlayerCharacterController.CharacterCamera.transform;
             m_cameraTarget.SetParent(m_tiltAxis);
         }
 
