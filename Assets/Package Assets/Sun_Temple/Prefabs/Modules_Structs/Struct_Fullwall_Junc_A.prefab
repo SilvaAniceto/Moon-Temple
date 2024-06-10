@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4342955036833624}
   - component: {fileID: 33411541372013168}
   - component: {fileID: 23695778500246406}
-  - component: {fileID: 64828400415044562}
+  - component: {fileID: 7548542236273847047}
   m_Layer: 3
   m_Name: Struct_Fullwall_Junc_A
   m_TagString: Untagged
@@ -86,8 +86,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64828400415044562
-MeshCollider:
+--- !u!65 &7548542236273847047
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -104,10 +104,9 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: a640c07f8d16ca84a8a9cf6865992123, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 2.026708, y: 9.461173, z: 3.1016448}
+  m_Center: {x: -0.024177551, y: 4.727159, z: 1.4859592}
 --- !u!1 &1832624983376708
 GameObject:
   m_ObjectHideFlags: 0

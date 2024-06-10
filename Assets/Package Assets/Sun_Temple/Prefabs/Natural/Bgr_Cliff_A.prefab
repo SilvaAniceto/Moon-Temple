@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4588758564662042}
   - component: {fileID: 33918296016213160}
   - component: {fileID: 23765809233850886}
-  - component: {fileID: 64417851730169212}
+  - component: {fileID: 3387314572690432845}
   m_Layer: 3
   m_Name: Bgr_Cliff_A
   m_TagString: Untagged
@@ -27,13 +27,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1123833264027568}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.08742682, y: -0.21379073, z: 0.0030602529, w: 0.97295463}
-  m_LocalPosition: {x: 98.81838, y: 13.371009, z: -49.346718}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -9.719, y: -25, z: 2.52}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &33918296016213160
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64417851730169212
+--- !u!64 &3387314572690432845
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

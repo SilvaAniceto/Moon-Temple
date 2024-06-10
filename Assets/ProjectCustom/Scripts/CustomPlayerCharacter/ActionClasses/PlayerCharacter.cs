@@ -55,7 +55,7 @@ namespace CustomGameController
         {
             set
             {
-                m_currentSpeed = value ? BaseSpeed * 3.6f : BaseSpeed;
+                m_currentSpeed = value ? BaseSpeed * 2.2f : BaseSpeed;
 
                 if (m_speedingUpAction == value) return;
 
@@ -82,7 +82,7 @@ namespace CustomGameController
         }
         private float BaseSpeed
         {
-            get => 0.415f * m_characterController.height * 3.2f;
+            get => 0.415f * m_characterController.height * 3.8f;
         }
         private Vector3 CharacterAnchorPosition { get => new Vector3(m_characterController.bounds.center.x, m_characterController.bounds.center.y - m_characterController.bounds.extents.y, m_characterController.bounds.center.z); }
         private float GravityMultiplierFactor

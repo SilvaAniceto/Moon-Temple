@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4583425314022746}
   - component: {fileID: 33085453537207694}
   - component: {fileID: 23054772579826254}
-  - component: {fileID: 64022945265016396}
+  - component: {fileID: 5930230053892923951}
   m_Layer: 3
   m_Name: Bgr_Cliff_A_Var
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64022945265016396
-MeshCollider:
+--- !u!65 &5930230053892923951
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +102,6 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 96efae405de83eb4282c6ffe22314caa, type: 3}
+  serializedVersion: 3
+  m_Size: {x: 27.310873, y: 42.843098, z: 12.125942}
+  m_Center: {x: -11.907014, y: 20.956953, z: 3.0688975}
