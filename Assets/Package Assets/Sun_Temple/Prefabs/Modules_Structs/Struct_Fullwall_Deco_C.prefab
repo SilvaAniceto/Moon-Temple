@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4382470282482282}
   - component: {fileID: 33730429765044144}
   - component: {fileID: 23755583988135076}
-  - component: {fileID: 65813732923312830}
+  - component: {fileID: 1038771666587381542}
   m_Layer: 0
   m_Name: Struct_Fullwall_Deco_C
   m_TagString: Untagged
@@ -29,8 +29,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000021855694, y: 0, z: -0, w: 1}
   m_LocalPosition: {x: 58.344566, y: 98.79051, z: 38.008385}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -85,8 +85,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &65813732923312830
-BoxCollider:
+--- !u!64 &1038771666587381542
+MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -103,6 +103,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1.5082226, y: 2.2113574, z: 1.4968734}
-  m_Center: {x: 0.007319212, y: 1.1146897, z: -0.0038515031}
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: e6035143820594146b8e4ea0c8530906, type: 3}
