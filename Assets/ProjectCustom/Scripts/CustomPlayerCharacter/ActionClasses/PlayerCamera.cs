@@ -55,27 +55,19 @@ namespace CustomGameController
 
             lookDirection = lookDirection.normalized;
 
-            float pan = m_panAxis.localEulerAngles.y;
-            float tilt = m_tiltAxis.localEulerAngles.x;
-
-            pan += lookDirection.x * m_cameraRotationSensibility;
-            tilt -= lookDirection.y * m_cameraRotationSensibility;
-
-            tilt = tilt > 180 ? tilt - 360 : tilt;
-            tilt = Mathf.Clamp(tilt, -50.0f, 70.0f);
-
             if (lookDirection != Vector2.zero)
             {
                 m_followPlayerDirectionDelayTime = 3.0f;
 
-                if (Mathf.Abs(lookDirection.x * lookDirection.magnitude) > 0.45f)
+                if (Mathf.Abs(lookDirection.x * lookDirection.magnitude) > 0.65f)
                 {
-                    m_panAxis.localEulerAngles = Vector3.up * pan;
+                    m_panAxis.localRotation = m_panAxis.localRotation * Quaternion.Euler(0, lookDirection.x * m_cameraRotationSensibility * Time.deltaTime * 100, 0);
                 }
 
-                if (Mathf.Abs(lookDirection.y * lookDirection.magnitude) > 0.125f)
+                if (Mathf.Abs(lookDirection.y * lookDirection.magnitude) > 0.65f)
                 {
-                    m_tiltAxis.localEulerAngles = Vector3.right * tilt;
+                    m_tiltAxis.localRotation = m_tiltAxis.localRotation * Quaternion.Euler(lookDirection.y * m_cameraRotationSensibility * Time.deltaTime * 100, 0, 0);
+                    m_tiltAxis.localRotation = Quaternion.Euler(Mathf.Clamp(m_tiltAxis.localEulerAngles.x > 180 ? m_tiltAxis.localEulerAngles.x - 360 : m_tiltAxis.localEulerAngles.x, -50.0f, 70.0f), 0.0f, 0.0f);
                 }
 
                 return;
@@ -83,9 +75,7 @@ namespace CustomGameController
 
             if (characterDirection != Vector3.zero && m_followPlayerDirectionDelayTime <= Time.fixedDeltaTime)
             {
-                pan += characterDirection.x;
-
-                m_panAxis.localRotation = Mathf.Abs(characterDirection.x) > 0.65f ? Quaternion.Slerp(m_panAxis.localRotation, Quaternion.Euler(0, pan, 0), speedingUpAction ? 0.8f : 0.4f) : m_panAxis.localRotation;
+                m_panAxis.localRotation = m_panAxis.localRotation * Quaternion.Euler(0, characterDirection.x * m_cameraRotationSensibility * Time.deltaTime * 100, 0);
                 m_tiltAxis.localRotation = m_tiltAxis.localRotation;
 
                 return;
