@@ -66,7 +66,7 @@ namespace CustomGameController
 
                 if (Mathf.Abs(lookDirection.y * lookDirection.magnitude) > 0.65f)
                 {
-                    m_tiltAxis.localRotation = m_tiltAxis.localRotation * Quaternion.Euler(lookDirection.y * m_cameraRotationSensibility * Time.deltaTime * 100, 0, 0);
+                    m_tiltAxis.localRotation = m_tiltAxis.localRotation * Quaternion.Euler(-lookDirection.y * m_cameraRotationSensibility * Time.deltaTime * 100, 0, 0);
                     m_tiltAxis.localRotation = Quaternion.Euler(Mathf.Clamp(m_tiltAxis.localEulerAngles.x > 180 ? m_tiltAxis.localEulerAngles.x - 360 : m_tiltAxis.localEulerAngles.x, -50.0f, 70.0f), 0.0f, 0.0f);
                 }
 
